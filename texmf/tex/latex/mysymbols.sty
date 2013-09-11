@@ -1,0 +1,65 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{mysymbols}[2013/09/11 Symbols frequently used in my talks, V2.0]
+
+\RequirePackage{amsmath}
+
+%% Basics
+\newcommand{\card}[1]{\# #1}  % cardinality
+\newcommand{\diffset}{\,\backslash\,}  % difference between sets
+\newcommand{\ndiv}{\nmid}  % does not divide
+\newcommand{\isom}{\cong}  % isomorphisms
+\newcommand{\eqdef}{\overset{\mathrm{def}}{\equiv}}  % equal by definition
+
+%% Some standard mathbb
+\newcommand{\NN}{\mathbb{N}}  % natural numbers
+\newcommand{\ZZ}{\mathbb{Z}}  % integers
+\newcommand{\QQ}{\mathbb{Q}}  % rational numbers
+\newcommand{\RR}{\mathbb{R}}  % real numbers
+\newcommand{\CC}{\mathbb{C}}  % complex numbers
+\newcommand{\FF}{\mathbb{F}}  % a finite field
+\newcommand{\KK}{\mathbb{K}}  % a field
+\newcommand{\LL}{\mathbb{L}}  % yet another field
+\newcommand{\PP}{\mathbb{P}}  % projective space
+
+%% Algebra
+\newcommand{\trans}[1]{#1^\top}  % transposed
+\newcommand{\dual}[1]{#1^\ast}  % dual
+\newcommand{\clot}[1]{\bar{#1}}  % algebraic closure
+\newcommand{\frob}{\varphi}  % Frobenius isomorphism
+\newcommand{\euler}{\varphi}  % Euler totient function
+\newcommand{\Cyclo}{\Phi}  % cyclotomic polynomial
+\newcommand{\bra}[1]{\left\langle #1 \right\rvert}
+\newcommand{\ket}[1]{\left\lvert #1 \right\rangle}
+\newcommand{\braket}[2]{\left\langle #1 \middle| #2 \right\rangle}
+\newcommand{\braketop}[3]{\left\langle #1 \middle| #2 \middle| #3 \right\rangle}  % bra-ket notation
+\newcommand{\poinc}{\mathcal{H}}  % Poincaré half plane
+
+%% Shorthands for arrows
+\newcommand{\la}{\leftarrow}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\La}{\Leftarrow}
+\newcommand{\Ra}{\Rightarrow}
+
+%% Complexity
+\newcommand{\tildO}{\tilde{O}}  % soft Oh notation
+\newcommand{\Mult}{\mathsf{M}}  % multiplication function
+
+%%%%%%%% Operators
+
+%% Algebra
+\DeclareMathOperator{\im}{im}  % image
+\DeclareMathOperator{\End}{End}  % Endomorphism ring
+\DeclareMathOperator{\Aut}{Aut}  % Automorphism group
+\DeclareMathOperator{\Mat}{\mathcal{M}}  % Matrices
+\DeclareMathOperator{\GL}{GL}  % General linear group
+\DeclareMathOperator{\SL}{SL}  % Special linear group
+\DeclareMathOperator{\diff}{d}  % differential operator
+\DeclareMathOperator{\car}{char}  % characteristic
+\DeclareMathOperator{\Frac}{Frac}  % fraction field
+\DeclareMathOperator{\Gal}{Gal}  % Galois group
+\DeclareMathOperator{\Tr}{Tr}  % trace
+\DeclareMathOperator{\Norm}{N} % norm
+\DeclareMathOperator{\ord}{ord}  % order of an element
+
+%% Complexity
+\DeclareMathOperator{\loglog}{loglog}  % loglog (thanks to Kaltofen <- Cantor)
