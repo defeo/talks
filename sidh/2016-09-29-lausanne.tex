@@ -1108,7 +1108,7 @@
       queries. Countermeasures are relatively
       expensive.\footcite{galbraithsecurity}
     \item[Side channel] Constant-time implementation
-      available.\footcite{costello2015four}
+      available.\footcite{costello2016sidh}
     \item[] Attack on partially leaked
       keys.\footnotemark[1]
     \end{description}
@@ -1131,7 +1131,7 @@
   \begin{block}{Practical optimizations:}
     \renewcommand{\thefootnote}{\alph{footnote}}
     \begin{itemize}
-    \item Optimize arithmetic for $\F_p$.\footcite{costello2015four}\footcite{vercauteren-sidh-fp}
+    \item Optimize arithmetic for $\F_p$.\footcite{costello2016sidh}\footcite{vercauteren-sidh-fp}
     \item $-1$ is a quadratic non-residue: \alert{$\F_{p^2}\simeq\F_p[X]/(X^2+1)$}.
     \item $E$ (or its twist) has a $4$-torsion point: use \alert{Montgomery} form.
     \item Avoid inversions by using \textit{projective curve
