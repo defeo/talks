@@ -1,0 +1,378 @@
+\documentclass{beamer}
+
+%\includeonlyframes{current}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{tikz,pgflibraryarrows,pgflibraryplotmarks,pgflibrarysnakes,pgflibraryshapes}
+\usepackage[backend=biber,citestyle=authoryear-comp,bibstyle=beamer,doi=false,isbn=false,url=false,maxnames=10]{biblatex}
+\bibliography{defeo}
+
+\mode<presentation>{%
+  \usetheme{Boadilla}
+}
+\beamertemplatenavigationsymbolsempty
+
+\usepackage{sourcesanspro}
+\usepackage[amssymb,amsfonts]{concmath}
+\usefonttheme[onlymath]{serif}
+
+\renewcommand{\emph}[1]{{\usebeamercolor[fg]{structure}#1}}
+
+%\let\footcite\footnote
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\renewcommand{\P}{\mathbb{P}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\tildO}{\mathcal{\tilde{O}}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\chr}{\operatorname{char}}
+\newcommand{\Cl}{\operatorname{Cl}}
+\renewcommand{\a}{{\mathfrak{a}}}
+\renewcommand{\b}{{\mathfrak{b}}}
+\newcommand{\cyc}[1]{{\langle #1 \rangle}}
+\newcommand{\ord}{\operatorname{ord}}
+
+\usetikzlibrary{matrix,decorations,decorations.text,calc}
+
+\pgfkeys{/triangle/.code=\tikzset{x={(-0.5cm,-0.866cm)},y={(1cm,0cm)}}}
+\pgfkeys{/lattice/.code n args={4}{\tikzset{cm={#1,#2,#3,#4,(0,0)}}}}
+
+\newcommand{\axes}[4]{
+  \clip (#1,#3) rectangle (#2,#4);
+  \draw [thin, gray, -latex] (#1,0) -- (#2,0);% Draw x axis
+  \draw [thin, gray, -latex] (0,#3) -- (0,#4);% Draw y axis
+}
+
+\newcommand{\lattice}[2]{
+  \draw[style=help lines,dashed] (#1-1,#1-1) grid[step=1] (#2+1,#2+1);
+  \foreach \x in {#1,...,#2}{
+    \foreach \y in {#1,...,#2}{
+      \node[draw,circle,inner sep=2pt,fill] at (\x,\y) {};
+      % Places a dot at those points
+    }
+  }
+}
+
+\newcommand{\bl}[1]{\textcolor{blue}{#1}}
+\newcommand{\rd}[1]{\textcolor{red}{#1}}
+\newcommand{\gr}[1]{\textcolor{green}{#1}}
+
+% This command defines a triangle of dots of given height
+\newcommand{\dottriangle}[2][\i-\j]{%
+  \foreach \i in {0,...,#2} {%
+    \foreach \j in {0,...,\i} {%
+      \draw(\i,\j) node{#1};%
+    }%
+  }}
+
+
+\title{Isogeny graphs in cryptography}
+\author[Luca De Feo]{Luca De Feo}
+\date[Mar 19--23, 2018 --- Post-Scryptum]{March 19--23, 2018, Post-Scryptum Spring School, Les 7 Laux}
+\institute[U Paris Saclay]{Université Paris Saclay, UVSQ \& Inria}
+
+\begin{document}
+
+\frame[plain]{
+  \begin{tikzpicture}[remember picture,overlay,opacity=0.5]
+%    \node[at=(current page.center),yshift=-8mm]{\includegraphics[width=0.7\textwidth]{stroop.jpg}};
+  \end{tikzpicture}
+  {\bf \titlepage}
+  \vspace{1.5cm}
+  \begin{center}
+    Slides online at~~~\emph{\url{http://defeo.lu/docet/}}
+  \end{center}
+}
+
+%% 
+
+\begin{frame}
+  \frametitle{Overview}
+  \tableofcontents  
+\end{frame}
+
+%%
+%% 
+
+\section{Foundations}
+
+\subsection{Elliptic curves}
+
+\begin{frame}{Projective space}
+  \begin{definition}[Projective space]
+    Let $\bar{k}$ an algebraically closed field, the \emph{projective
+      space} $\P^n(\bar{k})$ is the set of non-null $n+1$-tuples
+    $(x_0,\dots,x_n)\in \bar{k}^n$ modulo the equivalence relation
+    \[(x_0,\dots,x_n) \sim (\lambda x_0, \dots, \lambda x_n) \qquad
+      \text{with $\lambda\in \bar{k}\setminus\{0\}$}.\]
+    A class is denoted by $(x_0:\cdots:x_n)$.
+  \end{definition}
+
+  Picture here
+\end{frame}
+
+%%
+
+\begin{frame}{Weierstrass equations}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      Let $k$ be a field of characteristic $\ne 2,3$.
+
+      An \emph{elliptic curve \textit{defined over $k$}} is the locus
+      in $\P^2(\bar{k})$ of an equation
+      \[\emph{Y^2Z = X^3 + aXZ^2 + bZ^3},\]
+      where $a,b\in k$ and $4a^3+27b^2\ne 0$.
+
+      \begin{itemize}
+      \item<2-> $\O=(0:1:0)$ is the \emph{point at infinity};
+      \item<3-> $y^2 = x^3 + ax + b$ is the \emph{affine equation}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[domain=-2.4566:4,samples=100,yscale=1/2]
+          \draw plot (\x,{sqrt(\x*\x*\x-4*\x+5)});
+          \draw plot (\x,{-sqrt(\x*\x*\x-4*\x+5)});
+
+          \draw[thin,gray,-latex] (0,-7) -- (0,7);
+          \draw[thin,gray,-latex] (-3,0) -- (4,0);
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{The group law}
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \begin{block}{Bezout's theorem}
+        Every line cuts $E$ in exactly three points (counted with
+        multiplicity).
+      \end{block}
+
+      Define a \emph{group law} such that any three colinear points
+      add up to zero.
+
+      \begin{itemize}
+      \item<2-> The law is \emph{algebraic}\\ (it has \textit{formulas});
+      \item<3-> The law is \emph{commutative};
+      \item<3-> $\O$ is the \emph{group identity};
+      \item<3-> \emph{Opposite points} have the same $x$-value.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.6\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[domain=-2.4566:4,samples=100,yscale=1/2]
+          \draw plot (\x,{sqrt(\x*\x*\x-4*\x+5)});
+          \draw plot (\x,{-sqrt(\x*\x*\x-4*\x+5)});
+
+          \draw[thin,gray,-latex] (0,-7) -- (0,7);
+          \draw[thin,gray,-latex] (-3,0) -- (4,0);
+          \draw (-3,1) -- (4,8/3+3);
+          \begin{scope}[every node/.style={draw,circle,inner sep=1pt,fill},cm={1,2/3,0,0,(0,3)}]
+            \node at (-2.287980,0) {};
+            \node at (-0.535051,0) {};
+            \node at (3.267475,0) {};
+          \end{scope}
+          \begin{scope}[every node/.style={yshift=0.3cm},cm={1,2/3,0,0,(0,3)}]
+            \node at (-2.287980,0) {$P$};
+            \node at (-0.535051,0) {$Q$};
+            \node at (3.267475,0) {$R$};
+          \end{scope}
+
+          \draw[dashed] (3.267475,3.267475*2/3+3) -- (3.267475,-3.267475*2/3-3) 
+          node[draw,circle,inner sep=1pt,fill] {}
+          node[xshift=-0.1cm,anchor=east] {$P+Q$};
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Group structure}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Isomorphisms}
+  j-invariant, twists?
+\end{frame}
+
+%%
+
+\begin{frame}{Isogenies}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Curves over finite fields}
+  Frobenius, Hasse, Sato-Tate
+\end{frame}
+
+%%
+%% 
+
+\subsection{Isogenies}
+
+\begin{frame}{Complex tori}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Curves over $\C$}
+  j-invariant, $\p$, uniformization
+\end{frame}
+
+%%
+
+\begin{frame}{Isogenies}
+  dual, degree
+\end{frame}
+
+%%
+%% 
+
+\subsection{Complex multiplication}
+
+\begin{frame}{The endomorphism ring}
+  orders, quaternions, Deuring
+\end{frame}
+
+%%
+
+\begin{frame}{Complex multiplication}
+  Hasse
+\end{frame}
+
+%%
+
+\begin{frame}{Isogeny volcanoes}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Quaternions?}
+  
+\end{frame}
+
+%%
+%% 
+
+\section{Isogeny-based cryptography}
+\subsection{Isogeny walks}
+
+%%
+%% 
+
+\subsection{Key exchange from ordinary graphs}
+
+%%
+%% 
+
+\subsection{Key exchange from supersingular graphs}
+
+\begin{frame}{The scheme}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Attacks}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{SIKE}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Implementation}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Side channels}
+  
+\end{frame}
+
+%% 
+
+\begin{frame}{Key compression? Signatures?}
+  
+\end{frame}
+
+%%
+%% 
+
+%%
+
+\begin{frame}
+  \centering
+  \begin{tikzpicture}
+    \begin{scope}[xscale=1.2,black!60]
+      \def\crater{7}
+      \foreach \i in {1,...,\crater} {
+        \draw[fill] (360/\crater*\i:3cm) circle (5pt);
+        \draw (360/\crater*\i : 3cm) -- (360/\crater*\i+360/\crater : 3cm);
+        \foreach \j in {-1,1} {
+          \draw[fill] (360/\crater*\i : 3cm) -- (360/\crater*\i + \j*360/\crater/4 : 4cm) circle (3pt);
+          \foreach \k in {-1,0,1} {
+            \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 4cm) --
+            (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 4.5cm) circle (1pt);
+          }
+        }
+      }
+    \end{scope}
+    
+    \draw (0,1) node{\Huge\bf Thank you};
+    \draw (0,-0.6) node{\large\url{http://defeo.lu/}};
+    \draw (0,-1.3) node{\large\includegraphics[height=0.9em]{twitter.png}~\href{https://twitter.com/luca_defeo}{@luca\_defeo}};
+  \end{tikzpicture}
+\end{frame}
+
+%%
+%%
+
+\begin{frame}[allowframebreaks]
+  \frametitle{References}
+
+  \defbibfilter{books}{\type{book} \or \type{booklet} \or \type{thesis}
+    \or \type{report} \or \type{collection} \or \type{manual}
+    \or \type{periodical} \or \type{proceedings}}
+  \defbibfilter{articles}{\not \(\type{book} \or \type{booklet} \or \type{thesis}
+    \or \type{report} \or \type{collection} \or \type{manual}
+    \or \type{periodical} \or \type{proceedings}\)}
+
+  \beamertemplatebookbibitems
+  \printbibliography[filter=books]
+  \beamertemplatearticlebibitems
+  \printbibliography[filter=articles]
+\end{frame}
+
+\end{document}
+
+
+% LocalWords:  Isogeny abelian isogenies hyperelliptic supersingular Frobenius
+% LocalWords:  isogenous
+
+
