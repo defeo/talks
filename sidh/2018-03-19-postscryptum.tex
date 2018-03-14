@@ -6,7 +6,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage[american]{babel}
 \usepackage{amsmath,amssymb,amsthm}
-\usepackage{tikz,pgflibraryarrows,pgflibraryplotmarks,pgflibrarysnakes,pgflibraryshapes}
+\usepackage{tikz}
 \usepackage[backend=biber,citestyle=authoryear-comp,bibstyle=beamer,doi=false,isbn=false,url=false,maxnames=10]{biblatex}
 \bibliography{defeo}
 
@@ -40,7 +40,7 @@
 \newcommand{\cyc}[1]{{\langle #1 \rangle}}
 \newcommand{\ord}{\operatorname{ord}}
 
-\usetikzlibrary{matrix,decorations,decorations.text,calc}
+\usetikzlibrary{arrows,matrix,decorations,decorations.text,decorations.pathmorphing,calc}
 
 \pgfkeys{/triangle/.code=\tikzset{x={(-0.5cm,-0.866cm)},y={(1cm,0cm)}}}
 \pgfkeys{/lattice/.code n args={4}{\tikzset{cm={#1,#2,#3,#4,(0,0)}}}}
@@ -109,7 +109,7 @@
 \begin{frame}{Projective space}
   \begin{definition}[Projective space]
     Let $\bar{k}$ an algebraically closed field, the \emph{projective
-      space} $\P^n(\bar{k})$ is the set of non-null $n+1$-tuples
+      space} $\P^n(\bar{k})$ is the set of non-null $(n+1)$-tuples
     $(x_0,\dots,x_n)\in \bar{k}^n$ modulo the equivalence relation
     \[(x_0,\dots,x_n) \sim (\lambda x_0, \dots, \lambda x_n) \qquad
       \text{with $\lambda\in \bar{k}\setminus\{0\}$}.\]
@@ -202,19 +202,132 @@
 %%
 
 \begin{frame}{Group structure}
-  
+  \begin{block}{Torsion structure}
+    Let $E$ be defined over an algebraically closed field $\bar{k}$ of
+    characteristic $p$.
+    \begin{align*}
+      E[m] \simeq\quad& \Z/m\Z\times\Z/m\Z  &\text{if $p\nmid m$,}\\[1em]
+                 &\Z/p^e\Z & \text{\emph{ordinary} case,}\\[-1.7em]
+      E[p^e] \simeq\Biggl\{& \\[-1.7em]
+%               \begin{cases}
+                 &\{\O\} & \text{\emph{supersingular} case.}
+%               \end{cases}
+    \end{align*}
+  \end{block}
+
+  \begin{block}{Free part}
+    Let $E$ be defined over a \emph{number field} $k$, the group of
+    $k$-rational points $E(k)$ is \emph{finitely generated}.
+  \end{block}
 \end{frame}
 
 %%
 
-\begin{frame}{Isomorphisms}
-  j-invariant, twists?
+\begin{frame}{Maps: isomorphisms}
+  \begin{block}{Isomorphisms}
+    The only \emph{invertible algebraic maps} between elliptic curves
+    are of the form
+    \[(x,y) \mapsto (u^2x, u^3y)\]
+    for some $u\in\bar{k}$.
+
+    They are \emph{group isomorphisms}.
+  \end{block}
+
+  \begin{block}{$j$-Invariant}
+    Let $E\;:\;y^2=x^3+ax+b$, its \emph{$j$-invariant} is
+    \[j(E) = 1728\frac{4a^3}{4a^3+27b^2}.\]
+
+    Two elliptic curves $E,E'$ are \emph{isomorphic} if and only if
+    $j(E)=j(E')$.
+  \end{block}
 \end{frame}
 
 %%
 
-\begin{frame}{Isogenies}
+\begin{frame}{Maps: isogenies}
+  \begin{theorem}
+    Let $\phi:E\to E'$ be a map between elliptic curves. These
+    conditions are equivalent:
+    \begin{itemize}
+    \item $\phi$ is a \emph{surjective group morphism},
+    \item $\phi$ is a \emph{group morphism} with \emph{finite kernel},
+    \item $\phi$ is a non-constant \emph{algebraic map} of projective
+      varieties sending the point at infinity of $E$ onto the point at
+      infinity of $E'$.
+    \end{itemize}
+    If they hold $\phi$ is called an \emph{isogeny}.
+  \end{theorem}
+
+  Two curves are called \emph{isogenous} if there exists an isogeny
+  between them.
+
+  \begin{block}{Example: Multiplication-by-$m$}
+    On any curve, an isogeny from $E$ to itself (i.e., an
+    \emph{endomorphism}):
+    \begin{align*}
+      [m] \;:\; E &\to E,\\
+      P &\mapsto [m]P.
+    \end{align*}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Isogenies: an example over $\F_{11}$}
+  \begin{tikzpicture}[scale=0.4]
+    \begin{scope}
+      \node[anchor=center] at (0,7) {$E \;:\; y^2 = x^3 + x$};
+
+      \draw[thin,gray] (0,-6) -- (0,6);
+      \draw[thin,gray] (-6,0) -- (6,0);
+
+      \foreach \x/\y in {0/0,5/3,-4/3,-3/5,-2/1,-1/3} {
+        \draw[blue,fill] (\x,\y) circle (0.2) node(E_\x_\y){}
+        (\x,-\y) circle (0.2) node(E_\x_-\y){};
+      }
+
+      \uncover<3->{\draw[red,fill] (0,0) circle (0.3);}
+    \end{scope}
+    
+    \begin{scope}[xshift=1.2\textwidth]
+      \node at (0,7) {$E' \;:\; y^2 = x^3 - 4x$};
+
+      \draw[thin,gray] (0,-6) -- (0,6);
+      \draw[thin,gray] (-6,0) -- (6,0);
+
+      \foreach \x/\y in {0/0,2/0,3/2,4/2,6/4,-2/0,-1/5} {
+        \draw[color=blue,fill] (\x,\y) circle (0.2) node(F_\x_\y){}
+        (\x,-\y) circle (0.2) node(F_\x_-\y){};
+      }
+    \end{scope}
+
+    \begin{uncoverenv}<2->
+      \path[color=red,-latex,dashed]
+      (E_5_3) edge (F_3_2)
+      (E_-4_3) edge (F_4_-2)
+      (E_-3_5) edge (F_4_2)
+      (E_-2_1) edge (F_3_-2)
+      (E_-1_3) edge (F_-2_0)
+      (E_5_-3) edge (F_3_-2)
+      (E_-4_-3) edge (F_4_2)
+      (E_-3_-5) edge (F_4_-2)
+      (E_-2_-1) edge (F_3_2)
+      (E_-1_-3) edge (F_-2_0);
+    \end{uncoverenv}
+  \end{tikzpicture}
   
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \[\phi(x,y) = \left(\frac{x^2 + 1}{x},\quad y\frac{x^2-1}{x^2}\right)\]
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item<3-> Kernel generator in \alert{red}.
+      \item<4-> This is a degree $2$ map.
+      \item<5-> Analogous to $x\mapsto x^2$ in $\F_p^*$.
+      \end{itemize}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 %%
@@ -235,7 +348,7 @@
 %%
 
 \begin{frame}{Curves over $\C$}
-  j-invariant, $\p$, uniformization
+  j-invariant, $\wp$, uniformization
 \end{frame}
 
 %%
