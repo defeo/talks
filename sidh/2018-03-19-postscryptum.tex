@@ -355,7 +355,7 @@
     \[\lvert\#E(k)-q-1\rvert\le 2\sqrt{q}.\]
   \end{block}
 
-  \begin{block}{Sato-Tate theorem}
+  \begin{block}{Serre-Tate theorem}
     Two elliptic curves $E,E'$ defined over a finite field $k$ are
     \emph{isogenous over $k$} if and only if $\#E(k)=\#E'(k)$.
   \end{block}
@@ -743,7 +743,7 @@
 \begin{frame}{Algebras, orders}
   \begin{itemize}
   \item A \emph{quadratic imaginary number field} is an extension of
-    $\Q$ of the form $Q[\sqrt{-D}]$ for some $D>0$.
+    $\Q$ of the form $Q[\sqrt{-D}]$ for some non-square $D>0$.
   \item A \emph{quaternion algebra} is an algebra of the form
     $\Q + \alpha\Q + \beta\Q + \alpha\beta\Q$, where the generators
     satisfy the relations
@@ -753,16 +753,16 @@
   \begin{block}{Orders}
     Let $K$ be a finitely generated $\Q$-algebra.  An \emph{order}
     $\O\subset K$ is a \emph{subring} of $K$ that is a finitely
-    generated $\Z$-module of \emph{maximal dimension}.
-
-    An order that is not contained in any other order of $K$ is called
-    a \emph{maximal order}.
+    generated $\Z$-module of \emph{maximal dimension}.  An order that
+    is not contained in any other order of $K$ is called a
+    \emph{maximal order}.
   \end{block}
 
   Examples:
   \begin{itemize}
-  \item $\Z$ is the only maximal order contained in $\Q$,
+  \item $\Z$ is the only order contained in $\Q$,
   \item $\Z[i]$ is the only maximal order of $\Q[i]$,
+  \item $\Z[\sqrt{5}]$ is a non-maximal order of $\Q[\sqrt{5}]$,
   \item The \emph{ring of integers} of a number field is its only
     maximal order,
   \item In general, maximal orders in quaternion algebras are
@@ -777,22 +777,23 @@
 
   \begin{block}{Theorem (Deuring)}
     Let $E$ be an elliptic curve defined over a field $k$ of
-    characteristic $p$.  $\End(E)$ is isomorphic to one of the
-    following:
+    characteristic $p$.\\
+    $\End(E)$ is isomorphic to one of the following:
     \begin{itemize}
     \item $\Z$, only if $p=0$
-      \begin{center}
+      \begin{flushright}
         $E$ is \emph{ordinary}.
-      \end{center}
+      \end{flushright}
     \item An order $\O$ in a quadratic imaginary field:
-      \begin{center}
-        $E$ is ordinary with \emph{complex multiplication} by $\O$.
-      \end{center}
+      \begin{flushright}
+        $E$ is \emph{ordinary} with \emph{complex multiplication} by
+        $\O$.
+      \end{flushright}
     \item Only if $p>0$, a maximal order in a quaternion
       algebra\footnote{(ramified at $p$ and $\infty$)}:
-      \begin{center}
+      \begin{flushright}
         $E$ is \emph{supersingular}.
-      \end{center}
+      \end{flushright}
     \end{itemize}
   \end{block}
 \end{frame}
@@ -805,57 +806,274 @@
     $\pi$ satisfies a quadratic equation
     \[\pi^2 - t\pi + q = 0\]
     in $\End(E)$ for some $|t|\le2\sqrt{q}$, called the \emph{trace}
-    of $\pi$.
+    of $\pi$.  The trace $t$ is coprime to $q$ if and only if $E$ is
+    ordinary.
   \end{block}
 
-  Let $D_\pi=t^2-4q$ and $K=\Q[\sqrt{D_\pi}]$, then, if $E$ is
-  \emph{ordinary}:
-  \[\Z \ne \Z[\pi] \subset \End(E) \subset \O_K.\]
+  Suppose $E$ is \emph{ordinary}, then $D_\pi=t^2-4q<0$ is the
+  \emph{discriminant} of $\Z[\pi]$.
+  
+  \begin{itemize}
+  \item $K=\Q[\pi]=\Q[\sqrt{D_\pi}]$ is the \emph{endomorphism algebra} of $E$.
+  \item Denote by $\O_K$ its ring of integers, then
+    \[\Z \ne \Z[\pi] \subset \End(E) \subset \O_K.\]
+  \end{itemize}
 
-  \begin{block}{Proposition}
-    Let $K$ be a quadratic number field, and let $\O_K$ be its ring of
-    integers.  Any order $\O\subset K$ can be written as $\O=\Z+f\O_K$
-    for an integer $f$, called the \emph{conductor} of $\O$.  If $d_K$
-    is the \emph{discriminant} of $K$, the discriminant of $\O$ is
-    $f^2d_K$.
-
-    If $\O,\O'$ are two orders of discriminants $f,f'$, then
-    $\O\subset\O'$ if and only if $f'|f$.
-  \end{block}
+  In the \emph{supersingular} case, $\pi$ may or may not be in $\Z$,
+  depending on $q$.
 \end{frame}
 
 %%
 
 \begin{frame}{Isogeny volcanoes}
-  \centering
-  \begin{tikzpicture}
-    \begin{scope}
-      \def\crater{7}
-      \foreach \i in {1,...,\crater} {
-        \draw[fill] (360/\crater*\i:1cm) circle (5pt);
-        \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
-        \foreach \j in {-1,1} {
-          \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
-          \foreach \k in {-1,0,1} {
-            \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
-            (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
+  \begin{block}{Serre-Tate theorem reloaded}
+    Two elliptic curves $E,E'$ defined over a finite field are
+    isogenous iff their \emph{endomorphism algebras}
+    $\End(E)\otimes\Q$ and $\End(E')\otimes\Q$ are isomorphic.
+  \end{block}
+  
+  \begin{columns}
+    \begin{column}{0.3\textwidth}
+      \emph{Isogeny graphs}
+      \begin{itemize}
+      \item \emph{Vertices are curves} up to isomorphism,
+      \item \emph{Edges are isogenies} up to isomorphism.
+      \end{itemize}
+
+      \emph{Isogeny volcanoes}
+      \begin{itemize}
+      \item Curves are ordinary,
+      \item Isogenies all have degree a prime $\ell$.
+      \end{itemize}
+    \end{column}      
+    \begin{column}{0.6\textwidth}
+      \begin{tikzpicture}
+        \begin{scope}
+          \def\crater{7}
+          \foreach \i in {1,...,\crater} {
+            \draw[fill] (360/\crater*\i:1cm) circle (5pt);
+            \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+            \foreach \j in {-1,1} {
+              \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
+              \foreach \k in {-1,0,1} {
+                \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
+                (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
+              }
+            }
           }
-        }
-      }
-    \end{scope}
-    \begin{scope}[xshift=4cm]
-      \node at (0,2) {$\End(E)$};
-      \draw[fill] (0,1) circle(5pt) node[xshift=0.7cm]{$\O_K$} -- 
-      (0,0) circle(3pt) --
-      (0,-1) circle(1pt) node[xshift=0.7cm]{$\Z[\pi]$};
-    \end{scope}
-  \end{tikzpicture}
+        \end{scope}
+        \begin{scope}[xshift=4cm]
+          \node at (0,2) {$\End(E)$};
+          \draw[fill] (0,1) circle(5pt) node[xshift=0.7cm]{$\O_K$} -- 
+          (0,0) circle(3pt) --
+          (0,-1) circle(1pt) node[xshift=0.7cm]{$\Z[\pi]$};
+        \end{scope}
+      \end{tikzpicture}
+      
+      \centering\small
+      Isogeny volcano of degree $\ell=3$.
+    \end{column}
+  \end{columns}
 \end{frame}
 
 %%
 
-\begin{frame}{Quaternions?}
+\begin{frame}{Isogeny volcanoes}
+  \begin{block}{Classifying quadratic orders}
+    Let $K$ be a quadratic number field, and let $\O_K$ be its ring of
+    integers.
+    \begin{itemize}
+    \item Any order $\O\subset K$ can be written as $\O=\Z+f\O_K$ for
+      an integer $f$, called the \emph{conductor} of $\O$, denoted by
+      $[\O_k:\O]$.
+    \item If $d_K$ is the \emph{discriminant} of $K$, the discriminant
+      of $\O$ is $f^2d_K$.
+    \item If $\O,\O'$ are two orders with discriminants $d,d'$, then
+      \emph{$\O\subset\O'$ iff $d'|d$}.
+    \end{itemize}
+  \end{block}
+
+  Let $E,E'$ be curves with respective endomorphism rings $\O,\O'$.\\
+  Let $\phi:E\to E'$ be an isogeny of prime degree $\ell$, then:
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+      \item if $\O=\O'$, \hfill$\phi$ is \emph{horizontal};
+      \item if $[\O':\O]=\ell$, \hfill$\phi$ is \emph{ascending};
+      \item if $[\O:\O']=\ell$, \hfill$\phi$ is \emph{descending}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.7]
+        \def\crater{7}
+        \foreach \i in {1,...,\crater} {
+          \draw[fill] (360/\crater*\i:1cm) circle (5pt);
+          \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+          \foreach \j in {-1,1} {
+            \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
+            \foreach \k in {-1,0,1} {
+              \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
+              (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
+            }
+          }
+        }
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Volcanology}
+  \centering
+  \begin{columns}
+    \begin{column}{0.35\textwidth}
+      \uncover<2->{Height $= v_\ell([\O_K:\Z[\pi]])$.}
+      
+      \bigskip
+      
+      \uncover<3->{\alert{How large is the crater?}}
+    \end{column}
+    \begin{column}{0.65\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.9]
+        \begin{scope}
+          \def\crater{7}
+          \foreach \i in {1,...,\crater} {
+            \draw[fill] (360/\crater*\i:1cm) circle (5pt);
+            \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+            \foreach \j in {-1,1} {
+              \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
+              \foreach \k in {-1,0,1} {
+                \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
+                (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
+              }
+            }
+          }
+        \end{scope}
+        \begin{scope}[xshift=4cm]
+          \node at (0,2) {$\End(E)$};
+          \draw[fill] (0,1) circle(5pt) node[xshift=0.7cm]{$\O_K$} -- 
+          (0,0) circle(3pt) --
+          (0,-1) circle(1pt) node[xshift=0.7cm]{$\Z[\pi]$};
+        \end{scope}
+      \end{tikzpicture}
+    \end{column}  
+  \end{columns}
   
+  \bigskip
+  
+  \begin{tabular}{c | c | c c c}
+    && \textbf{Horizontal} & \textbf{Ascending} & \textbf{Descending}\\
+    \hline
+    $\ell\nmid[\O_K:\O]]$ & $\ell\nmid[\O:\Z[\pi]]$ &$1+\left(\frac{D_K}{\ell}\right)$& &\\
+    $\ell\nmid[\O_K:\O]]$ & $\ell\mid[\O:\Z[\pi]]$ &$1+\left(\frac{D_K}{\ell}\right)$& &$\ell-\left(\frac{D_K}{\ell}\right)$\\
+    $\ell\mid[\O_K:\O]]$ & $\ell\mid[\O:\Z[\pi]]$ &  &$1$&$\ell$\\
+    $\ell\mid[\O_K:\O]]$ & $\ell\nmid[\O:\Z[\pi]]$ & &$1$& 
+  \end{tabular}
+\end{frame}
+
+%%
+
+\begin{frame}{The class group}
+  
+  Let \emph{$\End(E) = \O \subset \Q(\sqrt{-D})$}. Define
+
+  \begin{itemize}
+  \item $\mathcal{I}(\O)$, the group of \emph{invertible fractional ideals},
+  \item $\mathcal{P}(\O)$, the group of \emph{principal ideals},
+  \end{itemize}
+  
+  \begin{block}{The class group}
+    The \emph{class group} of $\O$ is
+    \[\Cl(\O) = \mathcal{I}(\O)/\mathcal{P}(O).\]
+  \end{block}
+
+  \begin{itemize}
+  \item It is a \emph{finite abelian} group.
+  \item Its order \emph{$h(\O)$} is called the \emph{class number} of
+    $\O$.
+  \item It arises as the Galois group of an abelian extension of
+    $\Q(\sqrt{-D})$.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Complex multiplication}
+  
+  \begin{block}{The $\a$-torsion}
+    \begin{itemize}
+    \item Let \emph{$\a\subset\O$} be an (integral invertible) ideal of
+      $\O$;
+    \item Let \emph{$E[\a]$} be the subgroup of $E$ annihilated by
+      $\a$:
+      \[E[\a] = \{P\in E \;|\; \alpha(P) = 0 \text{ for all } \alpha\in\a\};\]
+    \item Let \emph{$\phi:E\to E_\a$}, where $E_\a=E/E[\a]$.
+    \end{itemize}
+    Then $\End(E_\a) = \O$ (i.e., $\phi$ is \emph{horizontal}).
+  \end{block}
+
+
+  \begin{theorem}[Complex multiplication]
+    The action on the set of elliptic curves with complex
+    multiplication by $\O$ defined by \emph{$\a\ast j(E) = j(E_\a)$}
+    factors through $\Cl(\O)$, is faithful and transitive.
+  \end{theorem}
+
+  \begin{corollary}
+    If $E$ is on the crater of an $\ell$ volcano, the crater contains
+    $h(\End(E))$ curves.
+  \end{corollary}
+\end{frame}
+
+%%
+
+\begin{frame}{Supersingular graphs}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}
+      \item Every supersingular curve is defined over \emph{$\F_{p^2}$}.
+      \item For every \emph{maximal order type} of the quaternion
+        algebra $\Q_{p,\infty}$ there are \emph{$1$ or $2$ curves over
+          $\F_{p^2}$} having endomorphism ring isomorphic to it.
+      \item There is a \emph{unique isogeny class} of supersingular
+        curves over $\bar{\F}_p$ of size \emph{$\sim p/12$}.
+      \item Left ideals act on the set of maximal orders like isogenies.
+      \item The graph of \emph{$\ell$}-isogenies is
+        \emph{$(\ell+1)$}-regular.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{scope}[every node/.style={fill,black,circle,inner sep=2pt}]
+          \node at (0,0)  (1){};
+          \node at (0,4) (20){};
+          \node at (2,1)  (16z){};
+          \node at (-2,1)  (81z){};
+          \node at (-1,2) (77z){};
+          \node at (1,2)  (20z){};
+          \node at (-2,3)  (85z){};
+          \node at (2,3)  (12z){};
+        \end{scope}
+
+        \begin{scope}[red]
+          \path (1) edge (85z) edge (81z) edge (12z) edge (16z);
+          \path (20) edge (85z) edge (77z) edge (20z) edge (12z);
+          \path (81z) edge (85z) edge (77z) edge (16z);
+          \path (85z) edge (12z);
+          \path (12z) edge (16z);
+          \path (16z) edge (20z);
+          \path (20z) edge[bend right=10] (77z) edge[bend left=10] (77z);
+        \end{scope}
+      \end{tikzpicture}
+      \small
+      \emph{Figure:} $3$-isogeny graph on $\F_{97^2}$.
+    \end{column}
+  \end{columns}
 \end{frame}
 
 %%
@@ -874,39 +1092,39 @@
 
 \subsection{Key exchange from supersingular graphs}
 
-\begin{frame}{The scheme}
+% \begin{frame}{The scheme}
   
-\end{frame}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{Attacks}
+% \begin{frame}{Attacks}
   
-\end{frame}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{SIKE}
+% \begin{frame}{SIKE}
   
-\end{frame}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{Implementation}
+% \begin{frame}{Implementation}
   
-\end{frame}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{Side channels}
+% \begin{frame}{Side channels}
   
-\end{frame}
+% \end{frame}
 
-%% 
+% %% 
 
-\begin{frame}{Key compression? Signatures?}
+% \begin{frame}{Key compression? Signatures?}
   
-\end{frame}
+% \end{frame}
 
 %%
 %% 
@@ -940,21 +1158,21 @@
 %%
 %%
 
-\begin{frame}[allowframebreaks]
-  \frametitle{References}
+% \begin{frame}[allowframebreaks]
+%   \frametitle{References}
 
-  \defbibfilter{books}{\type{book} \or \type{booklet} \or \type{thesis}
-    \or \type{report} \or \type{collection} \or \type{manual}
-    \or \type{periodical} \or \type{proceedings}}
-  \defbibfilter{articles}{\not \(\type{book} \or \type{booklet} \or \type{thesis}
-    \or \type{report} \or \type{collection} \or \type{manual}
-    \or \type{periodical} \or \type{proceedings}\)}
+%   \defbibfilter{books}{\type{book} \or \type{booklet} \or \type{thesis}
+%     \or \type{report} \or \type{collection} \or \type{manual}
+%     \or \type{periodical} \or \type{proceedings}}
+%   \defbibfilter{articles}{\not \(\type{book} \or \type{booklet} \or \type{thesis}
+%     \or \type{report} \or \type{collection} \or \type{manual}
+%     \or \type{periodical} \or \type{proceedings}\)}
 
-  \beamertemplatebookbibitems
-  \printbibliography[filter=books]
-  \beamertemplatearticlebibitems
-  \printbibliography[filter=articles]
-\end{frame}
+%   \beamertemplatebookbibitems
+%   \printbibliography[filter=books]
+%   \beamertemplatearticlebibitems
+%   \printbibliography[filter=articles]
+% \end{frame}
 
 \end{document}
 
