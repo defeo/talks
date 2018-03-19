@@ -278,22 +278,28 @@
     \begin{scope}
       \node[anchor=center] at (0,7) {$E \;:\; y^2 = x^3 + x$};
 
-      \draw[thin,gray] (0,-6) -- (0,6);
-      \draw[thin,gray] (-6,0) -- (6,0);
+      \uncover<-1>{
+        \draw[thin,gray] (0,-6) -- (0,6);
+        \draw[thin,gray] (-6,0) -- (6,0);
+      }
 
       \foreach \x/\y in {0/0,5/3,-4/3,-3/5,-2/1,-1/3} {
         \draw[blue,fill] (\x,\y) circle (0.2) node(E_\x_\y){}
         (\x,-\y) circle (0.2) node(E_\x_-\y){};
       }
 
-      \uncover<3->{\draw[red,fill] (0,0) circle (0.3);}
+      \uncover<4->{\draw[red,fill] (0,0) circle (0.3);}
     \end{scope}
+
+    \draw[black!10!white,thick] (8,-7) -- +(0,14);
     
-    \begin{scope}[xshift=1.2\textwidth]
+    \begin{scope}[shift={(16,0)}]
       \node at (0,7) {$E' \;:\; y^2 = x^3 - 4x$};
 
-      \draw[thin,gray] (0,-6) -- (0,6);
-      \draw[thin,gray] (-6,0) -- (6,0);
+      \uncover<-1>{
+        \draw[thin,gray] (0,-6) -- (0,6);
+        \draw[thin,gray] (-6,0) -- (6,0);
+      }
 
       \foreach \x/\y in {0/0,2/0,3/2,4/2,6/4,-2/0,-1/5} {
         \draw[color=blue,fill] (\x,\y) circle (0.2) node(F_\x_\y){}
@@ -301,19 +307,24 @@
       }
     \end{scope}
 
-    \begin{uncoverenv}<2->
-      \path[color=red,-latex,dashed]
-      (E_5_3) edge (F_3_2)
-      (E_-4_3) edge (F_4_-2)
-      (E_-3_5) edge (F_4_2)
-      (E_-2_1) edge (F_3_-2)
-      (E_-1_3) edge (F_-2_0)
-      (E_5_-3) edge (F_3_-2)
-      (E_-4_-3) edge (F_4_2)
-      (E_-3_-5) edge (F_4_-2)
-      (E_-2_-1) edge (F_3_2)
-      (E_-1_-3) edge (F_-2_0);
-    \end{uncoverenv}
+    \begin{scope}[color=red,-latex,dashed]
+      \begin{uncoverenv}<2->
+        \path
+        (E_5_3) edge (F_3_2)
+        (E_-4_3) edge (F_4_-2)
+        (E_-3_5) edge (F_4_2)
+        (E_-2_1) edge (F_3_-2)
+        (E_-1_3) edge (F_-2_0);
+      \end{uncoverenv}
+      \begin{uncoverenv}<2,5->
+        \path
+        (E_5_-3) edge (F_3_-2)
+        (E_-4_-3) edge (F_4_2)
+        (E_-3_-5) edge (F_4_-2)
+        (E_-2_-1) edge (F_3_2)
+        (E_-1_-3) edge (F_-2_0);
+      \end{uncoverenv}
+    \end{scope}
   \end{tikzpicture}
   
   \begin{columns}
@@ -322,9 +333,9 @@
     \end{column}
     \begin{column}{0.5\textwidth}
       \begin{itemize}
-      \item<3-> Kernel generator in \alert{red}.
-      \item<4-> This is a degree $2$ map.
-      \item<5-> Analogous to $x\mapsto x^2$ in $\F_p^*$.
+      \item<4-> Kernel generator in \alert{red}.
+      \item<5-> This is a degree $2$ map.
+      \item<6-> Analogous to $x\mapsto x^2$ in $\F_q^*$.
       \end{itemize}
     \end{column}
   \end{columns}
@@ -333,7 +344,21 @@
 %%
 
 \begin{frame}{Curves over finite fields}
-  Frobenius, Hasse, Sato-Tate
+  \begin{block}{Frobenius endomorphism}
+    Let $E$ be defined over $\F_q$. The \emph{Frobenius endomorphism}
+    of $E$ is the map
+    \[\pi \;:\; (X:Y:Z) \mapsto (X^q:Y^q:Z^q).\]
+  \end{block}
+
+  \begin{block}{Hasse's theorem}
+    Let $E$ be defined over $\F_q$, then
+    \[\lvert\#E(k)-q-1\rvert\le 2\sqrt{q}.\]
+  \end{block}
+
+  \begin{block}{Sato-Tate theorem}
+    Two elliptic curves $E,E'$ defined over a finite field $k$ are
+    \emph{isogenous over $k$} if and only if $\#E(k)=\#E'(k)$.
+  \end{block}
 \end{frame}
 
 %%
@@ -342,19 +367,372 @@
 \subsection{Isogenies}
 
 \begin{frame}{Complex tori}
+  \begin{columns}
+    \begin{column}{0.75\textwidth}
+      \begin{tikzpicture}[scale=2]
+        \axes{-1}{3.5}{-0.5}{3}
+
+        \begin{scope}[/lattice={1}{0.2}{0.4}{0.7}]
+          \begin{uncoverenv}<1>
+            \draw[fill,black!10] (0,0) -- (1,0) -- (1,1) -- (0,1) -- (0,0);
+            \node at (0.5,0.5) {$\C/\Lambda$};
+            \node at (0.9,-0.1) {$\omega_1$};
+            \node at (-0.1,0.9) {$\omega_2$};
+          \end{uncoverenv}
+
+          \lattice{-3}{4}
+
+          \begin{uncoverenv}<2-5>
+            \node[red] at (0.7,0.65) {$a$}; 
+            \node[draw,circle,inner sep=1pt,fill,red] at (0.8,0.5) {};
+            \node[red] at (0.2,0.9) {$b$}; 
+            \node[draw,circle,inner sep=1pt,fill,red] at (0.3,0.7) {};
+            
+            \begin{uncoverenv}<3-4>
+              \node[red] at (1.2,1.3) {$a+b$}; 
+              \node[draw,circle,inner sep=1pt,fill,red] at (1.1,1.2) {};
+              \begin{uncoverenv}<3>
+                \draw[red,thin] (0,0) -- (0.8,0.5) -- (1.1,1.2);
+                \draw[red,thin] (0,0) -- (0.3,0.7) -- (1.1,1.2);          
+              \end{uncoverenv}
+            \end{uncoverenv}
+
+            \transdissolve<5>
+            \begin{uncoverenv}<5>
+              \node[red] at (0.2,0.3) {$a+b$}; 
+              \node[draw,circle,inner sep=1pt,fill,red] at (0.1,0.2) {};
+            \end{uncoverenv}
+          \end{uncoverenv}
+        \end{scope}  
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.2\textwidth}
+      \begin{onlyenv}<1>
+        Let $\omega_1,\omega_2\in\C$ be linearly independent complex
+        numbers. Set
+        \[\emph{\Lambda = \omega_1\Z \oplus \omega_2\Z}\]
+
+        $\C/\Lambda$ is a \emph{complex torus}.
+      \end{onlyenv}
+
+      \begin{onlyenv}<2->
+        Addition law induced by addition on $\mathbb{C}$.
+      \end{onlyenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Homotheties}
+  \begin{columns}
+    \begin{column}{0.7\textwidth}
+      \begin{tikzpicture}[scale=2]
+        \axes{-1}{3.3}{-0.5}{3}
+
+        \newcount\scale
+        \animate<1-21>
+        \animatevalue<1-21>{\scale}{0}{20}
+        \begin{uncoverenv}<1-22>
+          \begin{scope}[/lattice={1}{0.2}{0.4}{0.7},scale=1+\the\scale/20,rotate=\the\scale]
+            \lattice{-3}{4}
+            \node[red,yshift=0.2cm] at (0.8,0.5) {$a$}; 
+            \node[draw,circle,inner sep=1pt,fill,red] at (0.8,0.5) {};
+          \end{scope}
+        \end{uncoverenv}
+      \end{tikzpicture}      
+    \end{column}
+    \begin{column}{0.25\textwidth}
+      Two lattices are \emph{homotetic} if there exist $\alpha\in\C$
+      such that
+      \[\emph{\alpha\Lambda_1 = \Lambda_2}\]
+    \end{column}
+  \end{columns}
+\end{frame}  
+
+%%
+
+\begin{frame}{The $j$-invariant}
+  We want to classify complex lattices/tori \emph{up to homothety}.
+
+  \begin{block}{Eisenstein series}
+    Let $\Lambda$ be a complex lattice. For any integer $k>0$ define
+    \[G_{2k}(\Lambda)=\sum_{\omega\in\Lambda\setminus\{0\}}\omega^{-2k}.\]
+    Also set
+    \[g_2(\Lambda) = 60G_4(\Lambda),\qquad
+      g_3(\Lambda) = 140G_6(\Lambda).\]
+  \end{block}
+
+  \begin{block}{Modular $j$-invariant}
+    Let $\Lambda$ be a complex lattice, the \emph{modular
+      $j$-invariant} is
+    \[j(\Lambda) = 1728\frac{g_2(\Lambda)^3}{g_2(\Lambda)^3 - 27g_3(\Lambda)^2}.\]
+    Two lattices $\Lambda,\Lambda'$ are
+    homothetic if and only if $j(\Lambda)=j(\Lambda')$.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Elliptic curves over $\C$}
+  \begin{block}{Weierstrass $\wp$ function}
+    Let $\Lambda$ be a complex lattice, the \emph{Weierstrass $\wp$
+      function} associated to $\Lambda$ is the series
+    \[\wp(z;\Lambda) = \frac{1}{z^2}
+      + \sum_{\omega\in\Lambda\setminus\{0\}} \left(\frac{1}{(z-\omega)^2} - \frac{1}{\omega^2}\right).\]
+  \end{block}
+
+  Fix a lattice $\Lambda$, then $\wp$ and its derivative $\wp'$ are
+  \emph{elliptic functions}:
+  \[\wp(z+\omega) = \wp(z),\qquad\wp'(z+\omega) = \wp'(z)\]
+  for all $\omega\in\Lambda$.
+\end{frame}
+
+\begin{frame}{Uniformization theorem}
+  Let $\Lambda$ be a complex lattice. The curve
+  \[E\;:\;y^2=\emph{4}x^3 \emph{- g_2(\Lambda)}x \emph{- g_3(\Lambda)}\]
+  is an elliptic curve over $\C$. The map
+  \begin{align*}
+    \C/\Lambda &\to E(\C),\\
+    0 &\mapsto (0:1:0),\\
+    z &\mapsto (\wp(z):\wp'(z):1)
+  \end{align*}
+  is an \emph{isomorphism of Riemann surfaces} and a \emph{group morphism}.
+
+  \smallskip
   
+  Conversely, for any elliptic curve
+  \[E \;:\; y^2 = x^3 + ax + b\]
+  there is a unique complex lattice $\Lambda$ such that
+  \[g_2(\Lambda) = -4a,\qquad g_3(\Lambda) = -4b.\]
+  Moreover \emph{$j(\Lambda) = j(E)$}.
 \end{frame}
 
 %%
 
-\begin{frame}{Curves over $\C$}
-  j-invariant, $\wp$, uniformization
+\begin{frame}
+  \frametitle{Multiplication}
+
+  \begin{tikzpicture}[scale=2.2]
+    \axes{-1}{4.5}{-0.5}{3}
+
+    \begin{scope}[/lattice={1}{0.2}{0.4}{0.7}]
+      \lattice{-3}{5}
+    
+      \node[red,yshift=0.2cm] at (0.8,0.6) {$a$}; 
+      \draw[red] (0.8,0.6) node[fill,circle,inner sep=1pt] {};
+
+      \begin{uncoverenv}<2>
+        \node[red,yshift=0.2cm] at (2.4,1.8) {$[3]a$}; 
+        \draw[red] (0,0) -- (1.6,1.2) node[fill,circle,inner sep=1pt] {} 
+        -- (2.4,1.8) node[fill,circle,inner sep=1pt] {};
+      \end{uncoverenv}
+
+      \transdissolve<3>
+      \begin{uncoverenv}<3>
+        \node[red,yshift=0.3cm] at (0.4,0.8) {$[3]a$}; 
+        \draw[red] (0.4,0.8) node[fill,circle,inner sep=1pt] {};
+      \end{uncoverenv}
+    \end{scope}
+  \end{tikzpicture}
 \end{frame}
 
 %%
 
-\begin{frame}{Isogenies}
-  dual, degree
+\begin{frame}
+  \frametitle{Torsion subgroups}
+
+  \begin{columns}
+    \begin{column}{0.7\textwidth}
+      \begin{tikzpicture}[scale=1.8]
+        \axes{-0.3}{4.5}{-0.5}{4};
+
+        \begin{scope}[/lattice={3}{0.6}{1.2}{2.1}]
+          \lattice{-1}{2}
+
+          \foreach \i in {0,...,2} {
+            \foreach \j in {0,...,2} {
+              \draw[red] (\i/3,\j/3) node[fill,circle,inner sep=1pt] {};
+            }
+          }
+          \draw[red] (0,0) -- (1/3,0) node[yshift=0.2cm] {$a$};
+          \draw[red] (0,0) -- (0,1/3) node[yshift=0.2cm] {$b$};
+        \end{scope}
+      \end{tikzpicture}  
+    \end{column}
+    \begin{column}{0.25\textwidth}
+      The $\ell$-torsion subgroup is made up by the points
+      \[\emph{\left(\frac{i\omega_1}{\ell},\frac{j\omega_2}{\ell}\right)}\]
+
+      It is a group of rank two
+      \begin{alertenv}
+        \begin{align*}
+          E[\ell] &= \langle a,b \rangle\\
+          &\simeq (\Z/\ell\Z)^2
+        \end{align*}
+      \end{alertenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Isogenies}
+
+  \begin{columns}
+    \begin{column}{0.7\textwidth}
+      \begin{tikzpicture}[scale=1.8]
+        \axes{-0.3}{4.5}{-0.5}{4};
+        
+        \begin{scope}[/lattice={3}{0.6}{1.2}{2.1}]
+          \uncover<1->{\lattice{-1}{2}}
+          
+          \begin{uncoverenv}<1-3>
+            \draw[red] (0,0) -- (1/3,0) node[yshift=0.3cm] {$a$};
+          \end{uncoverenv}
+          \begin{uncoverenv}<4->
+            \draw[red] (0,0) -- (0,1/3) node[yshift=0.3cm] {$b$};
+          \end{uncoverenv}
+
+          \begin{uncoverenv}<1-2>
+            \draw[blue] (0.8,0.5) node[yshift=0.3cm] {$p$};
+            \draw[blue] (0.8,0.5) node[fill,circle,inner sep=1pt] {};
+          \end{uncoverenv}
+        \end{scope}
+        
+        \begin{scope}[/lattice={1}{0.2}{1.2}{2.1}]
+          \transdissolve<2>
+          \begin{scope}[opacity=0.3]
+            \uncover<2-4>{\lattice{-3}{5}}
+          \end{scope}
+          
+          \transdissolve<3>
+          \begin{uncoverenv}<3-5>
+            \draw[blue] (0.4,0.5) node[yshift=0.3cm] {$p$};
+            \draw[blue] (0.4,0.5) node[fill,circle,inner sep=1pt] {};
+          \end{uncoverenv}
+        \end{scope}
+
+        \begin{scope}[/lattice={1}{0.2}{0.4}{0.7}]
+          \transdissolve<5>
+          \begin{scope}[opacity=0.3]
+            \uncover<5->{\lattice{-3}{5}}
+          \end{scope}
+          
+          \transdissolve<6>
+          \begin{uncoverenv}<6->
+            \draw[blue] (0.4,0.5) node[yshift=0.3cm] {$p$};
+            \draw[blue] (0.4,0.5) node[fill,circle,inner sep=1pt] {};
+          \end{uncoverenv}
+        \end{scope}
+        
+        \begin{scope}[/lattice={3}{0.6}{1.2}{2.1}]
+          \foreach \i in {0,...,2} {
+            \foreach \j in {0,...,2} {
+              \draw[red] (\i/3,\j/3) node[fill,circle,inner sep=1pt] {};
+            }
+          }
+        \end{scope}
+      \end{tikzpicture}  
+    \end{column}
+    \begin{column}{0.25\textwidth}
+      \begin{onlyenv}<1-3>
+        Let $\rd{a}\in\C/\Lambda_1$ be an $\ell$-torsion point, and let
+        \[\emph{\Lambda_2 = a\Z\oplus\Lambda_1}\]
+        Then \emph{$\Lambda_1\subset\Lambda_2$} and we define a degree
+        $\ell$ cover
+        \[\emph{\phi:\C/\Lambda_1\to\C/\Lambda_2}\]
+
+        \emph{$\phi$} is a morphism of complex Lie groups and is called an
+        \alert{isogeny}.
+      \end{onlyenv}
+      \begin{onlyenv}<4-> 
+        Taking a point $\rd{b}$ not in the kernel of \emph{$\phi$}, we
+        obtain a new degree $\ell$ cover
+        \[\emph{\hat{\phi}:\C/\Lambda_2\to\C/\Lambda_3}\]
+
+        The composition \emph{$\hat{\phi}\circ\phi$} has degree
+        $\ell^2$ and is \alert{homothetic to the multiplication} by
+        $\ell$ map.
+
+        \emph{$\hat{\phi}$} is called the \alert{dual isogeny} of
+        \emph{$\phi$}.
+      \end{onlyenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Isogenies: back to algebra}
+  Let $\phi:E\to E'$ be an isogeny defined over a field $k$ of
+  characteristic $p$.
+  
+  \begin{itemize}
+  \item $k(E)$ is the \emph{field of all rational functions} from $E$
+    to $k$;
+  \item $\phi^\ast k(E')$ is the subfield of $k(E)$ defined as
+    \[\phi^\ast k(E') = \{ f\circ\phi \;\vert\; f\in k(E') \}.\]
+  \end{itemize}
+
+  \begin{block}{Degree, separability}
+    \begin{enumerate}
+    \item The \emph{degree} of $\phi$ is 
+      $\deg\phi = [k(E):\phi^\ast k(E')]$. It is always finite.
+    \item $\phi$ is said to be \emph{separable}, \emph{inseparable}, or
+      \emph{purely inseparable} if the extension of function fields is.
+    \item \alert<2>{If $\phi$ is separable, then
+        $\deg\phi = \#\ker\phi$.}
+    \item If $\phi$ is purely inseparable, then $\ker\phi=\{\O\}$ and
+      $\deg\phi$ is a power of $p$.
+    \item Any isogeny can be decomposed as a product of a separable and
+      a purely inseparable isogeny.
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Isogenies: separable vs inseparable}
+
+  \begin{block}{Purely inseparable isogenies}
+    Examples:
+    \begin{itemize}
+    \item The \emph{Frobenius endomorphism} is purely inseparable of
+      degree $q$.
+    \item All purely inseparable maps in characteristic $p$ are of the
+      form $(X:Y:Z)\mapsto(X^{p^e}:Y^{p^e}:Z^{p^e})$.
+    \end{itemize}
+  \end{block}
+  
+  \begin{block}{Separable isogenies}
+    Let $E$ be an elliptic curve, and let $G$ be a finite subgroup of
+    $E$.  There are a unique elliptic curve $E'$ and a \emph{unique
+      separable isogeny $\phi$}, such that \emph{$\ker\phi=G$} and
+    $\phi:E\to E'$.
+
+    The curve $E'$ is called the \emph{quotient of $E$ by $G$} and is
+    denoted by \emph{$E/G$}.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{The dual isogeny}
+  Let $\phi:E\to E'$ be an isogeny of degree $m$. 
+  There is a unique isogeny $\hat{\phi}:E'\to E$ such that
+  \[\hat{\phi}\circ\phi = [m]_E, \quad \phi\circ\hat{\phi} = [m]_{E'}.\]
+  $\hat{\phi}$ is called the \emph{dual isogeny of $\phi$}; it has the
+  following properties:
+  
+  \begin{enumerate}
+  \item $\hat{\phi}$ is defined over $k$ if and only if $\phi$ is;
+  \item $\widehat{\psi\circ\phi} = \hat{\phi}\circ\hat{\psi}$ for any isogeny $\psi:E'\to E''$;
+  \item $\widehat{\psi+\phi} = \hat{\psi} + \hat{\phi}$ for any isogeny $\psi:E\to E'$;
+  \item $\deg \phi = \deg\hat{\phi}$;
+  \item $\hat{\hat{\phi}} = \phi$.
+  \end{enumerate}
 \end{frame}
 
 %%
@@ -362,20 +740,116 @@
 
 \subsection{Complex multiplication}
 
+\begin{frame}{Algebras, orders}
+  \begin{itemize}
+  \item A \emph{quadratic imaginary number field} is an extension of
+    $\Q$ of the form $Q[\sqrt{-D}]$ for some $D>0$.
+  \item A \emph{quaternion algebra} is an algebra of the form
+    $\Q + \alpha\Q + \beta\Q + \alpha\beta\Q$, where the generators
+    satisfy the relations
+    \[\alpha^2,\beta^2\in\Q, \quad \alpha^2<0, \quad \beta^2 < 0, \quad \beta\alpha=-\alpha\beta.\]
+  \end{itemize}
+  
+  \begin{block}{Orders}
+    Let $K$ be a finitely generated $\Q$-algebra.  An \emph{order}
+    $\O\subset K$ is a \emph{subring} of $K$ that is a finitely
+    generated $\Z$-module of \emph{maximal dimension}.
+
+    An order that is not contained in any other order of $K$ is called
+    a \emph{maximal order}.
+  \end{block}
+
+  Examples:
+  \begin{itemize}
+  \item $\Z$ is the only maximal order contained in $\Q$,
+  \item $\Z[i]$ is the only maximal order of $\Q[i]$,
+  \item The \emph{ring of integers} of a number field is its only
+    maximal order,
+  \item In general, maximal orders in quaternion algebras are
+    \emph{not unique}.
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{The endomorphism ring}
-  orders, quaternions, Deuring
+  The \emph{endomorphism ring} $\End(E)$ of an elliptic curve $E$ is
+  the ring of all isogenies $E\to E$ (plus the null map) with
+  \emph{addition} and \emph{composition}.
+
+  \begin{block}{Theorem (Deuring)}
+    Let $E$ be an elliptic curve defined over a field $k$ of
+    characteristic $p$.  $\End(E)$ is isomorphic to one of the
+    following:
+    \begin{itemize}
+    \item $\Z$, only if $p=0$
+      \begin{center}
+        $E$ is \emph{ordinary}.
+      \end{center}
+    \item An order $\O$ in a quadratic imaginary field:
+      \begin{center}
+        $E$ is ordinary with \emph{complex multiplication} by $\O$.
+      \end{center}
+    \item Only if $p>0$, a maximal order in a quaternion
+      algebra\footnote{(ramified at $p$ and $\infty$)}:
+      \begin{center}
+        $E$ is \emph{supersingular}.
+      \end{center}
+    \end{itemize}
+  \end{block}
 \end{frame}
 
 %%
 
-\begin{frame}{Complex multiplication}
-  Hasse
+\begin{frame}{The finite field case}
+  \begin{block}{Theorem (Hasse)}
+    Let $E$ be defined over a finite field. Its Frobenius endomorphism
+    $\pi$ satisfies a quadratic equation
+    \[\pi^2 - t\pi + q = 0\]
+    in $\End(E)$ for some $|t|\le2\sqrt{q}$, called the \emph{trace}
+    of $\pi$.
+  \end{block}
+
+  Let $D_\pi=t^2-4q$ and $K=\Q[\sqrt{D_\pi}]$, then, if $E$ is
+  \emph{ordinary}:
+  \[\Z \ne \Z[\pi] \subset \End(E) \subset \O_K.\]
+
+  \begin{block}{Proposition}
+    Let $K$ be a quadratic number field, and let $\O_K$ be its ring of
+    integers.  Any order $\O\subset K$ can be written as $\O=\Z+f\O_K$
+    for an integer $f$, called the \emph{conductor} of $\O$.  If $d_K$
+    is the \emph{discriminant} of $K$, the discriminant of $\O$ is
+    $f^2d_K$.
+
+    If $\O,\O'$ are two orders of discriminants $f,f'$, then
+    $\O\subset\O'$ if and only if $f'|f$.
+  \end{block}
 \end{frame}
 
 %%
 
 \begin{frame}{Isogeny volcanoes}
-  
+  \centering
+  \begin{tikzpicture}
+    \begin{scope}
+      \def\crater{7}
+      \foreach \i in {1,...,\crater} {
+        \draw[fill] (360/\crater*\i:1cm) circle (5pt);
+        \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+        \foreach \j in {-1,1} {
+          \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
+          \foreach \k in {-1,0,1} {
+            \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
+            (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
+          }
+        }
+      }
+    \end{scope}
+    \begin{scope}[xshift=4cm]
+      \node at (0,2) {$\End(E)$};
+      \draw[fill] (0,1) circle(5pt) node[xshift=0.7cm]{$\O_K$} -- 
+      (0,0) circle(3pt) --
+      (0,-1) circle(1pt) node[xshift=0.7cm]{$\Z[\pi]$};
+    \end{scope}
+  \end{tikzpicture}
 \end{frame}
 
 %%
