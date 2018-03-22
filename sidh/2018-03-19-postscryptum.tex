@@ -122,7 +122,8 @@
     A class is denoted by $(x_0:\cdots:x_n)$.
   \end{definition}
 
-  Picture here
+  \centering
+  \includegraphics[height=0.5\textheight]{camera-obscura.jpg}
 \end{frame}
 
 %%
@@ -1894,7 +1895,7 @@
     Given \emph{$E$}, Alice's public data
     \emph{$E/\cyc{R_A}, \phi(P_B), \phi(Q_B)$}, and Bob's public data
     \emph{$E/\cyc{R_B}, \psi(P_A), \psi(Q_A)$}, find the shared secret
-    \emph{$E/\cyc{R_A,R_b}$}.
+    \emph{$E/\cyc{R_A,R_B}$}.
   \end{block}
 
   Under the SIDH assumption:
@@ -1927,7 +1928,7 @@
       \vspace{-2mm}
       \begin{align*}
         \bl R &= \bl mP + \bl nQ\\
-        &= \bl mP + \bl nQ + \bl n2^{e-1}Q,
+        &= \bl mP + \bl nQ + \bl n2^{e-1}P,
       \end{align*}
       \vspace{-2mm}
       i.e., iff $\bl n$ is even;
@@ -2295,7 +2296,7 @@
 \begin{frame}{Summary}
   \emph{Public parameters:}
   \begin{itemize}
-  \item $p = 2^a3^b + 1$,
+  \item $p = 2^a3^b - 1$,
   \item Staring curve $E\;:\; y^2 = x^3 + x$,
   \item Torsion generators
     \begin{gather*}
