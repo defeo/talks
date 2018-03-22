@@ -1209,7 +1209,7 @@
       property.}.
   \end{block}
   
-  In the \emph{ordinary} case, for all primes \emph{$\ell \nmid t^2+4q$}:
+  In the \emph{ordinary} case, for all primes \emph{$\ell \nmid t^2-4q$}:
   \begin{itemize}
   \item 50\% of $\ell$-isogeny graphs are isolated
     points,\hfill$\left(\frac{D_K}{\ell}\right)=-1$
@@ -1652,7 +1652,7 @@
 
   \begin{block}{The Abelian Hidden Shift Problem}
     Let $G$ be a group and $S$ be a set. Given two oracles
-    $f_0,f_1:G\to S$ such that \emph{$f_0(g)=f_q(gs)$} for some
+    $f_0,f_1:G\to S$ such that \emph{$f_0(g)=f_1(gs)$} for some
     $s\in G$, \emph{find $s$}.
   \end{block}
 
@@ -1924,18 +1924,23 @@
     \item Bob produces an ephemeral secret $\rd\psi$;
     \item Bob sends to Alice $\rd\psi(P), \rd\psi(Q+2^{e-1}P)$;
     \item Alice computes the shared secret correctly iff
+      \vspace{-2mm}
       \begin{align*}
         \bl R &= \bl mP + \bl nQ\\
         &= \bl mP + \bl nQ + \bl n2^{e-1}Q,
       \end{align*}
+      \vspace{-2mm}
       i.e., iff $\bl n$ is even;
     \item Bob \emph{learns one bit} of the secret key by checking that
       Alice gets the right shared secret.
     \end{itemize}
   \end{block}  
 
-  Bob repeats the queries in a similar fashion, \emph{learning one bit
-    per query}.
+  \begin{itemize}
+  \item Bob repeats the queries in a similar fashion, \emph{learning
+      one bit per query}.
+  \item Detecting Bob's faulty key seems to be as hard as breaking SIDH.
+  \end{itemize}
 \end{frame}
 
 %%
@@ -1954,7 +1959,7 @@
         |(Ep)| {\uncover<2->{$E/\cyc{\rd{P}}$}} \& |(Eps)| {\uncover<2->{$E/\cyc{\rd{P},\bl{S}}$}}\\
       };
       \path[blue] (E) edge node[auto] {$\phi$} (Es);
-      \uncover<2->{\path[blue] (Ep) edge node[auto,swap] {\alt<4>{$\phi'$}{?}} (Eps);}
+      \uncover<2->{\path[blue] (Ep) edge node[auto,swap] {\alt<4->{$\phi'$}{\phantom{$\phi'$}?}} (Eps);}
       \uncover<2->{\path[red] (E) edge node[auto,swap] {\alt<3>{$\psi$}{?}} (Ep);}
       \uncover<2->{\path[red] (Eps) edge node[auto,swap] {\alt<3>{$\psi'$}{?}} (Es);}
     \end{tikzpicture}  
@@ -1979,27 +1984,343 @@
 
 \subsection{The SIKE submission}
 
-% \begin{frame}{SIKE}
+\begin{frame}{SIKE: Supersingular Isogeny Key Encapsulation}
+  \begin{itemize}
+  \item Submission to the \emph{NIST PQ competition}:
+    \begin{description}
+    \item[SIKE.PKE:] El Gamal-type system with \emph{IND-CPA} security
+      proof,
+    \item[SIKE.KEM:] generically transformed system with
+      \emph{IND-CCA} security proof.
+    \end{description}
+  \item Security levels 1, 3 and 5.
+  \item \emph{Smallest communication complexity} among all proposals
+    in each level.
+  \item \emph{Slowest} among all benchmarked proposals in each level.
+  \item A team of 14 submitters, from 8 universities and companies.
+  \item Download the package
+    \href{https://csrc.nist.gov/CSRC/media/Projects/Post-Quantum-Cryptography/documents/round-1/submissions/SIKE.zip}{\emph{here}}.
+  \end{itemize}
+
+  \centering
+  \begin{tabular}{l | c c c c c }
+    & $p$ & cl. security & q. security & speed & comm.\\
+    \hline
+    SIKEp503 & $2^{250}3^{159}-1$ & 126 bits & 84 bits & 10ms & 0.4KB\\
+    SIKEp751 & $2^{372}3^{239}-1$ & 188 bits & 125 bits & 30ms & 0.6KB\\
+    SIKEp964 & $2^{486}3^{301}-1$ & 241 bits & 161 bits & & 0.8KB
+  \end{tabular}
+\end{frame}
+
+%%
+
+\begin{frame}{Parameter choices}
+  \begin{description}
+  \item[For efficiency:] $p = 2^a3^b - 1$, with $a$ even;
+  \item[For security:]
+    \[a \sim (\log_2 3) b \ge
+      \begin{cases}
+        2 \times \text{classical
+          security parameter,}\\
+        3 \times \text{quantum
+          security parameter;}
+      \end{cases}\]
+  \item[For verifiability:] \
+    \begin{itemize}
+    \item Special starting curve $E_0 \;:\; y^2 = x^3 + x$;
+    \item $P_A,Q_A,P_B,Q_B$ chosen as the lexicographically first
+      points satisfying the necessary conditions.
+    \end{itemize}
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{Implementation: finite field}
+  \begin{block}{Arithmetic in $\F_p$}
+    \begin{itemize}
+    \item $p = 2^a3^b - 1$ lends itself to optimizations:
+      \begin{itemize}
+      \item Adapted Comba-based Montgomery reduction\footcite{costello2016sidh},
+      \item Adapted Barret reduction\footcite{vercauteren-sidh-fp};
+      \item Assembly optimized.
+      \end{itemize}
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Arithmetic in $\F_{p^2}$}
+    Because $p = -1 \mod 4$, then $-1$ is not a quadratic residue in
+    $\F_p$. We define \emph{$\F_{p^2} = \F_p[i] = \F_p[X]/(X^2+1)$}.
+    \begin{itemize}
+    \item Arithmetic similar to $\Q[i]$;
+    \item Karatsuba-like formulas for multiplication and squaring;
+    \item Inversion only requires one inversion in $\F_p$;
+    \item Optimizations similar to pairing-base crypto (e.g., BN254).
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Implementation: curves}
+  \begin{block}{Montgomery curves}
+    Not a Weierstrass equation:
+    \[\emph{b}y^2 = x^3 + \emph{a}x^2 + x\]
+    \begin{itemize}
+    \item Only possible for curves with a $4$-torsion point (we're
+      lucky);
+    \item Very efficient arithmetic in \emph{$XZ$-coordinates}:
+      identify $\pm P$ by dropping the $Y$-coordinate
+    \end{itemize}
+  \end{block}
+
+  Doubling:
+  \[[2](X:\;\cdot\;:Z) = \bigl((X^2 - Z^2)^2:\;\cdot\;:4XZ(X^2+\emph{a}XZ+Z^2)\bigr)\]
+
+  Tripling:
+  \footnotesize
+  \[[3](X:\;\cdot\;:Z) =
+    \bigl(X(X^4-6X^2Z^2-4\emph{a}XZ^3-3Z^4):\;\cdot\;:Z(3X^4+4\emph{a}X^3Z+6X^2Z^3-Z^4)\bigr)\]
+\end{frame}
+
+%%
+
+\begin{frame}{Implementation: curves}
+  \begin{block}{Computing \emph{$mP + nQ$}}
+    \begin{itemize}
+    \item Observe that \emph{$mP +nQ$} and \emph{$P+(n/m)Q$} generate
+      \emph{the same isogeny kernel};
+    \item \emph{Constant time Montgomery ladder}
+      tailored\footcite{cryptoeprint:2017:1015} to \emph{$P+cQ$}.
+    \item For simplicity and \emph{constant-time sampling}, SIKE
+      secret keys are restricted to \emph{$P+cQ$} with
+      \emph{$c\in[0,\dots,2^x-1]$}.
+    \end{itemize}
+  \end{block}
+
+  \begin{description}
+  \item[Input] {\small $P=(X_P:Z_P), Q=(X_Q:Z_Q), P-Q=(X_{P-Q}:Z_{P-Q})$,\\
+      a scalar $c$;}
+  \item[Output] {\small $P+cQ$.}
+  \end{description}
+  \begin{enumerate}
+  \item Set $R_0 = Q,\quad R_1= P,\quad R_2=Q-P$
+  \item For $i$ from $0$ to $\lfloor\log_2 c\rfloor$:
+    \begin{itemize}
+    \item if $c_i = 0$, let $\quad R_0, R_1 \quad=\quad 2R_0,\;\; R_0+R_1$;
+    \item if $c_i = 1$, let $\quad R_0, R_2 \quad=\quad 2R_0,\;\; R_0+R_2$;
+    \end{itemize}
+  \item Return $R_1$.
+  \end{enumerate}
+\end{frame}
+
+%%
+
+\begin{frame}{Implementation: isogenies}
+  \begin{block}{Vélu's formulas}
+    Given a group $G\subset E$, the isogeny $\phi:E\to E/G$ is defined by:
+    \footnotesize
+    \[\phi(P) = \left(x(P) + \sum_{Q\in G\setminus\{\O\}}x(P+Q) - x(Q),\right.
+      \left.y(P) + \sum_{Q\in G\setminus\{\O\}}y(P+Q) - y(Q)\right).\]
+  \end{block}
   
-% \end{frame}
+  \begin{block}{$3$-isogenies of Montgomery curves}
+    Let $P = (X_3:Z_3)$ be a point of order $3$ on
+    $\emph{b}y^2 = x^3 + \emph{a}x^2 + x$. The curve $E/\cyc{P}$ has
+    equation $\emph{b}y^2 = x^3 + \emph{a'}x^2 + x$ where
+    \[\emph{a'} = (\emph{a}X_3Z_3+6(Z_3^2-X_3^2))X_3\alert{/Z_3^3}.\]
+    It is defined by the map
+    \[\phi(X:Z) = \bigl(X(X_3X-Z_3Z)^2 \;:\; Z(Z_3X-X_3Z)^2\bigr).\]
+  \end{block}
 
-% %%
+  Similar formula for \emph{$4$-isogenies}.
+\end{frame}
 
-% \begin{frame}{Implementation}
+%%
+
+\begin{frame}{Implementation: isogeny walks}
   
-% \end{frame}
+  \emph{$\ord(R)=\ell^e$} and \emph{$\phi = \phi_0 \circ \phi_1 \circ \cdots
+    \circ \phi_{e-1}$}, each of degree $\emph{\ell}$
 
-% %%
+  \begin{center}
+  \begin{tikzpicture}[/triangle,scale=1.1]
+    \def\n{5}
+    \pgfmathtruncatemacro{\pn}{\n-1}
+    
 
-% \begin{frame}{Side channels}
-  
-% \end{frame}
+    \draw(-0.4,-0.2) node{$R$};
 
-% %% 
+    \foreach \i in {1,...,\n} {
+      \draw(\i,\i+0.7) node{$R_\i$};
+    }
+    \foreach \i in {1,...,\n} {
+      \draw(\i,-1) node{$[\ell^\i]R$};
+    }
+    \foreach \i in {0,...,\pn} {
+      \pgfmathtruncatemacro{\ii}{\pn-\i}
+      \foreach \j in {0,...,\ii} {
+        \draw(\i+\j+0.4,\i+0.6) node{$\phi_\i$};
+      }
+    }
+    \foreach \i in {0,...,\pn} {
+      \draw(\i+0.5,-0.2) node{$[\ell]$};
+    }
 
-% \begin{frame}{Key compression? Signatures?}
-  
-% \end{frame}
+    \foreach \i in {1,...,\pn} {
+      \pgfmathtruncatemacro{\ii}{\n-\i}
+      \draw(\n+0.5,1.15*\i-0.1) node{\emph{\small $[\ell^\ii]R_\i$}};
+    }
+
+    \foreach \i in {0,...,\pn} {
+      \foreach \j in {0,...,\i} {
+        \draw[gray,dashed]  (\i,\j) -- (\i+1,\j+1);
+        \draw[gray,dashed]  (\i,\j) -- (\i+1,\j);
+      }
+    }
+
+    \dottriangle[$\bullet$]{\n}
+  \end{tikzpicture}
+  \end{center}
+  For each $i$, one needs to compute \emph{$[\ell^{e-i}]R_i$} in
+  order to compute $\phi_i$.
+\end{frame}
+
+%%
+
+\begin{frame}{Implementation: isogeny walks}
+
+  \begin{figure}
+    \centering
+    \begin{tikzpicture}[/triangle,scale=0.35]
+      \def\n{3}
+      \newlength{\shift}
+      \setlength{\shift}{5cm}
+
+      \foreach \k in {0,...,6} {
+        \begin{scope}[xshift=\k\shift]
+          \dottriangle[$\cdot$]{\n}
+          \foreach \i in {1,...,\n} {
+            \draw(\i-1,0) -- (\i,0);
+          }
+          \foreach \i in {1,...,\n} {
+            \draw(\i-1,\i-1) -- (\i,\i);
+          }
+        \end{scope}
+      }
+
+      \begin{scope}
+        \draw (1,0)--(2,1) (2,1)--(3,2) (2,0)--(3,1);
+      \end{scope}
+
+      \begin{scope}[xshift=\shift]
+        \draw (1,0)--(2,1) (2,1)--(3,1) (2,1)--(3,2);
+      \end{scope}
+
+      \begin{scope}[xshift=2\shift]
+        \draw (1,0)--(2,1) (2,1)--(3,1) (2,2)--(3,2);
+      \end{scope}
+
+      \begin{scope}[xshift=3\shift]
+        \draw (2,0)--(3,1) (2,2)--(3,2);
+      \end{scope}
+
+      \begin{scope}[xshift=4\shift]
+        \draw (1,1)--(2,1) (2,1)--(3,2) (2,0)--(3,1);
+      \end{scope}
+
+      \begin{scope}[xshift=5\shift]
+        \draw (1,1)--(2,1) (2,1)--(3,2) (2,1)--(3,1);
+      \end{scope}
+
+      \begin{scope}[xshift=6\shift]
+        \draw (1,1)--(2,1) (2,1)--(3,1) (2,2)--(3,2);
+      \end{scope}
+    \end{tikzpicture}
+    \caption{The seven well formed strategies for $e=4$.}
+  \end{figure}
+
+  \begin{itemize}
+  \item Right edges are \emph{$\ell$-isogeny evaluation};
+  \item Left edges are \emph{multiplications by $\ell$} (about twice as expensive);
+  \item The best strategy can be \emph{precomputed} offline and
+    \emph{hardcoded}.
+  \item Evaluation is done in \emph{constant time}!
+  \item Pre-computed optimized strategies are given in the SIKE
+    submission document.
+  \end{itemize}
+\end{frame}
+
+%% 
+
+\begin{frame}{Example}
+  \begin{figure}[t]
+    \centering
+    \includegraphics[width=\textwidth]{optimal.png}
+    \caption{Optimal strategy for $e=512$, $\ell=2$.}
+    \label{fig:optimal}
+  \end{figure}
+\end{frame}
+
+%%
+
+\begin{frame}{Implementation: constant time}
+  \begin{itemize}
+  \item Secret key sampling in constant time by \emph{restricting key
+      space};
+  \item $P + cQ$ in constant time via \emph{Montgomery ladder};
+  \item Isogeny walk in constant time via \emph{any strategy}.
+  \end{itemize}
+
+  \begin{block}{Finite field operations in constant time}
+    Only problem is to \emph{avoid inversions} as much as possible,
+    but Vélu's formulas require one inversion per curve on the walk.
+
+    \textbf{Solution\footcite{costello2016sidh}:} \emph{projectivize
+      curve equations}
+    \vspace{-4mm}
+    \[E\;:\;\emph{CB}y^2 = \emph{C}x^3 + \emph{A}x^2 + \emph{C}x.\]
+    \vspace{-0.9cm}
+    \begin{itemize}
+    \item Slightly increases operation counts of formulas;
+    \item Delays all inversions to the very end;
+    \item Only the value $(A:C)$ is needed in computations. Then:
+      \[j(E) = \frac{256(A^2-3C^2)}{C^4(A^2-4C^2)}.\]
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Summary}
+  \emph{Public parameters:}
+  \begin{itemize}
+  \item $p = 2^a3^b + 1$,
+  \item Staring curve $E\;:\; y^2 = x^3 + x$,
+  \item Torsion generators
+    \begin{gather*}
+      P_A = (X_{a1}:Z_{a1}), \quad Q_A = (X_{a2}:Z_{a2}), \quad P_A-Q_A =  (X_{a3}:Z_{a3}),\\
+      P_B = (X_{b1}:Z_{b1}), \quad Q_B = (X_{b2}:Z_{b2}), \quad P_B-Q_B =  (X_{b3}:Z_{b3}).
+    \end{gather*}
+  \end{itemize}
+
+  \emph{Secret keys:}
+  \begin{itemize}
+  \item $R_A = P_A + cQ_A$ with $c\in[0,\dots,2^a-1]$,
+  \item $R_B = P_A + cQ_A$ with $c\in[0,\dots,2^{b\lfloor\log_23\rfloor}-1]$.
+  \end{itemize}
+
+  \emph{Public keys (curve equation can be interpolated from three points):}
+  \begin{itemize}
+  \item $\phi(P_B), \phi(Q_B), \phi(P_B-Q_B)$,
+  \item $\psi(P_A), \psi(Q_A), \psi(P_A-Q_A)$.
+  \end{itemize}
+
+  \emph{Shared secret:}
+  \begin{itemize}
+  \item $j = 256(A^2-3C^2)/C^4(A^2-4C^2)$.
+  \end{itemize}
+\end{frame}
 
 %%
 %% 
@@ -2033,21 +2354,21 @@
 %%
 %%
 
-% \begin{frame}[allowframebreaks]
-%   \frametitle{References}
+\begin{frame}[allowframebreaks]
+  \frametitle{References}
 
-%   \defbibfilter{books}{\type{book} \or \type{booklet} \or \type{thesis}
-%     \or \type{report} \or \type{collection} \or \type{manual}
-%     \or \type{periodical} \or \type{proceedings}}
-%   \defbibfilter{articles}{\not \(\type{book} \or \type{booklet} \or \type{thesis}
-%     \or \type{report} \or \type{collection} \or \type{manual}
-%     \or \type{periodical} \or \type{proceedings}\)}
+  \defbibfilter{books}{\type{book} \or \type{booklet} \or \type{thesis}
+    \or \type{report} \or \type{collection} \or \type{manual}
+    \or \type{periodical} \or \type{proceedings}}
+  \defbibfilter{articles}{\not \(\type{book} \or \type{booklet} \or \type{thesis}
+    \or \type{report} \or \type{collection} \or \type{manual}
+    \or \type{periodical} \or \type{proceedings}\)}
 
-%   \beamertemplatebookbibitems
-%   \printbibliography[filter=books]
-%   \beamertemplatearticlebibitems
-%   \printbibliography[filter=articles]
-% \end{frame}
+  \beamertemplatebookbibitems
+  \printbibliography[filter=books]
+  \beamertemplatearticlebibitems
+  \printbibliography[filter=articles]
+\end{frame}
 
 \end{document}
 
