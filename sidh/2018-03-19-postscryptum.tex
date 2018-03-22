@@ -449,7 +449,7 @@
       \end{tikzpicture}      
     \end{column}
     \begin{column}{0.25\textwidth}
-      Two lattices are \emph{homotetic} if there exist $\alpha\in\C$
+      Two lattices are \emph{homothetic} if there exist $\alpha\in\C$
       such that
       \[\emph{\alpha\Lambda_1 = \Lambda_2}\]
     \end{column}
@@ -831,15 +831,58 @@
 
 %%
 
+\begin{frame}{Endomorphism rings of ordinary curves}
+  \begin{block}{Classifying quadratic orders}
+    Let $K$ be a quadratic number field, and let $\O_K$ be its ring of
+    integers.
+    \begin{itemize}
+    \item Any order $\O\subset K$ can be written as $\O=\Z+f\O_K$ for
+      an integer $f$, called the \emph{conductor} of $\O$, denoted by
+      $[\O_k:\O]$.
+    \item If $d_K$ is the \emph{discriminant} of $K$, the discriminant
+      of $\O$ is $f^2d_K$.
+    \item If $\O,\O'$ are two orders with discriminants $d,d'$, then
+      \emph{$\O\subset\O'$ iff $d'|d$}.
+    \end{itemize}
+  \end{block}
+
+  \bigskip
+  
+  \centering
+  \begin{tikzpicture}[xscale=3,yscale=1.1]
+    \node(OK) at (0,0) {$\O_K$};
+    \node(O2) at (-1,-1) {$\Z+2\O_K$};
+    \node(O3) at (0,-1) {$\Z+3\O_K$};
+    \node(O5) at (1,-1) {$\Z+5\O_K$};
+    \node(O6) at (-1,-2) {$\Z+6\O_K$};
+    \node(O10) at (0,-2) {$\Z+10\O_K$};
+    \node(O15) at (1,-2) {$\Z+15\O_K$};
+    \node(O30) at (0,-3) {$\Z[\pi]\simeq\Z+30\O_K$};
+
+    \begin{scope}
+      \draw
+      (OK) edge (O2) edge (O3) edge (O5)
+      (O2) edge (O6) edge (O10)
+      (O3) edge (O6) edge (O15)
+      (O5) edge (O10) edge (O15)
+      (O30) edge (O6) edge (O15) edge (O10);
+    \end{scope}
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
 \begin{frame}{Isogeny volcanoes}
   \begin{block}{Serre-Tate theorem reloaded}
     Two elliptic curves $E,E'$ defined over a finite field are
     isogenous iff their \emph{endomorphism algebras}
     $\End(E)\otimes\Q$ and $\End(E')\otimes\Q$ are isomorphic.
   \end{block}
-  
+
+  \smallskip
+
   \begin{columns}
-    \begin{column}{0.3\textwidth}
+    \begin{column}{0.5\textwidth}
       \emph{Isogeny graphs}
       \begin{itemize}
       \item \emph{Vertices are curves} up to isomorphism,
@@ -852,7 +895,7 @@
       \item Isogenies all have degree a prime $\ell$.
       \end{itemize}
     \end{column}      
-    \begin{column}{0.6\textwidth}
+    \begin{column}{0.5\textwidth}
       \begin{tikzpicture}
         \begin{scope}
           \def\crater{7}
@@ -868,70 +911,61 @@
             }
           }
         \end{scope}
-        \begin{scope}[xshift=4cm]
-          \node at (0,2) {$\End(E)$};
-          \draw[fill] (0,1) circle(5pt) node[xshift=0.7cm]{$\O_K$} -- 
-          (0,0) circle(3pt) --
-          (0,-1) circle(1pt) node[xshift=0.7cm]{$\Z[\pi]$};
-        \end{scope}
       \end{tikzpicture}
-      
-      \centering\small
-      Isogeny volcano of degree $\ell=3$.
     \end{column}
   \end{columns}
 \end{frame}
 
 %%
 
-\begin{frame}{Isogeny volcanoes}
-  \begin{block}{Classifying quadratic orders}
-    Let $K$ be a quadratic number field, and let $\O_K$ be its ring of
-    integers.
-    \begin{itemize}
-    \item Any order $\O\subset K$ can be written as $\O=\Z+f\O_K$ for
-      an integer $f$, called the \emph{conductor} of $\O$, denoted by
-      $[\O_k:\O]$.
-    \item If $d_K$ is the \emph{discriminant} of $K$, the discriminant
-      of $\O$ is $f^2d_K$.
-    \item If $\O,\O'$ are two orders with discriminants $d,d'$, then
-      \emph{$\O\subset\O'$ iff $d'|d$}.
-    \end{itemize}
-  \end{block}
+\begin{frame}{Volcanology I}
 
-  Let $E,E'$ be curves with respective endomorphism rings $\O,\O'$.\\
-  Let $\phi:E\to E'$ be an isogeny of prime degree $\ell$, then:
   \begin{columns}
-    \begin{column}{0.55\textwidth}
-      \begin{itemize}
-      \item if $\O=\O'$, \hfill$\phi$ is \emph{horizontal};
-      \item if $[\O':\O]=\ell$, \hfill$\phi$ is \emph{ascending};
-      \item if $[\O:\O']=\ell$, \hfill$\phi$ is \emph{descending}.
-      \end{itemize}
+    \begin{column}{0.5\textwidth}
+      Let $E,E'$ be curves with respective endomorphism rings $\O,\O'$.\\
+      Let $\phi:E\to E'$ be an isogeny of prime degree $\ell$, then:
     \end{column}
-    \begin{column}{0.45\textwidth}
-      \centering
-      \begin{tikzpicture}[scale=0.7]
-        \def\crater{7}
-        \foreach \i in {1,...,\crater} {
-          \draw[fill] (360/\crater*\i:1cm) circle (5pt);
-          \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
-          \foreach \j in {-1,1} {
-            \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
-            \foreach \k in {-1,0,1} {
-              \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
-              (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
-            }
-          }
-        }
-      \end{tikzpicture}
+    \begin{column}{0.5\textwidth}
+      \centering{}
+      \begin{tabular}{l l}
+        if $\O=\O'$, & $\phi$ is \emph{horizontal};\\
+        if $[\O':\O]=\ell$, & $\phi$ is \emph{ascending};\\
+        if $[\O:\O']=\ell$, & $\phi$ is \emph{descending}.
+      \end{tabular}      
     \end{column}
   \end{columns}
+
+  \bigskip
+
+  \centering
+  \begin{tikzpicture}
+    \def\crater{7}
+    \foreach \i in {1,...,\crater} {
+      \draw[fill] (360/\crater*\i:1cm) circle (5pt);
+      \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+      \foreach \j in {-1,1} {
+        \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
+        \foreach \k in {-1,0,1} {
+          \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
+          (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
+        }
+      }
+    }
+    \begin{scope}[xshift=4cm]
+      \node at (0,2) {$\End(E)$};
+      \draw[fill] (0,1) circle(5pt) node[xshift=0.7cm]{$\O_K$} -- 
+      (0,0) circle(3pt) --
+      (0,-1) circle(1pt) node[xshift=0.7cm]{$\Z[\pi]$};
+    \end{scope}
+  \end{tikzpicture}
+  
+  \small
+  Isogeny volcano of degree $\ell=3$.
 \end{frame}
 
 %%
 
-\begin{frame}{Volcanology}
+\begin{frame}{Volcanology II}
   \centering
   \begin{columns}
     \begin{column}{0.35\textwidth}
@@ -1016,8 +1050,10 @@
       $\O$;
     \item Let \emph{$E[\a]$} be the subgroup of $E$ annihilated by
       $\a$:
+      \vspace{-2mm}
       \[E[\a] = \{P\in E \;|\; \alpha(P) = 0 \text{ for all } \alpha\in\a\};\]
-    \item Let \emph{$\phi:E\to E_\a$}, where $E_\a=E/E[\a]$.
+    \item \vspace{-1mm} Let \emph{$\phi:E\to E_\a$}, where
+      $E_\a=E/E[\a]$.
     \end{itemize}
     Then $\End(E_\a) = \O$ (i.e., $\phi$ is \emph{horizontal}).
   \end{block}
@@ -1030,8 +1066,9 @@
   \end{theorem}
 
   \begin{corollary}
-    If $E$ is on the crater of an $\ell$ volcano, the crater contains
-    $h(\End(E))$ curves.
+    Let $\End(E)$ have discriminant $D$. Assume that
+    $\left(\frac{D}{\ell}\right)=1$, then $E$ is on a crater of an
+    $\ell$-volcano, and the crater contains $h(\End(E))$ curves.
   \end{corollary}
 \end{frame}
 
@@ -1086,29 +1123,861 @@
 %% 
 
 \section{Isogeny-based cryptography}
-\subsection{Isogeny walks}
+
+\begin{frame}
+  \frametitle{Overview}
+  \tableofcontents  
+\end{frame}
 
 %%
+
+\begin{frame}{Isogeny graphs}
+  \begin{itemize}
+  \item \emph{Vertices are curves} up to isomorphism,
+  \item \emph{Edges are isogenies} up to isomorphism.
+  \end{itemize}
+
+  \begin{block}{Ordinary case}
+    \begin{itemize}
+    \item $\ell$-isogeny graphs form \emph{volcanoes}.
+    \item The height of the volcano is given by the conductor of
+      $\Z[\pi]$.
+    \item All curves on the same level have the same endomorphism ring
+      (have \emph{complex multiplication} by the same order $\O$).
+    \item Type of summit (one curve, two curves, crater) determined by
+      $\left(\frac{D}{\ell}\right)$.
+    \item Size of the crater is $h(\O)$, and $\Cl(\O)$ acts on it.
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Supersingular case}
+    \begin{itemize}
+    \item There are $\sim p/12$ supersingular $j$-invariants, all
+      defined over $\F_{p^2}$.
+    \item $\ell$-isogeny graphs are \emph{$(\ell+1)$-regular and
+        connected}.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\subsection{Isogeny walks}
+
+\begin{frame}{Graphs lexicon}
+  \begin{description}
+  \item[Degree:] Number of (outgoing/ingoing) edges.
+  \item[$k$-regular:] All vertices have degree $k$.
+  \item[Connected:] There is a path between any two vertices.
+  \item[Distance:] The length of the shortest path between two vertices.
+  \item[Diamater:] The longest distance between two vertices.
+  \item[$\lambda_1\ge\cdots\ge\lambda_n$:] The (ordered) eigenvalues
+    of the adjacency matrix.
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{Expander graphs}
+  \begin{block}{Proposition}
+    If $G$ is a $k$-regular graph, its largest and smallest
+    eigenvalues satisfy
+    \[k = \lambda_1 \ge \lambda_n \ge -k.\]
+  \end{block}
+  
+  \begin{block}{Expander families}
+    An infinite family of connected $k$-regular graphs on $n$ vertices
+    is an \emph{expander family} if there exists an $\epsilon>0$ such
+    that all \emph{non-trivial} eigenvalues satisfy
+    $|\lambda| \le (1-\epsilon)k$ for $n$ large enough.
+  \end{block}
+  
+  \begin{itemize}
+  \item Expander graphs have \emph{short diameter} ($O(\log n)$);
+  \item Random walks \emph{mix rapidly} (after $O(\log n)$ steps,
+    the induced distribution on the vertices is close to uniform).
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Expander graphs from isogenies}
+  \begin{block}{Theorem (\cite{pizer1,pizer2})}
+    Let $\ell$ be fixed. The family of graphs of \emph{supersingular}
+    curves over $\F_{p^2}$ with $\ell$-isogenies, as $p\to\infty$, is
+    an expander family\footnote{Even better, it has the Ramanujan
+      property.}.
+  \end{block}
+  
+  In the \emph{ordinary} case, for all primes \emph{$\ell \nmid t^2+4q$}:
+  \begin{itemize}
+  \item 50\% of $\ell$-isogeny graphs are isolated
+    points,\hfill$\left(\frac{D_K}{\ell}\right)=-1$
+  \item 50\% of $\ell$-isogeny graphs are
+    \emph{cycles}.\hfill$\left(\frac{D_K}{\ell}\right)=+1$
+  \end{itemize}
+  
+  \begin{block}{Theorem (\cite{jao+miller+venkatesan09})}
+    Let $\O\subset\Q[\sqrt{-D}]$ be an order in a quadratic imaginary
+    field. The graphs of all curves over $\F_q$ with \emph{complex
+      multiplication by $\O$}, with isogenies of prime degree
+    bounded\footnote{May contain traces of GRH.} by
+    $(\log q)^{2+\delta}$, are expanders.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Isogeny based cryptography is 20 years old!}
+
+  \begin{description}
+  \item<1->[1996] Couveignes suggests \emph{isogeny-based
+      key-exchange} at a seminar in École Normale Supérieure;
+  \item<1->[1997] He submits \emph{``Hard Homogeneous Spaces''} to
+    Crypto;
+  \item<2->[1997] His paper gets \alert{rejected};
+  \item<3->[1997--2006] \dots Nothing happens for about 10 years.
+  \end{description}
+
+  \bigskip
+  
+  \begin{uncoverenv}<4->
+    \begin{center}
+      \large
+      
+      \emph{Ok. Let's move on to the next 10 years!}
+    \end{center}
+  \end{uncoverenv}
+\end{frame}
+
+%%
+
+\begin{frame}{Isogeny problems}
+  \begin{block}{Isogeny computation\hfill\uncover<2->{$\mathrm{poly}(\#G)$}}
+    Given an elliptic curve $E$ with Frobenius endomorphism $\pi$, and
+    a subgroup $G\subset E$ such that $\pi(G)=G$, compute the rational
+    fractions and the image curve of the separable isogeny
+    $\phi:E\to E/G$.
+  \end{block}
+
+  \begin{block}{Explicit isogeny\hfill\uncover<3->{$\mathrm{poly}(d)$}}
+    Given two elliptic curves $E,E'$ over a finite field, isogenous of
+    known degree $d$, find an isogeny $\phi:E\to E'$ of degree $d$.
+  \end{block}
+
+  \begin{block}{Isogeny walk\hfill\uncover<4->{\alert{$\exp(\log\#k)$}}}
+    Given two elliptic curves $E,E'$ over a finite field $k$, such
+    that $\#E=\#E'$, find an isogeny $\phi:E\to E'$ of smooth degree.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Isogeny walks and
+    cryptanalysis\footcite{galbraith99,GHS,bisson+sutherland11-rho} (circa 2000)}
+  
+  \emph{Fact:} Having a \emph{weak DLP} is not (always) isogeny invariant.
+
+  \begin{center}
+    \begin{tikzpicture}
+      \path (0,0) node[anchor=east] {$E$} (6,0) node[anchor=west] {$E'$};
+      \path[gray] (-0.8,0) node[anchor=east] {weak curve}
+      (6.8,0) node[anchor=west] {strong curve};
+
+      \draw[->] (0,0) -- (0.5,-0.2);
+      \draw[->] (6,0) -- (5.5,0.2);
+      \draw[->] (0.5,-0.2) -- (1,0.2);
+      \draw[->] (5.5,0.2) -- (5,-0.2);
+      \begin{scope}[densely dotted,coils/.style={decorate,decoration={coil,aspect=0,amplitude=2pt}}]
+        \draw[coils] (1,0.2) -- (3,0.4);
+        \draw[coils] (5,-0.2) -- (3,0.4);
+        \draw[-angle 90,coils] (3,0.4) -- (3, -0.4) node[anchor=north] {$E''$};
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+  
+  \begin{block}{Fourth root attacks}
+    \begin{itemize}
+    \item Start two random walks from the two curves and wait for a
+      collision.
+    \item Over \emph{$\F_q$}, the average size of an isogeny class is
+      \emph{$h(\O_K)\sim\sqrt{q}$}.
+    \item A collision is expected after
+      \emph{$O(\sqrt{h(\O_K)}) = O(q^{\frac{1}{4}})$} steps.
+    \end{itemize}
+  \end{block}
+
+  \emph{Note:} Can be used to build \emph{trapdoor
+    systems}\footcite{teske06}.
+
+\end{frame}
+
 %% 
+
+\begin{frame}
+  \frametitle{Random walks and hash functions (circa 2006)}
+
+  Any expander graph gives rise to a hash function.
+
+  \begin{center}
+    \begin{tikzpicture}
+      \coordinate (last) at (0,0);
+      \draw (last) node[anchor=east] {$v$};
+      \foreach \i in {1,...,6} {
+        \pgfmathparse{(-1)^\i}
+        \let\sign\pgfmathresult
+        \pgfmathparse{int(mod(\i+1,2))}
+        \let\bit\pgfmathresult
+        \pgfmathparse{int(mod(\i,2))}
+        \let\nbit\pgfmathresult
+        \draw[->] (last) -- (\i,\sign*0.1) node[blue,pos=0.5,yshift=\sign*0.2cm]{\small$\bit$};
+        \draw[dashed,->] (last) -- (\i,-\sign*0.5) node[gray,pos=0.5,yshift=-\sign*0.2cm]{\small$\nbit$};
+        \coordinate (last) at (\i,\sign*0.1);
+      }
+      \draw (last) node[anchor=west] {$v'$};
+
+      \node[blue,anchor=west] at (7,0) {$H(010101)=v'$};
+    \end{tikzpicture}
+  \end{center}
+
+  \begin{itemize}
+  \item Fix a starting vertex \emph{$v$};
+  \item The value to be hashed determines a random path to \emph{$v'$};
+  \item \emph{$v'$} is the hash.
+  \end{itemize}
+
+  \begin{block}{Provably secure hash functions}
+    \begin{itemize}
+    \item Use the expander graph of \alert{supersingular
+        $2$-isogenies};\footcite{charles+lauter+goren09,doliskani+barreto+hash}
+    \item \alert{Collision resistance} = hardness of finding cycles in the graph;
+    \item \alert{Preimage resistance} = hardness of finding a path
+      from \emph{$v$} to \emph{$v'$}.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+%%
 
 \subsection{Key exchange from ordinary graphs}
 
+\begin{frame}
+  \frametitle{Random walks and key exchange}
+
+  \begin{flushleft}
+    \Large
+    Let's try something harder...
+  \end{flushleft}
+
+  \begin{center}
+    \begin{tikzpicture}[xscale=0.7,yscale=0.4]
+      \foreach \p/\psym/\psign in {Alice/A/-1,Bob/B/1} {
+        \coordinate (last) at (\psign,0);
+        \foreach \round in {0,1} {
+          \pgfmathparse{\psign*(2*\round-1)}
+          \let\rsign\pgfmathresult
+          \foreach \i in {1,...,5} {
+            \pgfmathparse{int(mod(mod(\i,2+(1+\psign)*0.5+\round),2))}
+            \let\bit\pgfmathresult
+            \pgfmathparse{int(mod(\bit+1,2))}
+            \let\nbit\pgfmathresult
+            \pgfmathparse{(-1)^(\bit)}
+            \let\sign\pgfmathresult
+            \draw[->] (last) -- ++(-\rsign,-1+\sign*0.1) node[blue,pos=0.5,yshift=\sign*0.1cm,xshift=-\sign*0.1cm*\rsign]{\small$\bit$};
+            \draw[dashed,->,white!80!black] (last) -- ++(-\rsign+\sign*0.5*\rsign,-1-\sign*0.5) node[pos=0.5,yshift=-\sign*0.1cm,xshift=\sign*0.1cm*\rsign]{\small$\nbit$};
+            \coordinate (last) at (-\i*\rsign+\round*5*\rsign+\psign,-\i-\round*6.6+\sign*0.1);
+          }
+          \coordinate (last) at (-5*\rsign+\psign,-6.6);
+        }
+      }
+      \draw[alert] (0,0) node[anchor=south] {Public $v_0$}
+      (-5,-5.2) node[anchor=north] {Alice's public $v_A$}
+      (5,-5.2) node[anchor=north] {Bob's public $v_B$}
+      (0,-11.8) node[anchor=north] {Shared secret};
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{-1cm}
+  
+  \begin{flushright}
+    \Large
+    ...is this even possible?
+  \end{flushright}
+\end{frame}
+
 %%
+
+\begin{frame}
+  \frametitle{Expander graphs from groups}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}
+        \def\crater{12}
+        \def\jumpa{-8}
+        \def\jumpb{9}
+        \def\diam{3cm}
+
+        \foreach \i in {1,...,\crater} {
+          \uncover<2->{\draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);}
+          \uncover<3->{\draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jumpa*360/\crater : \diam);}
+          \uncover<4->{\draw[green] (360/\crater*\i : \diam) to[bend right=50] (360/\crater*\i+\jumpb*360/\crater : \diam);}
+        }
+        \foreach \i in {1,...,\crater} {
+          \pgfmathparse{int(mod(2^\i,13))}
+          \let\exp\pgfmathresult
+          \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.4) node{$g^{\exp}$};
+        }
+      \end{scope}
+      \begin{scope}[xshift=4cm]
+        \draw (0,2.1) node[anchor=west] {\parbox{4cm}{
+            Let \emph{$G=\langle g\rangle$} be a cyclic group of order \emph{$p$}.
+            \uncover<5->{Let \emph{$S\subset(\Z/p\Z)^\times$} s.t. \emph{$S^{-1}\subset S$}.\\
+              The \emph{Schreier graph} of \emph{$(S,G\setminus\{1\})$} is (usually) an expander.}}};
+        \uncover<2->{\draw[blue] (0,0) -- (0.5,0) (0.5,0) node[anchor=west] {$x \mapsto x^{2}$};}
+        \uncover<3->{\draw[red] (0,-1) -- (0.5,-1) (0.5,-1) node[anchor=west] {$x \mapsto x^{3}$};}
+        \uncover<4->{\draw[green] (0,-2) -- (0.5,-2) (0.5,-2) node[anchor=west] {$x \mapsto x^{5}$};}
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 %% 
+
+{
+  \newcommand{\myedge}[3]{
+    \draw[#3] (360/\crater*#1 : \diam) to[bend right] (360/\crater*#2 : \diam);
+  }
+
+\begin{frame}
+  \frametitle{Key exchange from Schreier graphs}
+
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{tikzpicture}
+        \begin{scope}
+          \def\crater{12}
+          \def\jumpa{-8}
+          \def\jumpb{9}
+          \def\diam{2.5cm}
+          
+          \foreach \i in {1,...,\crater} {
+            \pgfmathparse{int(mod(2^\i,13))}
+            \let\exp\pgfmathresult
+            \draw[fill] (360/\crater*\i: \diam) circle (2pt);
+          }
+          \uncover<2,6->{
+            % Alice 1
+            \myedge{0}{1}{blue}\myedge{1}{5}{red}\myedge{5}{6}{blue}\myedge{6}{3}{green}
+          }
+          \uncover<3,5>{
+            % Bob 1
+            \begin{scope}[dashed,thick]
+              \myedge{0}{4}{red}\myedge{4}{8}{red}\myedge{8}{5}{green}\myedge{5}{6}{blue}
+            \end{scope}
+          }
+          \uncover<5>{
+            % Alice 2
+            \myedge{6}{7}{blue}\myedge{7}{11}{red}\myedge{11}{0}{blue}\myedge{0}{9}{green}
+          }
+          \uncover<6->{
+            % Bob 2
+            \begin{scope}[dashed,thick]
+              \myedge{3}{7}{red}\myedge{7}{11}{red}\myedge{11}{8}{green}\myedge{8}{9}{blue}
+            \end{scope}
+          }
+
+          \draw (0 : \diam + 0.4cm) node {$g$};
+          \uncover<2->{\draw (360/\crater*3 : \diam + 0.4cm) node {$g_A$};}
+          \uncover<3->{\draw (360/\crater*6 : \diam + 0.4cm) node {$g_B$};}
+          \uncover<5->{\draw (360/\crater*9 : \diam + 0.4cm) node {$g_{BA}\uncover<6->{=g_{AB}}$};}
+        \end{scope}
+      \end{tikzpicture}  
+    \end{column}    
+    \begin{column}{0.45\textwidth}
+      \begin{onlyenv}<-6>
+        \textbf{Public parameters:}
+        \begin{itemize}
+        \item A group \emph{$G=\langle g\rangle$} of order \emph{$p$};
+        \item A subset \emph{$S\subset(\Z/p\Z)^\times$}.
+        \end{itemize}
+        \begin{enumerate}
+        \item<2-> \textbf{Alice} takes a \alert{secret} random walk
+          \emph{$s_A:g\to g_A$} of length \emph{$O(\log p)$};
+        \item<3-> \textbf{Bob} does the same;
+        \item<4-> They publish \emph{$g_A$} and \emph{$g_B$};
+        \item<5-> \textbf{Alice} repeats her secret walk \emph{$s_A$}
+          starting from \emph{$g_B$}.
+        \item<6-> \textbf{Bob} repeats his secret walk \emph{$s_B$}
+          starting from \emph{$g_A$}.
+        \end{enumerate}
+      \end{onlyenv}
+      \begin{onlyenv}<7->
+        \textbf{Why does this work?}
+        \begin{align*}
+          g_A &= g^{\bl{2}\cdot\rd{3}\cdot\bl{2}\cdot\gr{5}},\\
+          g_B &= g^{\rd{3^2}\cdot\gr{5}\cdot\bl{2}},\\
+          g_{BA} &= g_{AB} = g^{\bl{2^3}\cdot\rd{3^3}\cdot\gr{5^2}};
+        \end{align*}
+        and $g_A,g_B,g_{AB}$ are uniformly distributed in $G$\dots
+
+        \bigskip
+        
+        \begin{uncoverenv}<8->
+          \dots Indeed, this is just a twisted presentation of the
+          \alert{classical Diffie-Hellman protocol!}
+        \end{uncoverenv}
+      \end{onlyenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+}
+
+%%
+
+\begin{frame}
+  \frametitle{Group action on isogeny graphs}
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{scope}
+          \def\crater{11}
+          \def\jump{5}
+          \def\diam{2.5cm}
+
+          \foreach \i in {1,...,\crater} {
+            \draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+            \draw[red] (360/\crater*\i : \diam) to[bend left] (360/\crater*\i+\jump*360/\crater : \diam);
+          }
+          \foreach \i in {1,...,\crater}
+          \draw[fill] (360/\crater*\i: \diam) circle (2pt);
+        \end{scope}
+        \begin{scope}[xshift=-1.5cm, yshift=-3.2cm]
+          \draw[blue] (0,0) -- (0.5,0) (0.5,0) node[anchor=west] {\bl{$\ell_1$}-isogenies};
+          \draw[red] (0,-1) -- (0.5,-1) (0.5,-1) node[anchor=west] {\rd{$\ell_2$}-isogenies};
+        \end{scope}
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item There is a group action of the \emph{ideal class group}
+        $\Cl(\O)$ on the set of ordinary curves with \emph{complex
+          multiplication} by $\O$.
+      \item Its Schreier graph is an isogeny graph (and an
+        expander if we take enough generators)
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Key exchange in graphs of ordinary isogenies\footcite{Couv,R&S} (circa 2006)}
+  
+  \emph{Parameters:}
+  \begin{itemize}
+  \item \alert{$E/\F_p$ ordinary elliptic curve} with \textit{Frobenius
+      endomorphism} $\pi$,
+  \item primes \bl{$\ell_1$},\rd{$\ell_2$},\dots\
+    such that $\left(\frac{D_\pi}{\ell_i}\right)=1$.
+  \item A \textit{direction} for each $\ell_i$ (i.e.\ a choice of a root of
+    $\pi^2-t\pi+q\mod\ell$).
+  \end{itemize}
+
+  \emph{Secret data:} \alert{Random walks} $\a,\b\in\Cl(\O)$ in the
+  isogeny graph.
+  
+  \begin{center}
+    \begin{tikzpicture}
+      \Large
+      \node[matrix of math nodes, ampersand replacement=\&, column sep=0cm, row sep=1cm] (diagram) {
+        \& |(1)| E \\
+        |(a)| \a\ast E \& \& |(b)| \b\ast E\\
+        \& |(ab)| \a\b\ast E = \b\a\ast E\\
+      };
+      \small
+      \path[->] (1) edge node[auto,swap]{$\bl{\ell_1^{a_1}}\rd{\ell_2^{a_2}}\cdots=\mathcal{N}(\a)$} (a);
+      \path[->] (1) edge node[auto]{$\mathcal{N}(\b)=\bl{\ell_1^{b_1}}\rd{\ell_2^{b_2}}\cdots$} (b);
+      \path[->] (a) edge (ab);
+      \path[->] (b) edge (ab);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%%
+
+\begin{frame}{CRS key exchange}
+
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}
+        \def\crater{11}
+        \def\jump{5}
+        \def\diam{1.8cm}
+
+        \foreach \i in {1,...,\crater} {
+          \draw[blue] (360/\crater*\i : \diam) to[bend left] (360/\crater*\i+360/\crater : \diam);
+          \draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jump*360/\crater : \diam);
+        }
+        \foreach \i in {1,...,\crater}
+          \draw[fill] (360/\crater*\i: \diam) circle (2pt);
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+
+  \begin{description}
+  \item[Key generation:] compose small degree isogenies\\
+    (Isogeny Computation Problem)\\
+    \alert{polynomial in the length of the random walk}.
+  \item[Attack:] Isogeny Walk Problem\\
+    \alert{polynomial in the degree, exponential in the length}.
+  \item[Open problem:] Make this thing practical!
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{Security of CRS}
+  \begin{description}
+  \item[Size of the graph:] $h(\O)\sim\sqrt{p}$,
+  \item[Key space size:] Exponential in the number of primes
+    \bl{$\ell_1$},\rd{$\ell_2$},\dots\
+  \item[Meet in the middle attack:] $O(\sqrt[4]{p})$.
+  \end{description}
+
+  \begin{block}{The Abelian Hidden Shift Problem}
+    Let $G$ be a group and $S$ be a set. Given two oracles
+    $f_0,f_1:G\to S$ such that \emph{$f_0(g)=f_q(gs)$} for some
+    $s\in G$, \emph{find $s$}.
+  \end{block}
+
+  \begin{block}{Ordinary isogeny walk $\to$ Hidden shift}
+    To find a secret isogeny walk $E_0\to E_1$, set
+    \begin{align*}
+      f_0 : \Cl(\O) &\to V & f_1 : \Cl(\O) &\to V\\
+      \a &\mapsto \a\ast E_0 & \a &\mapsto \a\ast E_1
+    \end{align*}
+    Then the hidden shift is \emph{$\mathfrak{s}$} such that
+    \emph{$\mathfrak{s}\ast E_0 = E_1$}.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Quantum attack on CRS\footcite{childs+jao+soukharev10}}
+
+  \begin{enumerate}
+  \item \alert{$L_p(1/2,\sqrt{3}/2)$} classical algorithm for
+    evaluating $f_0,f_1$.
+  \item Hidden Shift Problem $\to$ Dihedral Hidden
+    Subgroup Problem.
+  \end{enumerate}
+  
+  \begin{block}{Quantum algorithms for dihedral HSP}
+    \begin{description}
+    \item[Kuperberg\footcite{Kup}:] \alert{$2^{O(\sqrt{\log|G|})}$}
+      quantum time, space and query complexity.
+    \item[Regev\footcite{regev04}:]
+      \alert{$L_{|G|}(\frac{1}{2},\sqrt{2})$} quantum time and query
+      complexity, \alert{$\text{poly}(\log(|G|)$} quantum space.
+    \end{description}
+  \end{block}
+\end{frame}
+
+%%
+%%
 
 \subsection{Key exchange from supersingular graphs}
 
-% \begin{frame}{The scheme}
+\begin{frame}
+  \frametitle{Key exchange with supersingular curves (2011)}
   
-% \end{frame}
+  \begin{description}
+  \item[Good news:] there is no action of a commutative class group.
+  \item[Bad news:] there is no action of a commutative class group.
+  \item[Idea:] Let \bl{Alice} and \rd{Bob} walk in two
+    \emph{different isogeny graphs} on the \emph{same vertex set}.
+  \end{description}
 
-% %%
+  \begin{columns}
+    \begin{column}{0.7\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.4]
+        \begin{scope}[every node/.style={fill,black,circle,inner sep=2pt}]
+          \node at (0,0)  (1){};
+          \node at (0,4) (20){};
+          \node at (2,1)  (16z){};
+          \node at (-2,1)  (81z){};
+          \node at (-1,2) (77z){};
+          \node at (1,2)  (20z){};
+          \node at (-2,3)  (85z){};
+          \node at (2,3)  (12z){};
+        \end{scope}
 
-% \begin{frame}{Attacks}
+        \begin{uncoverenv}<1,3>
+          \begin{scope}[blue,every loop/.style={looseness=50}]
+            \path (1) edge (20) edge (16z) edge (81z);
+            \path (20) edge[loop left] (20) edge[loop right] (20);
+            \path (16z) edge (81z) edge (77z);
+            \path (81z) edge (20z);
+            \path (77z) edge (20z) edge (85z);
+            \path (20z) edge (12z);
+            \path (12z) edge[bend right=10] (85z) edge[bend left=10] (85z);
+          \end{scope}
+        \end{uncoverenv}
+        
+        \begin{uncoverenv}<2->
+          \begin{scope}[red]
+            \path (1) edge (85z) edge (81z) edge (12z) edge (16z);
+            \path (20) edge (85z) edge (77z) edge (20z) edge (12z);
+            \path (81z) edge (85z) edge (77z) edge (16z);
+            \path (85z) edge (12z);
+            \path (12z) edge (16z);
+            \path (16z) edge (20z);
+            \path (20z) edge[bend right=10] (77z) edge[bend left=10] (77z);
+          \end{scope}
+        \end{uncoverenv}
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      \small
+      \emph{Figure:} \bl{$2$}- and \rd{$3$}-isogeny graphs on $\F_{97^2}$.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Key exchange with supersingular curves}
+
+  \begin{itemize}
+  \item Fix small primes \bl{$\ell_A$}, \rd{$\ell_B$};
+  \item \emph{No canonical labeling} of the \bl{$\ell_A$}- and
+    \rd{$\ell_B$}-isogeny graphs; \emph{however\dots}
+  \end{itemize}
+
+  \begin{center}
+    \bf
+    Walk of length \bl{$e_A$}\\
+    $=$\\
+    Isogeny of degree \bl{$\ell_A^{e_A}$}\\
+    $=$\\
+    Kernel \bl{$\langle P\rangle\subset E[\ell_A^{e_A}]$}
+  \end{center}
   
-% \end{frame}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}
+        \draw (0,1.2) node[anchor=east,blue] {$\ker\phi=\cyc{P}\subset E[\ell_A^{e_A}]$};
+        \draw (0,0.4) node[anchor=east,red] {$\ker\psi=\cyc{Q}\subset E[\ell_B^{e_B}]$};
+        \draw (0,-0.4) node[anchor=east,blue] {$\ker\phi' = \cyc{\rd{\psi}(P)}$};
+        \draw (0,-1.2) node[anchor=east,red] {$\ker\psi' = \cyc{\bl{\phi}(Q)}$};
+      \end{scope}
+      \begin{scope}[xshift=4.5cm,coils/.style={-angle 90,decorate,decoration={coil,aspect=0,amplitude=1pt}}]
+        \large
+        \node[matrix of nodes, ampersand replacement=\&, column sep=3cm, row sep=1.5cm] (diagram) {
+          |(E)| $E$ \& |(Es)| $E/\cyc{\bl{P}}$ \\
+          |(Ep)| {$E/\cyc{\rd{Q}}$} \& |(Eps)| {$E/\cyc{\bl{P},\rd{Q}}$}\\
+        };
+        \path[->,blue] (E) edge[coils] node[auto] {$\phi$} (Es);
+        \path[->,blue] (Ep) edge[coils] node[auto,swap] {$\phi'$} (Eps);
+        \path[->,red] (E) edge[coils] node[auto,swap] {$\psi$} (Ep);
+        \path[->,red] (Es) edge[coils] node[auto] {$\psi'$} (Eps);
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
 
-% %%
+%%
+
+\begin{frame}
+  \frametitle{Supersingular Isogeny
+    Diffie-Hellman\footcite{jao+defeo2011,defeo+jao+plut12}}
+
+  \vspace{-1cm}
+
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \begin{block}{}
+        \emph{Parameters:}
+        \begin{itemize}
+          \setlength{\itemsep}{1.5ex}
+        \item Prime $p$ such that $p+1 = \bl{\ell_A^a}\rd{\ell_B^b}$;
+        \item Supersingular curve \emph{$E\simeq (\Z/(p+1)\Z)^2$};
+        \item \bl{$E[\ell_A^a] = \cyc{P_A,Q_A}$};
+        \item \rd{$E[\ell_B^b] = \cyc{P_B,Q_B}$}.
+        \end{itemize}
+
+        \emph{Secret data:}
+        \begin{itemize}
+          \setlength{\itemsep}{1.5ex}
+        \item \bl{$R_A = m_AP_A + n_AQ_A$},
+        \item \rd{$R_B = m_BP_B + n_BQ_B$},
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.58\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[coils/.style={-angle 90,decorate,decoration={coil,aspect=0,amplitude=1pt}}]
+          \large
+          \node[matrix of nodes, ampersand replacement=\&, column sep=4mm, row sep=2cm] (diagram) {
+            \& |(1)| $E$ \\
+            |(a)| \parbox{1.5cm}{$E/\cyc{\bl{R_A}}$\\\uncover<2->{{\footnotesize $\bl{\phi(}\rd{P_B}\bl{)}\\\bl{\phi(}\rd{Q_B}\bl{)}$}}} \& \&
+            |(b)| \parbox{1.5cm}{$E/\cyc{\rd{R_B}}$\\\uncover<2->{{\footnotesize $\rd{\psi(}\bl{P_A}\rd{)}\\\rd{\psi(}\bl{Q_A}\rd{)}$}}}\\
+            \normalsize $\frac{E/\cyc{\bl{R_A}}}{\alert{\bl{\phi(}\rd{R_B}\bl{)}}} \simeq$ \&
+            |(ab)|  $E/\cyc{\bl{R_A},\rd{R_B}}$ \&
+            \normalsize $\simeq \frac{E/\cyc{\rd{R_B}}}{\alert{\rd{\psi(}\bl{R_A}\rd{)}}}$\\
+          };
+          \small
+          \path[blue] (1) edge[coils] node[auto,swap](phia) {$\phi$} (a);
+          \path[red] (1) edge[coils] node[auto](phib) {$\psi$} (b);
+          \path[red] (a) edge[coils] node[auto,swap](psia){$\psi'$} (ab);
+          \path[blue] (b) edge[coils] node[auto](psib){$\phi'$} (ab);
+          \uncover<3>{\path[dashed,->] (phia) edge node[auto]{\footnotesize $\bl{\phi(}\rd{R_B}\bl{)}$} (psia);}
+          \uncover<3>{\path[dashed,->] (phib) edge node[auto,swap]{\footnotesize $\rd{\psi(}\bl{R_A}\rd{)}$} (psib);}
+        \end{tikzpicture}
+      \end{center}  
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%% 
+
+\begin{frame}
+  \frametitle{Generic attacks}
+  
+  \emph{Problem:} Given \emph{$E,E'$}, isogenous of degree
+  \emph{$\ell^n$}, find \emph{$\phi:E\to E'$}.
+
+  \begin{center}
+    \begin{tikzpicture}[xscale=4,coils/.style={-angle 90,decorate,decoration={coil,aspect=0,amplitude=1pt}}]
+      \large
+      \draw (0,2) node(E) {$E$};
+
+      \draw (1,4) node(E1) {$E/\cyc{P_0}$};
+      \draw (1,2) node(Ei) {$E_i/\cyc{P_i}$};
+      \draw (1,0) node(En) {$E/\cyc{P_{\ell^{n/2}}}$};
+      \draw (1,3) node(dots1) {$\vdots$};
+      \draw (1,1) node(dots2) {$\vdots$};
+
+      \draw (2,2) node(E') {$E'$};
+
+      \draw (E) edge[coils] node[auto] {\normalsize$\ell^{n/2}$} (E1);
+      \draw (E) edge[coils] (Ei);
+      \draw (E) edge[coils] (En);
+      \draw (E) edge[coils] (dots1);
+      \draw (E) edge[coils] (dots2);
+
+      \draw (E') edge[coils] node[auto,swap] {\normalsize$\ell^{n/2}$} (Ei);
+    \end{tikzpicture}
+  \end{center}
+
+  \begin{itemize}
+  \item With high probability $\phi$ is the unique collision (or
+    \textit{claw}) $\alert{O(\ell^{n/2})}$.
+  \item A \emph{quantum claw finding}\footcite{tani08} algorithm solves
+    the problem in $\alert{O(\ell^{n/3})}$.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Security}
+  \begin{block}{The SIDH problem}
+    Given \emph{$E$}, Alice's public data
+    \emph{$E/\cyc{R_A}, \phi(P_B), \phi(Q_B)$}, and Bob's public data
+    \emph{$E/\cyc{R_B}, \psi(P_A), \psi(Q_A)$}, find the shared secret
+    \emph{$E/\cyc{R_A,R_b}$}.
+  \end{block}
+
+  Under the SIDH assumption:
+  \begin{itemize}
+  \item The SIDH key exchange protocol is \emph{session-key secure}.
+  \item The derived El Gamal-type PKE is \emph{CPA secure}.
+  \end{itemize}
+
+  \begin{block}{Reductions}
+    \begin{itemize}
+    \item SIDH $\to$ Isogeny Walk Problem;
+    \item SIDH $\to$ \emph{Computing the endomorphism rings} of $E$
+      and
+      $E/\cyc{R_A}$.\footcite{kohel2014quaternion,galbraithsecurity}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Chosen ciphertext attack\footcite{galbraithsecurity}}
+  For simplicity, assume Alice's prime is $\ell = 2$.
+  
+  \begin{block}{Evil Bob}
+    \begin{itemize}
+    \item Alice has a long-term secret $\bl R = \bl mP + \bl nQ\in E[2^e]$;
+    \item Bob produces an ephemeral secret $\rd\psi$;
+    \item Bob sends to Alice $\rd\psi(P), \rd\psi(Q+2^{e-1}P)$;
+    \item Alice computes the shared secret correctly iff
+      \begin{align*}
+        \bl R &= \bl mP + \bl nQ\\
+        &= \bl mP + \bl nQ + \bl n2^{e-1}Q,
+      \end{align*}
+      i.e., iff $\bl n$ is even;
+    \item Bob \emph{learns one bit} of the secret key by checking that
+      Alice gets the right shared secret.
+    \end{itemize}
+  \end{block}  
+
+  Bob repeats the queries in a similar fashion, \emph{learning one bit
+    per query}.
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Bonus: a ZK proof of knowledge\footcite{defeo+jao+plut12}}
+  
+  \emph{Secret}: knowledge of the \emph{kernel} of a degree
+  \bl{$\ell_A^{e_A}$} isogeny from $E$ to $E/\cyc{\bl{S}}$.
+  \vspace{-2mm}
+  \begin{center}
+    \begin{tikzpicture}
+      \large
+      \node[matrix of nodes, ampersand replacement=\&, column sep=3cm, row sep=1.5cm] (diagram) {
+        |(E)| $E$ \& |(Es)| $E/\cyc{\bl{S}}$ \\
+        |(Ep)| {\uncover<2->{$E/\cyc{\rd{P}}$}} \& |(Eps)| {\uncover<2->{$E/\cyc{\rd{P},\bl{S}}$}}\\
+      };
+      \path[blue] (E) edge node[auto] {$\phi$} (Es);
+      \uncover<2->{\path[blue] (Ep) edge node[auto,swap] {\alt<4>{$\phi'$}{?}} (Eps);}
+      \uncover<2->{\path[red] (E) edge node[auto,swap] {\alt<3>{$\psi$}{?}} (Ep);}
+      \uncover<2->{\path[red] (Eps) edge node[auto,swap] {\alt<3>{$\psi'$}{?}} (Es);}
+    \end{tikzpicture}  
+  \end{center}
+  \vspace{-4mm}
+  \begin{enumerate}
+  \item<2-> Choose a random point \rd{$P\in E[\ell_B^{e_B}]$}, compute the diagram;
+  \item<2-> Publish the curves $E/\cyc{\rd{P}}$ and $E/\cyc{\rd{P},\bl{S}}$;
+  \item<3-> The verifier asks one of the two questions:
+    \begin{itemize}
+    \item<3-> Reveal the degree \rd{$\ell_B^{e_B}$} isogenies;
+    \item<4-> Reveal the \bl{bottom} isogeny.
+    \end{itemize}
+  \end{enumerate}
+
+  \uncover<5->{Can derive Fiat-Shamir \emph{signatures}: secure under
+    SIDH\dots but very slow!}
+\end{frame}  
+
+%% 
+%%
+
+\subsection{The SIKE submission}
 
 % \begin{frame}{SIKE}
   
