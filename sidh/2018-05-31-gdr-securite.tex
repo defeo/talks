@@ -842,7 +842,7 @@
   \item (small) primes \bl{$\ell_1$},\rd{$\ell_2$},\dots
     such that $\left(\frac{D_\pi}{\ell_i}\right)=1$.
   \item elements
-    \bl{$\frak f_1=(\ell_1,\pi-\lambda_1)$},\rd{$\frak f_2=(\ell_2,\pi-\lambda_2)$} in
+    \bl{$\frak f_1=(\ell_1,\pi-\lambda_1)$}, \rd{$\frak f_2=(\ell_2,\pi-\lambda_2)$} in
     $\Cl(\O)$.
   \end{itemize}
 
@@ -858,8 +858,8 @@
         \& |(ab)| \a\b\ast E = \b\a\ast E\\
       };
       \small
-      \path[->] (1) edge node[auto,swap]{$\bl{(\frak f_1)^{a_1}}\rd{(\frak f_2)^{a_2}}\cdots=\a$} (a);
-      \path[->] (1) edge node[auto]{$\b=\bl{(\frak f_1)^{b_1}}\rd{(\frak f_2)^{b_2}}\cdots$} (b);
+      \path[->] (1) edge node[auto,swap]{$\bl{\frak f_1^{a_1}}\rd{\frak f_2^{a_2}}\cdots=\a$} (a);
+      \path[->] (1) edge node[auto]{$\b=\bl{\frak f_1^{b_1}}\rd{\frak f_2^{b_2}}\cdots$} (b);
       \path[->] (a) edge (ab);
       \path[->] (b) edge (ab);
     \end{tikzpicture}
@@ -1083,18 +1083,25 @@
 
 \begin{frame}{CSIDH vs SIDH}
   \centering
+  \vspace{-3mm}
   \begin{tabular}{l | c | c}
     & \textbf{CSIDH} & \textbf{SIDH}\\
     \hline
-    Speed @128b & <100ms & 10ms\\
-    Public key size @128b & 64B & 378B\\
+    Speed (NIST 1) & <100ms & $\sim$ 10ms\\
+    Public key size (NIST 1) & 64B & 378B\\
+    Key compression\footcite{10.1007/978-3-319-79063-3_12} & \\
+    \enskip{}\rotatebox[origin=c]{180}{$\Lsh$} speed & & $\sim$ 15ms\footnote{https://twitter.com/PatrickLonga/status/1002313366466015232?s=20}\\
+    \enskip{}\rotatebox[origin=c]{180}{$\Lsh$} size & & 222B\\
+    Constant time impl. & not yet & yes\\
     Submitted to NIST & no & yes\\
+    \hline
     Best classical attack & $p^{1/4}$ & $p^{1/4}$\\
     Best quantum attack & subexponential & $p^{1/6}$\\
     Key size scales & quadratically & linearly\\
     Security assumption & isogeny walk problem & ad hoc\\
     CPA security & yes & yes\\
-    CCA security & yes & Fujsaki-Okamoto\\
+    CCA security & yes & Fujisaki-Okamoto\\
+    \hline
     Non-interactive key ex. & yes & no\\
     Signatures & unclear & very slow
   \end{tabular}
@@ -1117,7 +1124,7 @@
     in each level.
   \item \emph{Slowest} among all benchmarked proposals in each level.
   \item A team of 14 submitters, from 8 universities and companies.
-  \item Visit \url{https://sike.org/}.
+  \item Visit \emph{\url{https://sike.org/}}.
   \end{itemize}
 
   \centering

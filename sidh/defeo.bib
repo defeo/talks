@@ -788,7 +788,7 @@ requirement is only polynomial.},
     year = {1994}
 }
 
-@misc{Couv,
+@electronic{Couv,
     author = {Couveignes, Jean-Marc},
     citeulike-article-id = {10862469},
     citeulike-linkout-0 = {http://eprint.iacr.org/2006/291/},
@@ -2337,36 +2337,15 @@ material and will be assumed.},
     year = {2011}
 }
 
-@unpublished{childs+jao+soukharev10,
-    abstract = {Given two elliptic curves over a finite field having the same cardinality and
-endomorphism ring, it is known that the curves admit an isogeny between them,
-but finding such an isogeny is believed to be computationally difficult. The
-fastest known classical algorithm takes exponential time, and prior to our work
-no faster quantum algorithm was known. Recently, public-key cryptosystems based
-on the presumed hardness of this problem have been proposed as candidates for
-post-quantum cryptography. In this paper, we give a subexponential-time quantum
-algorithm for constructing isogenies, assuming the Generalized Riemann
-Hypothesis (but with no other assumptions). This result suggests that
-isogeny-based cryptosystems may be uncompetitive with more mainstream
-quantum-resistant cryptosystems such as lattice-based cryptosystems. As part of
-our algorithm, we also obtain a second result of independent interest: we
-provide a new subexponential-time classical algorithm for evaluating a
-horizontal isogeny given its kernel ideal, assuming (only) {GRH}, eliminating the
-heuristic assumptions required by prior algorithms.},
-    archivePrefix = {arXiv},
-    author = {Childs, Andrew M. and Jao, David and Soukharev, Vladimir},
-    citeulike-article-id = {8971379},
-    citeulike-linkout-0 = {http://arxiv.org/abs/1012.4019},
-    citeulike-linkout-1 = {http://arxiv.org/pdf/1012.4019},
-    day = {17},
-    eprint = {1012.4019},
-    keywords = {elliptic\_curve, isogenies, quantum},
-    month = dec,
-    posted-at = {2011-03-09 14:55:54},
-    priority = {5},
-    title = {Constructing elliptic curve isogenies in quantum subexponential time},
-    url = {http://arxiv.org/abs/1012.4019},
-    year = {2010}
+@Article{childs+jao+soukharev10,
+  author  = {Childs, Andrew and Jao, David and Soukharev, Vladimir},
+  title   = {Constructing elliptic curve isogenies in quantum subexponential time},
+  journal = {Journal of Mathematical Cryptology},
+  year    = {2014},
+  volume  = {8},
+  number  = {1},
+  pages   = {1--29},
+  groups  = {Isogenies},
 }
 
 @article{jao+miller+venkatesan09,
@@ -7822,7 +7801,7 @@ year={2016}
 
 
 @misc{defeo-kieffer-smith,
-    author = {Luca De Feo and Jean Kieffer and Benjamin Smith},
+    author = {De Feo, Luca and Kieffer, Jean and Smith, Benjamin},
     title = {Towards practical key exchange from ordinary isogeny graphs},
     howpublished = {Cryptology ePrint Archive, Report 2018/485},
     year = {2018},
@@ -7830,7 +7809,8 @@ year={2016}
 }
 
 @Misc{csidh,
-  author       = {Wouter Castryck and Tanja Lange and Chloe Martindale and Lorenz Panny and Joost Renes},
+  author       = {Castryck, Wouter and Lange, Tanja and Martindale,
+                  Chloe and Panny, Lorenz and Renes, Joost},
   title        = {{CSIDH}: An Efficient Post-Quantum Commutative Group Action},
   year         = {2018},
   howpublished = {Cryptology ePrint Archive, Report 2018/383},
@@ -7859,8 +7839,7 @@ year={2016}
 
 @article{DelfsG16,
   author    = {Christina Delfs and Steven D. Galbraith},
-  title     = {Computing isogenies between supersingular elliptic curves
-      over {$\mathbb{F}_p$}},
+  title     = {Computing isogenies between supersingular elliptic curves over {$\mathbb{F}_p$}},
   journal   = {Des. Codes Cryptography},
   volume    = {78},
   number    = {2},
@@ -7870,3 +7849,20 @@ year={2016}
   timestamp = {Wed, 14 Jun 2017 20:30:52 +0200},
 }
 
+@InProceedings{10.1007/978-3-319-79063-3_12,
+author="Zanon, Gustavo H. M.
+and Simplicio, Marcos A.
+and Pereira, Geovandro C. C. F.
+and Doliskani, Javad
+and Barreto, Paulo S. L. M.",
+editor="Lange, Tanja
+and Steinwandt, Rainer",
+title="Faster Isogeny-Based Compressed Key Agreement",
+booktitle="Post-Quantum Cryptography",
+year="2018",
+publisher="Springer International Publishing",
+address="Cham",
+pages="248--268",
+abstract="Supersingular isogeny-based cryptography is one of the more recent families of post-quantum proposals. An interesting feature is the comparatively low bandwidth occupation in key agreement protocols, which stems from the possibility of key compression. However, compression and decompression introduce a significant overhead to the overall processing cost despite recent progress. In this paper we address the main processing bottlenecks involved in key compression and decompression, and suggest substantial improvements for each of them. Some of our techniques may have an independent interest for other, more conventional areas of elliptic curve cryptography as well.",
+isbn="978-3-319-79063-3"
+}
