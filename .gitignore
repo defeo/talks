@@ -6,3 +6,14 @@
 *.snm
 *.toc
 *.vrb
+*.pdf
+*.synctex.gz
+*.bcf
+*.run.xml
+*.blg
+*.bbl
+*.fls
+*.fdb_latexmk
+_region_.tex
+
+.ipynb_checkpoints
