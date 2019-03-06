@@ -4,6 +4,7 @@
 
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
+\usepackage{unicode}
 \usepackage[american]{babel}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{tikz}
@@ -23,11 +24,11 @@
 
 %\let\footcite\footnote
 
-\newcommand{\C}{\mathbb{C}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\C}{ℂ}
+\newcommand{\R}{ℝ}
+\newcommand{\Z}{ℤ}
+\newcommand{\N}{ℕ}
+\newcommand{\Q}{ℚ}
 \newcommand{\F}{\mathbb{F}}
 \renewcommand{\P}{\mathbb{P}}
 \renewcommand{\O}{\mathcal{O}}
@@ -37,7 +38,7 @@
 \newcommand{\Cl}{\operatorname{Cl}}
 \renewcommand{\a}{{\mathfrak{a}}}
 \renewcommand{\b}{{\mathfrak{b}}}
-\newcommand{\cyc}[1]{{\langle #1 \rangle}}
+\newcommand{\cyc}[1]{{〈 #1 〉}}
 \newcommand{\ord}{\operatorname{ord}}
 
 \usetikzlibrary{arrows,matrix,decorations,decorations.text,decorations.pathmorphing,calc}
@@ -112,47 +113,19 @@
 
 \subsection{Elliptic Curves}
 
-\begin{frame}{Diffie--Hellman key exchange}
-  \begin{description}
-  \item[Goal:] Alice and Bob have never met before. They are chatting
-    over a public channel, and want to agree on a \emph{shared secret}
-    to start a private conversation.
-  \item[Setup:] They agree on a (large) cyclic group
-    $G=\langle g\rangle$ of order $N$.
-  \end{description}
-
-  \begin{center}
-    \begin{tikzpicture}
-      \node at (0,0) {\bf Alice};
-      \node at (7,0) {\bf Bob};
-      \node at (0,-1) {pick random \alert{$a\in\Z/N\Z$}};
-      \node at (0,-1.5) {compute $A=g^a$};
-      \node at (7,-1) {pick random \alert{$b\in\Z/N\Z$}};
-      \node at (7,-1.5) {compute $B=g^b$};
-      \draw[->]
-      (1,-2) to node[auto] {$A$} (6,-2);
-      \draw[->] (6,-2.5) to node[auto] {$B$} (1,-2.5);
-      \node at (3.5,-3.5) {\emph{Shared secret} is \alert{$B^a=g^{ab}=A^b$}};
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
-
-%%
-
 \begin{frame}{Elliptic curves}
   \begin{columns}
     \begin{column}{0.4\textwidth}
       Let $k$ be a field of characteristic $\ne 2,3$.
 
-      An \emph{elliptic curve \textit{defined over $k$}} is the
-      (projective) locus of an equation
-      \[\emph{y^2 = x^3 + ax + b},\]
+      An \emph{elliptic curve \textit{defined over $k$}} is the locus
+      in the \emph{projective space} $\P^2(\bar{k})$ of an equation
+      \[\emph{Y^2Z = X^3 + aXZ^2 + bZ^3},\]
       where $a,b\in k$ and $4a^3+27b^2\ne 0$.
 
       \begin{itemize}
-      \item<2-> There's one extra projective point $\O=(0:1:0)$
-        \emph{at infinity};
-      \item<2-> $y^2 = x^3 + ax + b$ is called a \emph{Weierstrass equation}.
+      \item<2-> $\O=(0:1:0)$ is the \emph{point at infinity};
+      \item<3-> $y^2 = x^3 + ax + b$ is the \emph{affine Weierstrass equation}.
       \end{itemize}
     \end{column}
     \begin{column}{0.6\textwidth}
@@ -220,6 +193,33 @@
 
 %%
 
+\begin{frame}{Why should I care? (Diffie--Hellman key exchange)}
+  \begin{description}
+  \item[Goal:] Alice and Bob have never met before. They are chatting
+    over a public channel, and want to agree on a \emph{shared secret}
+    to start a private conversation.
+  \item[Setup:] They agree on a (large) cyclic group $G=〈g〉$
+    of (prime) order $q$.
+  \end{description}
+
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0,0) {\bf Alice};
+      \node at (7,0) {\bf Bob};
+      \node at (0,-1) {pick random \alert{$a∈ℤ/qℤ$}};
+      \node at (0,-1.5) {compute $A=g^a$};
+      \node at (7,-1) {pick random \alert{$b∈ℤ/qℤ$}};
+      \node at (7,-1.5) {compute $B=g^b$};
+      \draw[->]
+      (1,-2) to node[auto] {$A$} (6,-2);
+      \draw[->] (6,-2.5) to node[auto] {$B$} (1,-2.5);
+      \node at (3.5,-3.5) {\emph{Shared secret} is \alert{$B^a=g^{ab}=A^b$}};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%%
+
 \begin{frame}{Brief history of DH key exchange}
   \begin{description}
   \item[1976] Diffie \& Hellman publish \emph{New directions in
@@ -228,8 +228,8 @@
     algorithm ($O(\sqrt{\# G})$ complexity).
   \item[1980] Miller and Koblitz independently suggest using
     \emph{elliptic curves} $G=E(\F_p)$.
-  \item[1994] Shor publishes his \emph{quantum discrete logarithm /
-      factoring} algorithm.
+  \item[1994] Shor publishes his quantum polynomial time
+    \emph{discrete logarithm / factoring} algorithm.
   \item[2005] NSA standardizes elliptic curve key agreement (ECDH) and
     signatures ECDSA.
   \item[2017] $\sim 70\%$ of web traffic is secured by ECDH and/or
@@ -239,26 +239,37 @@
   \end{description}
 \end{frame}
 
+%% 
+
+\begin{frame}{Why should I care? (cont'd)}
+
+  {\large\emph{But, also:}}
+  \begin{itemize}
+  \item Elliptic Curve Factoring Method (Lenstra '85);
+  \item Elliptic Curve Primality Proving (Atkin, Morain '86-'93);
+  \item Efficient normal bases for finite fields (Couveignes, Lercier '10);
+  \item \dots
+  \end{itemize}
+\end{frame}
+
 %%
 
-\begin{frame}{History of isogeny-based cryptography}
-  \begin{description}
-  \item[1996] Couveignes introduces the \emph{Hard Homogeneous
-      Spaces (HHS)}. His work stays unpublished for 10 years.
-  \item[2006] Rostovtsev \& Stolbunov independently rediscover
-    Couveignes ideas, suggest isogeny-based Diffie--Hellman as a
-    \emph{quantum-resistant} primitive.
-  \item[2006-2010] Other isogeny-based protocols by Teske and Charles,
-    Goren \& Lauter.
-  \item[2011-2012] D., Jao \& Plût introduce \emph{SIDH}, an
-    efficient post-quantum key exchange inspired by Couveignes,
-    Rostovtsev, Stolbunov, Charles, Goren, Lauter.
-  \item[2017] SIDH is submitted to the NIST competition (with the name
-    \emph{SIKE}, only isogeny-based candidate).
-  \item[2018] Castryck, Lange, Martindale, Panny \& Renes publish an
-    efficient variant of HHS named \emph{CSIDH}.
-  \item[2019] New isogeny protocols: Signatures, Verifiable Delay Functions, \dots
-  \end{description}
+\begin{frame}{What are elliptic curves?}
+  \begin{block}{For mathematicians}
+    \begin{itemize}
+    \item The \emph{smooth projective curves of genus 1};
+    \item The simplest \emph{abelian varieties} (dimension 1);
+    \item Finitely generated free groups of mysterious rank (aka
+      \emph{BSD conjecture});
+    \item What you use to make examples.
+    \end{itemize}
+  \end{block}
+
+  \pause
+  
+  \begin{block}{For cryptographers}
+    
+  \end{block}
 \end{frame}
 
 %%
@@ -285,6 +296,27 @@
 \section{Cryptography}
 
 \subsection{Isogeny walks and Hash functions}
+
+\begin{frame}{History of isogeny-based cryptography}
+  \begin{description}
+  \item[1996] Couveignes introduces the \emph{Hard Homogeneous
+      Spaces (HHS)}. His work stays unpublished for 10 years.
+  \item[2006] Rostovtsev \& Stolbunov independently rediscover
+    Couveignes ideas, suggest isogeny-based Diffie--Hellman as a
+    \emph{quantum-resistant} primitive.
+  \item[2006-2010] Other isogeny-based protocols by Teske and Charles,
+    Goren \& Lauter.
+  \item[2011-2012] D., Jao \& Plût introduce \emph{SIDH}, an
+    efficient post-quantum key exchange inspired by Couveignes,
+    Rostovtsev, Stolbunov, Charles, Goren, Lauter.
+  \item[2017] SIDH is submitted to the NIST competition (with the name
+    \emph{SIKE}, only isogeny-based candidate).
+  \item[2018] Castryck, Lange, Martindale, Panny \& Renes publish an
+    efficient variant of HHS named \emph{CSIDH}.
+  \item[2019] New isogeny protocols: Signatures, Verifiable Delay Functions, \dots
+  \end{description}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
