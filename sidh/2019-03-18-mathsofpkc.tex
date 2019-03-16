@@ -7,6 +7,7 @@
 \usepackage{unicode}
 \usepackage[american]{babel}
 \usepackage{amsmath,amssymb,amsthm}
+\usepackage[normalem]{ulem}
 \usepackage{tikz}
 \usepackage[backend=biber,citestyle=authoryear-comp,bibstyle=beamer,doi=false,isbn=false,url=false,maxnames=10]{biblatex}
 \bibliography{defeo}
@@ -34,12 +35,16 @@
 \renewcommand{\O}{\mathcal{O}}
 \newcommand{\tildO}{\mathcal{\tilde{O}}}
 \newcommand{\End}{\operatorname{End}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Gal}{\operatorname{Gal}}
 \newcommand{\chr}{\operatorname{char}}
 \newcommand{\Cl}{\operatorname{Cl}}
+\newcommand{\GL}{\operatorname{GL}}
 \renewcommand{\a}{{\mathfrak{a}}}
 \renewcommand{\b}{{\mathfrak{b}}}
 \newcommand{\cyc}[1]{{〈 #1 〉}}
 \newcommand{\ord}{\operatorname{ord}}
+\newcommand{\mat}[1]{\left(\begin{smallmatrix}#1\end{smallmatrix}\right)}
 
 \usetikzlibrary{arrows,matrix,decorations,decorations.text,decorations.pathmorphing,calc}
 
@@ -270,35 +275,927 @@
   \begin{block}{For cryptographers}
     \begin{itemize}
     \item \emph{Finite abelian} groups (often cyclic);
+    \item Easy to compute the order;
     \item ``2-dimensional'' generalizations of $μ_k$ (the \emph{roots
-        of unity} of $k$);
-    \item Boh
+        of unity} of $k$)\dots
+    \item \dots with \emph{bilinear maps} (aka \emph{pairings})!
     \end{itemize}
   \end{block}
 \end{frame}
 
 %%
 
+\begin{frame}{Isomorphisms}
+  \begin{block}{Isomorphisms}
+    The only \emph{invertible algebraic maps} between elliptic curves
+    are of the form
+    \[(x,y) \mapsto (u^2x, u^3y)\]
+    for some $u\in\bar{k}$.
+
+    They are \emph{group isomorphisms}.
+  \end{block}
+
+  \begin{block}{$j$-Invariant}
+    Let $E\;:\;y^2=x^3+ax+b$, its \emph{$j$-invariant} is
+    \[j(E) = 1728\frac{4a^3}{4a^3+27b^2}.\]
+
+    Two elliptic curves $E,E'$ are \emph{isomorphic} if and only if
+    $j(E)=j(E')$.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Group structure}
+  \begin{block}{Torsion structure}
+    Let $E$ be defined over an algebraically closed field $\bar{k}$ of
+    characteristic $p$.
+    \begin{align*}
+      E[m] \simeq\quad& \Z/m\Z\times\Z/m\Z  &\text{if $p\nmid m$,}\\[1em]
+                 &\Z/p^e\Z & \text{\emph{ordinary} case,}\\[-1.7em]
+      E[p^e] \simeq\Biggl\{& \\[-1.7em]
+                 &\{\O\} & \text{\emph{supersingular} case.}
+    \end{align*}
+  \end{block}
+
+  \begin{block}{Finite fields (Hasse's theorem)}
+    Let \emph{$E$} be defined over a finite field \emph{$\F_q$}, then
+    \[\lvert\#E(\F_q) - q - 1\rvert \le 2\sqrt{q}.\]
+    In particular, there exist integers \emph{$n_1$} and
+    \emph{$n_2|(q-1)$} such that
+    \[E(\F_q) ≃ ℤ/n_1ℤ × ℤ/n_2ℤ.\]
+  \end{block}
+\end{frame}
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Isogenies}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\begin{frame}{What is \alt<2->{\xout{scalar multiplication} an
+      isogeny}{scalar multiplication}?}
 
-\subsection{Endomorphism rings}
+  \begin{overlayarea}{\textwidth}{4em}
+    \Large
+    \[
+      \alt<3->{ϕ}{[n]}
+      \;:\; P \mapsto
+      \alt<3->{ϕ(P)}{\underbrace{P + P + \cdots + P}_{n\text{ times}}}\]
+  \end{overlayarea}
+  
+  \begin{itemize}
+  \item A map \emph{$E\to \alt<4->{\xout{E} E'}{E\phantom{\xout{}}}$},
+  \item a \emph{group morphism},
+  \item with \emph{finite kernel}\\
+    \alt<5->{(\xout{the torsion group $E[n]≃(ℤ/nℤ)^2$} any
+      finite subgroup \emph{$H\subset E$})}{(the torsion group
+      \emph{$E[n]\simeq(ℤ/nℤ)^2$})},
+  \item \emph{surjective} (in the algebraic closure),
+  \item given by \emph{rational maps} of degree \alt<6->{\xout{$n^2$}
+      \emph{$\#H$}}{\emph{$n^2$}}.
+  \end{itemize}
+
+  \begin{uncoverenv}<7->
+    (Separable) isogenies $⇔$ finite subgroups:
+    \alert{\[0 → H → E \overset{ϕ}{→} E' \to 0\]}
+    The kernel \emph{$H$} determines the image curve \emph{$E'$} up to
+    isomorphism \[\emph{E/H\overset{\text{\tiny def}}{=}E'}.\]
+  \end{uncoverenv}
+\end{frame}
+
+%%
+
+\begin{frame}{Isogenies: an example over $\F_{11}$}
+  \begin{tikzpicture}[scale=0.4]
+    \begin{scope}
+      \node[anchor=center] at (0,7) {$E \;:\; y^2 = x^3 + x$};
+
+      \uncover<-1>{
+        \draw[thin,gray] (0,-6) -- (0,6);
+        \draw[thin,gray] (-6,0) -- (6,0);
+      }
+
+      \foreach \x/\y in {0/0,5/3,-4/3,-3/5,-2/1,-1/3} {
+        \draw[blue,fill] (\x,\y) circle (0.2) node(E_\x_\y){}
+        (\x,-\y) circle (0.2) node(E_\x_-\y){};
+      }
+
+      \uncover<2->{\draw[red,fill] (0,0) circle (0.3);}
+    \end{scope}
+
+    \draw[black!10!white,thick] (8,-7) -- +(0,14);
+    
+    \begin{scope}[shift={(16,0)}]
+      \node at (0,7) {$E' \;:\; y^2 = x^3 - 4x$};
+
+      \uncover<-1>{
+        \draw[thin,gray] (0,-6) -- (0,6);
+        \draw[thin,gray] (-6,0) -- (6,0);
+      }
+
+      \foreach \x/\y in {0/0,2/0,3/2,4/2,6/4,-2/0,-1/5} {
+        \draw[color=blue,fill] (\x,\y) circle (0.2) node(F_\x_\y){}
+        (\x,-\y) circle (0.2) node(F_\x_-\y){};
+      }
+    \end{scope}
+
+    \begin{scope}[color=red,-latex,dashed]
+      \begin{uncoverenv}<2->
+        \path
+        (E_5_3) edge (F_3_2)
+        (E_-4_3) edge (F_4_-2)
+        (E_-3_5) edge (F_4_2)
+        (E_-2_1) edge (F_3_-2)
+        (E_-1_3) edge (F_-2_0);
+      \end{uncoverenv}
+      \begin{uncoverenv}<2->
+        \path
+        (E_5_-3) edge (F_3_-2)
+        (E_-4_-3) edge (F_4_2)
+        (E_-3_-5) edge (F_4_-2)
+        (E_-2_-1) edge (F_3_2)
+        (E_-1_-3) edge (F_-2_0);
+      \end{uncoverenv}
+    \end{scope}
+  \end{tikzpicture}
+  
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \[ϕ(x,y) = \left(\frac{x^2 + 1}{x},\quad y\frac{x^2-1}{x^2}\right)\]
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item<2-> Kernel generator in \alert{red}.
+      \item<2-> This is a degree $2$ map.
+      \item<2-> Analogous to $x↦x^2$ in $\F_q^*$.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Isogeny properties}
+  Let $\phi:E\to E'$ be an isogeny defined over a field $k$ of
+  characteristic $p$.
+  
+  \begin{itemize}
+  \item $k(E)$ is the \emph{field of all rational functions} from $E$
+    to $k$;
+  \item $\phi^\ast k(E')$ is the subfield of $k(E)$ defined as
+    \[\phi^\ast k(E') = \{ f\circ\phi \;\vert\; f\in k(E') \}.\]
+  \end{itemize}
+
+  \begin{block}{Degree, separability}
+    \begin{enumerate}
+    \item The \emph{degree} of $\phi$ is 
+      $\deg\phi = [k(E):\phi^\ast k(E')]$. It is always finite.
+    \item $\phi$ is said to be \emph{separable}, \emph{inseparable}, or
+      \emph{purely inseparable} if the extension of function fields is.
+    \item \alert<2>{If $\phi$ is separable, then
+        $\deg\phi = \#\ker\phi$.}
+    \item If $\phi$ is purely inseparable, then $\ker\phi=\{\O\}$ and
+      $\deg\phi$ is a power of $p$.
+    \item Any isogeny can be decomposed as a product of a separable and
+      a purely inseparable isogeny.
+    \end{enumerate}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{The dual isogeny}
+  Let $\phi:E\to E'$ be an isogeny of degree $m$. 
+  There is a unique isogeny $\hat{\phi}:E'\to E$ such that
+  \[\hat{\phi}\circ\phi = [m]_E, \quad \phi\circ\hat{\phi} = [m]_{E'}.\]
+  $\hat{\phi}$ is called the \emph{dual isogeny of $\phi$}; it has the
+  following properties:
+  
+  \begin{enumerate}
+  \item $\hat{\phi}$ is defined over $k$ if and only if $\phi$ is;
+  \item $\widehat{\psi\circ\phi} = \hat{\phi}\circ\hat{\psi}$ for any isogeny $\psi:E'\to E''$;
+  \item $\widehat{\psi+\phi} = \hat{\psi} + \hat{\phi}$ for any isogeny $\psi:E\to E'$;
+  \item $\deg \phi = \deg\hat{\phi}$;
+  \item $\hat{\hat{\phi}} = \phi$.
+  \end{enumerate}
+\end{frame}
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Isogeny graphs}
 
+\begin{frame}
+  \frametitle{Isogeny graphs}
+  
+  \vspace{-2mm}
+
+  \begin{columns}
+    \begin{column}{0.65\textwidth}
+      We look at the graph of elliptic curves with isogenies \emph{up
+        to isomorphism}.  We say two \alert{isogenies} $ϕ,ϕ'$
+      are \alert{isomorphic} if:
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      \begin{center}
+        \begin{tikzpicture}[node distance=4em]
+          \node(E){$E$}; 
+          \node(E1)[right of=E]{$E'$};
+          \node(E2)[below of=E1]{$E'$};
+          \scriptsize
+          \path[->] (E) edge node[auto]{$ϕ$} (E1);
+          \path[->] (E) edge node[auto,swap]{$ϕ'$} (E2);
+          \path[<->] (E1) edge node[rotate=270] {\large$\widetilde{}$} (E2);
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+  \end{columns}
+
+  \emph{Example:} Finite field, ordinary case, graph of isogenies of degree $3$.
+
+  \begin{center}
+    \begin{tikzpicture}[]
+      \begin{scope}
+        \def\crater{7}
+        \foreach \i in {1,...,\crater} {
+          \draw[fill] (360/\crater*\i:1cm) circle (5pt);
+          \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+          \foreach \j in {-1,1} {
+            \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
+            \foreach \k in {-1,0,1} {
+              \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
+              (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
+            }
+          }
+        }
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%%
+
+\begin{frame}{What do isogeny graphs look like?}
+  \begin{columns}
+    \begin{column}{0.46\textwidth}
+      \begin{block}{Torsion subgroups ($ℓ$ prime)}
+        In an algebraically closed field:
+        \[\emph{E[ℓ] = 〈P,Q〉 ≃ (ℤ/ℓℤ)^2}\]
+        \[\Downarrow\]
+        There are exactly \emph{$ℓ+1$} cyclic subgroups \emph{$H⊂E$}
+        of order $ℓ$:
+        \[\emph{〈P+Q〉, 〈P+2Q〉, \dots, 〈P〉, 〈Q〉}\]
+        \[\Downarrow\]
+        There are exactly \emph{$ℓ+1$} distinct isogenies of degree
+        \emph{$ℓ$}.
+      \end{block}
+    \end{column}
+    \begin{column}{0.54\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.5]
+        \def\levels{6}
+        \draw[fill] (0:0) circle (2pt);
+        \foreach \i in {1,...,\levels} {
+          \pgfmathparse{3*2^\i}
+          \let\nodes\pgfmathresult
+          \foreach \j in {1,3,...,\nodes} {
+            \pgfmathparse{\j + (-1)^div(\j,2)}
+            \let\lower\pgfmathresult
+            \ifthenelse{\i = \levels}{
+              \draw[dotted] (360/\nodes*\j : \i) --
+              (360/\nodes*\lower : \i - 1);
+            }{
+              \draw[fill] (360/\nodes*\j : \i) circle (2pt) --
+              (360/\nodes*\lower : \i - 1);
+            }
+          }
+        }
+      \end{tikzpicture}
+      (non-CM) $2$-isogeny graph over $ℂ$
+    \end{column}
+  \end{columns}
+\end{frame}  
+  
+%%
+
+\begin{frame}{What happens over a finite field $\F_p$?}
+  \begin{block}{Rational isogenies ($ℓ≠p$)}
+    In the algebraic closure \emph{$\bar{\F}_p$}
+    \[\emph{E[ℓ] = 〈P,Q〉 ≃ (ℤ/ℓℤ)^2}\]
+    However, an isogeny is \emph{defined over $\F_p$} only if its kernel
+    is \emph{Galois invariant}.
+  \end{block}
+
+  \begin{columns}
+    \begin{column}{0.47\textwidth}
+      Enter the \emph{Frobenius map}
+      \begin{align*}
+        π : E &→ E\\
+        (x,y) &↦ (x^p,y^p)
+      \end{align*}
+      \emph{$E$} is seen here as a curve over \emph{$\bar{\F}_p$}.
+    \end{column}
+    \begin{column}{0.47\textwidth}
+      \begin{block}{The Frobenius action on $E[ℓ]$}
+        \animate<2-5>
+        \transdissolve<2-5>
+        \begin{tikzpicture}[]
+          \uncover<1>{
+            \node at (0,0){$π(P) =$};   
+            \node at (0,-0.7){$π(Q) =$};
+          }
+          \node at (1.8,0){$a\uncover<-3>{P +} b\uncover<-3>{Q}$};
+          \node at (1.8,-0.7){$c\uncover<-3>{P +} d\uncover<-3>{Q}$};
+          \uncover<3->{
+            \node at (0.8,-0.35){$\Biggl($}; \node at (2.7,-0.35){$\Biggr)$};
+          }
+          \uncover<5->{
+            \node at (0.3,-0.35){$π:$};
+            \node at (3.3,-0.35){$\mod ℓ$};
+          }
+        \end{tikzpicture}
+
+        \uncover<6->{We identify \emph{$π|E[ℓ]$} to a conjugacy class
+          in \emph{$\GL(ℤ/ℓℤ)$}.}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{What happens over a finite field $\F_p$?}
+  \begin{center}
+    Galois invariant subgroups of \emph{$E[ℓ]$}\\
+    =\\
+    eigenspaces of \emph{$π∈\GL(ℤ/ℓℤ)$}\\
+    =\\
+    rational isogenies of \emph{degree $ℓ$}
+  \end{center}
+  \pause
+  \begin{block}{How many Galois invariant subgroups?}
+    \begin{itemize}
+    \item \emph{$π|E[ℓ] \sim \mat{λ&0\\0&λ}$}
+      \hfill $→ \emph{ℓ+1}$ isogenies
+    \item \emph{$π|E[ℓ] \sim \mat{λ&0\\0&μ}$} with \emph{$λ≠μ$}
+      \hfill $→$ \emph{two} isogenies
+    \item \emph{$π|E[ℓ] \sim \mat{λ&*\\0&λ}$}
+      \hfill $→$ \emph{one} isogeny
+    \item \emph{$π|E[ℓ]$} is not diagonalizable
+      \hfill $→$ \emph{no} isogeny
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Endomorphism rings}
+
+\begin{frame}{From local to global}
+  \begin{block}{Theorem (Hasse)}
+    Let $E$ be defined over a finite field $\F_q$. Its Frobenius map
+    $π$ satisfies a quadratic equation
+    \[π^2 - tπ + q = 0\] %
+    for some $|t|\le2\sqrt{q}$, called the \emph{trace}
+    of $π$.  The trace $t$ is coprime to $q$ if and only if $E$ is
+    ordinary.
+  \end{block}
+  
+  \begin{block}{Endomorphisms}
+    An isogeny $E→E$ is also called an \emph{endomorphism}. Examples:
+    \begin{itemize}
+    \item scalar multiplication \emph{$[n]$},
+    \item Frobenius map \emph{$π$}.
+    \end{itemize}
+    With \emph{addition} and \emph{composition}, the endomorphisms
+    form a ring \emph{$\End(E)$}.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{The endomorphism ring}
+
+  \begin{block}{Theorem (Deuring)}
+    Let $E$ be an \emph{ordinary} elliptic curve defined over a finite
+    field $\F_q$.\\
+    Let $π$ be its Frobenius endomorphism, and $D_π=t^2-4q<0$ the
+    \emph{discriminant} of its minimal polynomial.
+
+    Then $\End(E)$ is isomorphic to an \emph{order} $\O$ of the
+    \emph{quadratic imaginary field} $ℚ(\sqrt{D_π})$.%
+    \footnote{An order is a subring that is a $ℤ$-module of rank $2$
+      (equiv., a $2$-dimensional $ℝ$-lattice).}
+  \end{block}
+
+  In this case, we say that $E$ has \emph{complex multiplication} (CM)
+  by $\O$.
+
+  \begin{block}{Theorem (Serre-Tate)}
+    CM elliptic curves $E,E'$ are isogenous iff
+    \emph{$\End(E)⊗ℚ≃\End(E')⊗ℚ$}.
+
+    \medskip
+    
+    \textbf{\emph{Corollary:}} $E/\F_p$ and $E'/\F_p$ are isogenous
+    iff \emph{$\#E(\F_p)=\#E'(\F_p)$}.
+  \end{block}
+
+\end{frame}
+
+%%
+
+\begin{frame}{Endomorphism rings of ordinary curves}
+  \begin{block}{Classifying quadratic orders}
+    Let $K$ be a quadratic number field, and let $\O_K$ be its ring of
+    integers.
+    \begin{itemize}
+    \item Any order $\O\subset K$ can be written as $\O=\Z+f\O_K$ for
+      an integer $f$, called the \emph{conductor} of $\O$, denoted by
+      $[\O_K:\O]$.
+    \item If $D_K$ is the \emph{discriminant} of $K$, the discriminant
+      of $\O$ is $f^2D_K$.
+    \item If $\O,\O'$ are two orders with discriminants $D,D'$, then
+      \emph{$\O\subset\O'$ iff $D'|D$}.
+    \end{itemize}
+  \end{block}
+
+  \medskip
+  
+  \centering
+  \begin{tikzpicture}[xscale=3,yscale=1.1]
+    \node(OK) at (0,0) {$\O_K$};
+    \node(O2) at (-1,-1) {$\Z+2\O_K$};
+    \node(O3) at (0,-1) {$\Z+3\O_K$};
+    \node(O5) at (1,-1) {$\Z+5\O_K$};
+    \node(O6) at (-1,-2) {$\Z+6\O_K$};
+    \node(O10) at (0,-2) {$\Z+10\O_K$};
+    \node(O15) at (1,-2) {$\Z+15\O_K$};
+    \node(O30) at (0,-3) {$\Z[\pi]\simeq\Z+30\O_K$};
+
+    \begin{scope}
+      \draw
+      (OK) edge (O2) edge (O3) edge (O5)
+      (O2) edge (O6) edge (O10)
+      (O3) edge (O6) edge (O15)
+      (O5) edge (O10) edge (O15)
+      (O30) edge (O6) edge (O15) edge (O10);
+    \end{scope}
+  \end{tikzpicture}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Ordinary graphs}
+
+\begin{frame}{Volcanology \parencite{kohel}}
+
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Let \emph{$E,E'$} be curves with respective endomorphism rings \emph{$\O,\O'⊂K$}.\\
+      Let \emph{$ϕ:E→E'$} be an isogeny of prime degree \emph{$ℓ$},
+      then:
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering{}
+      \begin{tabular}{l l}
+        if $\O=\O'$, & $ϕ$ is \emph{horizontal};\\
+        if $[\O':\O]=ℓ$, & $ϕ$ is \emph{ascending};\\
+        if $[\O:\O']=ℓ$, & $ϕ$ is \emph{descending}.
+      \end{tabular}      
+    \end{column}
+  \end{columns}
+
+  \bigskip
+
+  \centering
+  \begin{tikzpicture}
+    \def\crater{7}
+    \foreach \i in {1,...,\crater} {
+      \draw[fill] (360/\crater*\i:1cm) circle (5pt);
+      \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+      \foreach \j in {-1,1} {
+        \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
+        \foreach \k in {-1,0,1} {
+          \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
+          (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
+        }
+      }
+    }
+    \begin{scope}[xshift=4cm]
+      \node at (0,2) {$\End(E)$};
+      \draw[fill] (0,1) circle(5pt) node[xshift=0.7cm]{$\O_K$} -- 
+      (0,0) circle(3pt) --
+      (0,-1) circle(1pt) node[xshift=0.7cm]{$ℤ[π]$};
+    \end{scope}
+  \end{tikzpicture}
+  
+  \small
+  Ordinary isogeny volcano of degree $ℓ=3$.
+\end{frame}
+
+%%
+
+\begin{frame}{Volcanology \parencite{kohel}}
+  \centering
+  \begin{columns}
+    \begin{column}{0.35\textwidth}
+      Let $E$ be ordinary, \emph{$\End(E)⊂K$}.
+
+      \bigskip
+
+      $\O_K$: \emph{maximal order} of $K$,\\
+      $D_K$: \emph{discriminant} of $K$.
+
+      \bigskip
+      
+      \uncover<2->{Height \emph{$= v_ℓ([\O_K:ℤ[π]])$}.}
+      
+      \bigskip
+      
+      \uncover<3->{\alert{How large is the crater?}}
+    \end{column}
+    \begin{column}{0.65\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.8]
+        \small
+        \begin{scope}
+          \draw[fill] (0,0) circle (2pt)
+          -- (-1,-1) circle (2pt)
+          (0,0) -- (0,-1) circle (2pt)
+          (0,0) -- (1,-1) circle (2pt);
+          \node at (0,-2) {$\left(\frac{D_K}{ℓ}\right) = -1$};
+        \end{scope}    
+
+        \begin{scope}[xshift=3.5cm]
+          \draw[fill] (0,0) circle (2pt)
+          -- (-0.5,-1) circle (2pt)
+          (0,0) -- (0.5,-1) circle (2pt)
+          (0,0) -- (2,0) circle (2pt)
+          -- (1.5,-1) circle (2pt)
+          (2,0) -- (2.5,-1) circle (2pt);
+          \node at (1,-2) {$\left(\frac{D_K}{ℓ}\right) = 0$};
+        \end{scope}
+        
+        \begin{scope}[xshift=2.5cm,yshift=-3cm]
+          \draw[fill] (-0.8,0) node[coordinate] (A) {} circle (2pt)
+          -- +(0,-1) circle (2pt)
+          (0,-0.3) node[coordinate] (B) {} circle (2pt)
+          -- +(0,-1) circle (2pt)
+          (0.8,0) node[coordinate] (C) {} circle (2pt)
+          -- +(0,-1) circle (2pt);
+          \draw[bend right=20]
+          (A) edge (B)
+          (B) edge (C)
+          (C) edge[dashed,bend right=90] (A);
+          \node at (0,-2) {$\left(\frac{D_K}{ℓ}\right) = +1$};
+        \end{scope}
+      \end{tikzpicture}
+    \end{column}  
+  \end{columns}
+  
+  \bigskip
+  
+  \begin{tabular}{c | c | c c c}
+    && \textbf{Horizontal} & \textbf{Ascending} & \textbf{Descending}\\
+    \hline
+    $\ell\nmid[\O_K:\O]]$ & $\ell\nmid[\O:ℤ[π]]$ &$1+\left(\frac{D_K}{ℓ}\right)$& &\\
+    $\ell\nmid[\O_K:\O]]$ & $\ell\mid[\O:ℤ[π]]$ &$1+\left(\frac{D_K}{ℓ}\right)$& &$\ell-\left(\frac{D_K}{ℓ}\right)$\\
+    $\ell\mid[\O_K:\O]]$ & $\ell\mid[\O:ℤ[π]]$ &  &$1$&$\ell$\\
+    $\ell\mid[\O_K:\O]]$ & $\ell\nmid[\O:ℤ[π]]$ & &$1$& 
+  \end{tabular}
+\end{frame}
+
+%%
+
+\begin{frame}{How large is the crater of a volcano?}
+  
+  Let \emph{$\End(E) = \O \subset ℚ(\sqrt{-D})$}. Define
+
+  \begin{itemize}
+  \item $\mathcal{I}(\O)$, the group of \emph{invertible fractional ideals},
+  \item $\mathcal{P}(\O)$, the group of \emph{principal ideals},
+  \end{itemize}
+  
+  \begin{block}{The class group}
+    The \emph{class group} of $\O$ is
+    \[\Cl(\O) = \mathcal{I}(\O)/\mathcal{P}(O).\]
+  \end{block}
+
+  \begin{itemize}
+  \item It is a \emph{finite abelian} group.
+  \item Its order \emph{$h(\O)$} is called the \emph{class number} of
+    $\O$.
+  \item It arises as the Galois group of an abelian extension of
+    $ℚ(\sqrt{-D})$.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Complex multiplication}
+  
+  \begin{block}{The $\a$-torsion}
+    \begin{itemize}
+    \item Let \emph{$\a\subset\O$} be an (integral invertible) ideal of
+      $\O$;
+    \item Let \emph{$E[\a]$} be the subgroup of $E$ annihilated by
+      $\a$:
+      \vspace{-2mm}
+      \[E[\a] = \{P\in E \;|\; \alpha(P) = 0 \text{ for all } \alpha\in\a\};\]
+    \item \vspace{-1mm} Let \emph{$\phi:E\to E_\a$}, where
+      $E_\a=E/E[\a]$.
+    \end{itemize}
+    Then $\End(E_\a) = \O$ (i.e., $\phi$ is \emph{horizontal}).
+  \end{block}
+
+
+  \begin{theorem}[Complex multiplication]
+    The action on the set of elliptic curves with complex
+    multiplication by $\O$ defined by \emph{$\a\ast j(E) = j(E_\a)$}
+    factors through $\Cl(\O)$, is faithful and transitive.
+  \end{theorem}
+
+  \begin{corollary}
+    Let $\End(E)$ have discriminant $D$. Assume that
+    $\left(\frac{D}{\ell}\right)=1$, then $E$ is on a crater of an
+    $\ell$-volcano, and the crater contains $h(\End(E))$ curves.
+  \end{corollary}
+\end{frame}
+
+% 17. CRS
+
+\begin{frame}
+  \frametitle{Complex multiplication graphs}
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}
+        \def\crater{12}
+        \def\jumpa{-8}
+        \def\jumpb{9}
+        \def\diam{3cm}
+
+        \foreach \i in {1,...,\crater} {
+          \uncover<2->{\draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);}
+          \uncover<3->{\draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jumpa*360/\crater : \diam);}
+          \uncover<4->{\draw[green] (360/\crater*\i : \diam) to[bend right=50] (360/\crater*\i+\jumpb*360/\crater : \diam);}
+        }
+        \foreach \i in {1,...,\crater} {
+          \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.4) node{$E_{\i}$};
+        }
+      \end{scope}
+      \begin{scope}[xshift=4cm]
+        \draw (0,2.5) node[anchor=west] {\parbox{4cm}{%
+            Vertices are elliptic curves \emph{with complex
+              multiplication by $\O_K$} (i.e., $\End(E)\simeq\O_K\subset ℚ(\sqrt{-D})$).\\
+            \uncover<2->{Edges are \emph{horizontal isogenies} of
+              bounded prime degree.}  }};
+      
+        \uncover<2->{\draw[blue] (0,0) -- (0.5,0)
+          (0.5,0) node[anchor=west] {degree $2$};}
+        \uncover<3->{\draw[red] (0,-1) -- (0.5,-1) (0.5,-1)
+          node[anchor=west] {degree $3$};}
+        \uncover<4->{\draw[green]
+          (0,-2) -- (0.5,-2) (0.5,-2) node[anchor=west] {degree $5$};}
+
+        \uncover<5->{\draw (0,-3) node[anchor=west] {\parbox{4cm}{%
+              Isomorphic to a \emph{Cayley graph of $\Cl(\O_K)$}.}};}
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\subsection{Supersingular graphs}
+
+\begin{frame}{Supersingular endomorphisms}
+  Recall, a curve $E$ over a field $\F_q$ of characteristic $p$ is
+  \emph{supersingular} iff
+  \[π^2 - tπ + q = 0\]
+  with \emph{$t=0\mod p$}.
+
+  \begin{block}{Case: $\quad t=0 \quad⇒\quad D_π = -4q$}
+    \begin{itemize}
+    \item Only possibility for $E/\F_p$,
+    \item $E/F_p$ has \emph{CM by an order of $ℚ(\sqrt{-p})$}, similar
+      to the ordinary case.
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Case: $\quad t=±2\sqrt{q} \quad⇒\quad D_π = 0$}
+    \begin{itemize}
+    \item General case for $E/\F_{p^2}$,
+    \item $π = ±q$, hence \emph{no complex multiplication}.
+    \end{itemize}
+  \end{block}
+
+  We will ignore marginal cases: $t=±\sqrt{q},±\sqrt{2q},±\sqrt{3q}$.
+\end{frame}
+
+%%
+
+\begin{frame}{Supersingular complex multiplication}
+  Let \emph{$E/\F_p$} be a \emph{supersingular} curve, then
+  \emph{$π^2 = -p$}, and
+  \[π = \mat{\sqrt{-p}&0\\0&-\sqrt{-p}} \mod ℓ\]
+  for any $ℓ$ s.t. $\left(\frac{-p}{ℓ}\right)=1$.
+
+  \begin{block}{Theorem \parencite{DelfsG16}}
+    Let \emph{$\End_{\F_p}(E)$} denote the ring of
+    \emph{$\F_p$-rational} endomorphisms of $E$.\\
+    Then \emph{$ℤ[π] ⊂ \End_{\F_p}(E) ⊂ ℚ(\sqrt{-p})$}.
+  \end{block}
+  
+  \begin{block}{Orders of $ℚ(\sqrt{-p})$}
+    \begin{itemize}
+    \item If $p=1 \bmod 4$, then \emph{$ℤ[π]$} is the maximal order.
+    \item If $p=-1 \bmod 4$, then \emph{$ℤ[\frac{π+1}{2}]$} is the
+      maximal order, and \emph{$[ℤ[\frac{π+1}{2}]:ℤ[π]]=2$}.
+    \end{itemize}
+  \end{block}
+\end{frame}  
+
+%%
+
+\begin{frame}{Supersingular CM graphs}
+  
+  \begin{block}{$2$-volcanoes, $p=-1 \bmod 4$}
+    \centering
+    \begin{tikzpicture}[scale=0.8]
+      \def\crater{7}
+      \begin{scope}
+        \foreach \i in {1,...,\crater} {
+          \draw[fill] (360/\crater*\i:1cm) circle (3pt);
+          \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+          \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i : 1.5cm) circle (1pt);
+        }
+      \end{scope}
+      \begin{scope}[xshift=4cm]
+        \foreach \i in {1,...,\crater} {
+          \draw[fill] (360/\crater*\i:1cm) circle (3pt);
+          \foreach \j in {-1,0,1} {
+            \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 1.5cm) circle (1pt);
+          }
+        }
+      \end{scope}
+      \begin{scope}[xshift=8cm]
+        \draw[fill] (0,0.7) circle(3pt) node[anchor=west,xshift=0.1cm]{$ℤ[\frac{π+1}{2}]$} -- 
+        (0,-0.7) circle(1pt) node[anchor=west,xshift=0.1cm]{$ℤ[π]$};
+      \end{scope}
+    \end{tikzpicture}
+  \end{block}
+
+  \begin{block}{$2$-graphs, $p=1\bmod 4$}
+    \centering
+    \begin{tikzpicture}[scale=0.8]
+      \begin{scope}
+        \def\crater{10}
+        \foreach \i in {1,...,\crater/2} {
+          \draw[fill] (360/\crater*2*\i:1cm) circle (2pt);
+          \draw[fill] (360/\crater*2*\i : 1cm) -- (360/\crater*2*\i+360/\crater : 1cm) circle (2pt);
+        }
+      \end{scope}
+      \begin{scope}[xshift=6cm]
+        \draw[fill] (0,0) circle(2pt) node[anchor=west,xshift=0.1cm]{$ℤ[π]$};
+      \end{scope}
+    \end{tikzpicture}    
+  \end{block}
+
+  \begin{center}
+    All \emph{other $ℓ$-graphs are cycles} of horizontal isogenies iff
+    $\left(\frac{-p}{ℓ}\right)=1$.
+  \end{center}
+\end{frame}
+
+%%
+
+\begin{frame}{Quaternion orders}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Supersingular graphs}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}
+      \item Every supersingular curve is defined over \emph{$\F_{p^2}$}.
+      \item For every \emph{maximal order type} of the quaternion
+        algebra $\Q_{p,\infty}$ there are \emph{$1$ or $2$ curves over
+          $\F_{p^2}$} having endomorphism ring isomorphic to it.
+      \item There is a \emph{unique isogeny class} of supersingular
+        curves over $\bar{\F}_p$ of size \emph{$\sim p/12$}.
+      \item Left ideals act on the set of maximal orders like isogenies.
+      \item The graph of \emph{$\ell$}-isogenies is
+        \emph{$(\ell+1)$}-regular.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{scope}[every node/.style={fill,black,circle,inner sep=2pt}]
+          \node at (0,0)  (1){};
+          \node at (0,4) (20){};
+          \node at (2,1)  (16z){};
+          \node at (-2,1)  (81z){};
+          \node at (-1,2) (77z){};
+          \node at (1,2)  (20z){};
+          \node at (-2,3)  (85z){};
+          \node at (2,3)  (12z){};
+        \end{scope}
+
+        \begin{scope}[red]
+          \path (1) edge (85z) edge (81z) edge (12z) edge (16z);
+          \path (20) edge (85z) edge (77z) edge (20z) edge (12z);
+          \path (81z) edge (85z) edge (77z) edge (16z);
+          \path (85z) edge (12z);
+          \path (12z) edge (16z);
+          \path (16z) edge (20z);
+          \path (20z) edge[bend right=10] (77z) edge[bend left=10] (77z);
+        \end{scope}
+      \end{tikzpicture}
+      \small
+      \emph{Figure:} $3$-isogeny graph on $\F_{97^2}$.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Graphs lexicon}
+  \begin{description}
+  \item[Degree:] Number of (outgoing/ingoing) edges.
+  \item[$k$-regular:] All vertices have degree $k$.
+  \item[Connected:] There is a path between any two vertices.
+  \item[Distance:] The length of the shortest path between two vertices.
+  \item[Diamater:] The longest distance between two vertices.
+  \item[$\lambda_1\ge\cdots\ge\lambda_n$:] The (ordered) eigenvalues
+    of the adjacency matrix.
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{Expander graphs}
+  \begin{block}{Proposition}
+    If $G$ is a $k$-regular graph, its largest and smallest
+    eigenvalues satisfy
+    \[k = \lambda_1 \ge \lambda_n \ge -k.\]
+  \end{block}
+  
+  \begin{block}{Expander families}
+    An infinite family of connected $k$-regular graphs on $n$ vertices
+    is an \emph{expander family} if there exists an $\epsilon>0$ such
+    that all \emph{non-trivial} eigenvalues satisfy
+    $|\lambda| \le (1-\epsilon)k$ for $n$ large enough.
+  \end{block}
+  
+  \begin{itemize}
+  \item Expander graphs have \emph{short diameter} ($O(\log n)$);
+  \item Random walks \emph{mix rapidly} (after $O(\log n)$ steps,
+    the induced distribution on the vertices is close to uniform).
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Expander graphs from isogenies}
+  \begin{block}{Theorem (\cite{pizer1,pizer2})}
+    Let $\ell$ be fixed. The family of graphs of \emph{supersingular}
+    curves over $\F_{p^2}$ with $\ell$-isogenies, as $p\to\infty$, is
+    an expander family\footnote{Even better, it has the Ramanujan
+      property.}.
+  \end{block}
+  
+  \begin{block}{Theorem (\cite{jao+miller+venkatesan09})}
+    Let $\O\subset\Q[\sqrt{-D}]$ be an order in a quadratic imaginary
+    field. The graphs of all curves over $\F_q$ with \emph{complex
+      multiplication by $\O$}, with isogenies of prime degree
+    bounded\footnote{May contain traces of GRH.} by
+    $(\log q)^{2+\delta}$, are expanders.
+  \end{block}
+\end{frame}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \section{Cryptography}
+
+\begin{frame}
+  \frametitle{Overview}
+  \tableofcontents  
+\end{frame}
+
+%%
 
 \subsection{Isogeny walks and Hash functions}
 
@@ -367,6 +1264,6 @@
 
 
 % LocalWords:  Isogeny abelian isogenies hyperelliptic supersingular Frobenius
-% LocalWords:  isogenous
+% LocalWords:  isogenous endomorphism
 
 
