@@ -16,6 +16,8 @@
   \usetheme{Boadilla}
 }
 \beamertemplatenavigationsymbolsempty
+\setbeamercolor*{title}{fg=blue!50!black}
+\setbeamercolor*{titlegraphic}{fg=blue!20!black}
 
 \usepackage{sourcesanspro}
 \usepackage[amssymb,amsfonts]{concmath}
@@ -93,14 +95,15 @@
 \frame[plain]{
   \begin{tikzpicture}[remember picture,overlay]
     \node[at=(current page.center), opacity=0.7] {
-      \includegraphics[width=1.2\paperwidth]{7laux.jpg}
+      \includegraphics[width=1.2\paperwidth]{aussois.jpg}
     };
   \end{tikzpicture}
   \vspace{-1.1cm}
+  \usebeamercolor[fg]{titlegraphic}
   {\bf \titlepage}
   \vspace{0.5cm}
   \begin{center}
-    Slides online at~~~\emph{\url{http://defeo.lu/docet/}}
+    \textcolor{white}{Slides online at}~~~\href{https://defeo.lu/docet/}{https://defeo.lu/docet/}
   \end{center}
 }
 
@@ -1056,15 +1059,17 @@
 
   \begin{block}{Theorem \parencite{DelfsG16}}
     Let \emph{$\End_{\F_p}(E)$} denote the ring of
-    \emph{$\F_p$-rational} endomorphisms of $E$.\\
-    Then \emph{$ℤ[π] ⊂ \End_{\F_p}(E) ⊂ ℚ(\sqrt{-p})$}.
+    \emph{$\F_p$-rational} endomorphisms of $E$.
+    Then
+    \[ℤ[π] ⊂ \End_{\F_p}(E) ⊂ ℚ(\sqrt{-p}).\]
   \end{block}
   
   \begin{block}{Orders of $ℚ(\sqrt{-p})$}
     \begin{itemize}
     \item If $p=1 \bmod 4$, then \emph{$ℤ[π]$} is the maximal order.
     \item If $p=-1 \bmod 4$, then \emph{$ℤ[\frac{π+1}{2}]$} is the
-      maximal order, and \emph{$[ℤ[\frac{π+1}{2}]:ℤ[π]]=2$}.
+      maximal order,\\
+      and \emph{$[ℤ[\frac{π+1}{2}]:ℤ[π]]=2$}.
     \end{itemize}
   \end{block}
 \end{frame}  
@@ -1123,8 +1128,66 @@
 
 %%
 
-\begin{frame}{Quaternion orders}
-  
+\begin{frame}{The full endomorphism ring}
+  \begin{block}{Theorem (Deuring)}
+    Let $E$ be a \emph{supersingular} elliptic curve, then
+    \begin{itemize}
+    \item $E$ is isomorphic to a curve defined over \emph{$\F_{p^2}$};
+    \item Every \emph{isogeny} of $E$ is defined over \emph{$\F_{p^2}$};
+    \item Every \emph{endomorphism} of $E$ is defined over
+      \emph{$\F_{p^2}$};
+    \item $\End(E)$ is isomorphic to a \emph{maximal order} in a
+      \emph{quaternion algebra} ramified at $p$ and $∞$.
+    \end{itemize}
+  \end{block}
+
+  In particular:
+  \begin{itemize}
+  \item If $E$ is defined over $\F_p$, then \emph{$\End_{\F_p}(E)$ is
+      strictly contained in $\End(E)$}.
+  \item Some endomorphisms \emph{do not commute}!
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{An example}
+  The curve of $j$-invariant \emph{$1728$}
+  \[E: y^2 = x^3 + x\]
+  is supersingular over $\F_p$ iff $p=-1\mod 4$.
+
+  \begin{block}{Endomorphisms}
+    \emph{$\End(E) = ℤ〈ι,π〉$}, with:
+    \begin{itemize}
+    \item $π$ the Frobenius endomorphism, s.t. \emph{$π^2=-p$};
+    \item $ι$ the map
+      \[ι(x,y) = (-x,iy),\]
+      where \emph{$i∈\F_{p^2}$} is a 4-th root of unity.
+      Clearly, \emph{$ι^2=-1$}.
+    \end{itemize}
+    And \emph{$ιπ=-πι$}.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Quaternion algebra?! WTF?\footnote{What The Field?}}
+  The quaternion algebra \emph{$B_{p,∞}$} is:
+  \begin{itemize}
+  \item A \emph{$4$-dimensional} $ℚ$-vector space with basis
+    \emph{$(1,i,j,k)$};
+  \item A non-commutative \emph{division algebra}%
+    \footnote{All elements have inverses.} %
+    $B_{p,∞} = ℚ〈i,j〉$ with the relations:
+    \[i^2 = a, \quad j^2 = -p, \quad ij = -ji = k,\]
+    for some $a<0$ (depending on $p$).
+  \item All elements of $B_{p,∞}$ are \emph{quadratic algebraic
+      numbers};
+  \item $B_{p,∞}⊗ℚ_ℓ≃\mathcal{M}_{2×2}(ℚ_ℓ)$ for all $ℓ≠p$.\\
+    I.e., endomorphisms restricted to $E[ℓ^e]$ are \emph{just $2×2$
+      matrices $\bmod ℓ^e$}.
+  \item $B_{p,∞}⊗ℝ≃\mathcal{M}_{2×2}(ℝ)$.
+  \end{itemize}
 \end{frame}
 
 %%
@@ -1133,12 +1196,12 @@
   \begin{columns}
     \begin{column}{0.6\textwidth}
       \begin{itemize}
-      \item Every supersingular curve is defined over \emph{$\F_{p^2}$}.
-      \item For every \emph{maximal order type} of the quaternion
-        algebra $\Q_{p,\infty}$ there are \emph{$1$ or $2$ curves over
-          $\F_{p^2}$} having endomorphism ring isomorphic to it.
+      \item Quaternion algebras have \emph{many maximal orders}.
+      \item For every \emph{maximal order type} of $B_{p,\infty}$
+        there are \emph{$1$ or $2$ curves over $\F_{p^2}$} having
+        endomorphism ring isomorphic to it.
       \item There is a \emph{unique isogeny class} of supersingular
-        curves over $\bar{\F}_p$ of size \emph{$\sim p/12$}.
+        curves over $\bar{\F}_p$ of size \emph{$≈ p/12$}.
       \item Left ideals act on the set of maximal orders like isogenies.
       \item The graph of \emph{$\ell$}-isogenies is
         \emph{$(\ell+1)$}-regular.
@@ -1222,7 +1285,7 @@
   \end{block}
   
   \begin{block}{Theorem (\cite{jao+miller+venkatesan09})}
-    Let $\O\subset\Q[\sqrt{-D}]$ be an order in a quadratic imaginary
+    Let $\O\subset\Q(\sqrt{-D})$ be an order in a quadratic imaginary
     field. The graphs of all curves over $\F_q$ with \emph{complex
       multiplication by $\O$}, with isogenies of prime degree
     bounded\footnote{May contain traces of GRH.} by
