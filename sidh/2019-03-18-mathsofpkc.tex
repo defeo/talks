@@ -649,6 +649,53 @@
   \end{block}
 \end{frame}
 
+%%
+
+\begin{frame}{Weil pairing}
+  Let $(N,p)=1$, fix any basis \emph{$E[N]=〈R,S〉$}. For any points
+  \emph{$P,Q∈E[N]$}
+  \begin{align*}
+    P &= aR + bS\\
+    Q &= cR + dS
+  \end{align*}
+  the form \emph{$\det_N(P,Q) = \det\mat{a&b\\c&d} = ad - bc ∈ ℤ/Nℤ$}\\
+  is \emph{bilinear}, non-degenerate, and independent from the choice
+  of basis.
+
+  \begin{block}{Theorem}
+    Let $E/\F_q$ be a curve, there exists a Galois invariant bilinear
+    map
+    \[e_N: E[N] × E[N] → μ_N ⊂ \bar\F_q,\] \\
+    called the \emph{Weil pairing of order $N$}, and a primitive
+    $N$-th root of unity \emph{$ζ∈\bar\F_q$} such that
+    \[e_N(P,Q) = ζ^{\det_N(P,Q)}.\] \\
+    The degree \emph{$k$} of the smallest extension such that
+    \emph{$ζ∈\F_{q^k}$} is called the \emph{embedding degree} of the
+    pairing.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Weil pairing and isogenies}
+  \begin{block}{Note}
+    The Weil pairing is Galois invariant $\;\;⇔\;\;\emph{\det(π|E[N]) = q}$.
+  \end{block}
+
+  \begin{block}{Theorem}
+    Let \emph{$ϕ:E→E'$} be an isogeny and \emph{$\hat{ϕ}:E'→E$} its dual. \\
+    Let \emph{$e_N$} be the Weil pairing of $E$ and \emph{$e_N'$} that
+    of $E'$. %
+    Then, for
+    \[e_N(P,\hat{ϕ}(Q)) = e_N(ϕ(P),Q),\]
+    for any \emph{$P∈E[N]$} and \emph{$Q∈E'[N]$}.
+  \end{block}
+  
+  \begin{block}{Corollary}
+    \[e_N'(ϕ(P),ϕ(Q)) = e_N(P,Q)^{\deg ϕ}.\]
+  \end{block}
+\end{frame}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -659,7 +706,7 @@
     Let $E$ be defined over a finite field $\F_q$. Its Frobenius map
     $π$ satisfies a quadratic equation
     \[π^2 - tπ + q = 0\] %
-    for some $|t|\le2\sqrt{q}$, called the \emph{trace}
+    for some \emph{$|t|\le2\sqrt{q}$}, called the \emph{trace}
     of $π$.  The trace $t$ is coprime to $q$ if and only if $E$ is
     ordinary.
   \end{block}
