@@ -1173,6 +1173,35 @@
 
 %%
 
+\begin{frame}{Class group action party}
+  \centering
+  \begin{tikzpicture}[scale=2]
+    \def\crater{11}
+    \draw[fill] (360/\crater:1cm) circle (1pt);
+    \uncover<1-2>{
+      \draw (360/\crater:1.1cm) node[anchor=west] {$j=1728$};
+    }
+    \uncover<2->{
+      \foreach \i in {1,...,\crater} {
+        \draw[fill] (360/\crater*\i:1cm) circle (1pt);
+        \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+      }
+      \draw (0,0) node {$\Cl(-4p)$};
+    }
+    \uncover<3->{
+      \draw (360/\crater:1.4cm) circle (0.4cm) node {$\Cl(-4)$};
+    }
+    \uncover<4>{
+      \draw (360/\crater*4:1.2cm) node[anchor=south east] {$j=0$};
+    }
+    \uncover<5->{
+      \draw (360/\crater*4:1.4cm) circle (0.4cm) node {$\Cl(-3)$};
+    }
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
 \begin{frame}{Quaternion algebra?! WTF?\footnote{What The Field?}}
   The quaternion algebra \emph{$B_{p,∞}$} is:
   \begin{itemize}
@@ -1302,102 +1331,102 @@
 
 \section{Cryptography}
 
-\begin{frame}
-  \frametitle{Overview}
-  \tableofcontents  
-\end{frame}
+% \begin{frame}
+%   \frametitle{Overview}
+%   \tableofcontents  
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{History of isogeny-based cryptography}
-  \begin{description}
-  \item[1996] Couveignes introduces the \emph{Hard Homogeneous
-      Spaces (HHS)}. His work stays unpublished for 10 years.
-  \item[2006] Rostovtsev \& Stolbunov independently rediscover
-    Couveignes ideas, suggest isogeny-based Diffie--Hellman as a
-    \emph{quantum-resistant} primitive.
-  \item[2007] Charles, Goren \& Lauter propose supersingular
-    $2$-isogeny graphs as a foundation for a ``provably secure'' hash
-    function.
-  \item[2011-2012] D., Jao \& Plût introduce \emph{SIDH}, an
-    efficient post-quantum key exchange inspired by Couveignes,
-    Rostovtsev, Stolbunov, Charles, Goren, Lauter.
-  \item[2017] SIDH is submitted to the NIST competition (with the name
-    \emph{SIKE}, only isogeny-based candidate).
-  \item[2018] Castryck, Lange, Martindale, Panny \& Renes publish an
-    efficient variant of HHS named \emph{CSIDH}.
-  \item[2019] New isogeny protocols: Signatures, Verifiable Delay Functions, \dots
-  \end{description}
-\end{frame}
+% \begin{frame}{History of isogeny-based cryptography}
+%   \begin{description}
+%   \item[1996] Couveignes introduces the \emph{Hard Homogeneous
+%       Spaces (HHS)}. His work stays unpublished for 10 years.
+%   \item[2006] Rostovtsev \& Stolbunov independently rediscover
+%     Couveignes ideas, suggest isogeny-based Diffie--Hellman as a
+%     \emph{quantum-resistant} primitive.
+%   \item[2007] Charles, Goren \& Lauter propose supersingular
+%     $2$-isogeny graphs as a foundation for a ``provably secure'' hash
+%     function.
+%   \item[2011-2012] D., Jao \& Plût introduce \emph{SIDH}, an
+%     efficient post-quantum key exchange inspired by Couveignes,
+%     Rostovtsev, Stolbunov, Charles, Goren, Lauter.
+%   \item[2017] SIDH is submitted to the NIST competition (with the name
+%     \emph{SIKE}, only isogeny-based candidate).
+%   \item[2018] Castryck, Lange, Martindale, Panny \& Renes publish an
+%     efficient variant of HHS named \emph{CSIDH}.
+%   \item[2019] New isogeny protocols: Signatures, Verifiable Delay Functions, \dots
+%   \end{description}
+% \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \subsection{Isogeny walks and Hash functions}
 
-\begin{frame}{Isogeny problems}
-  \begin{block}{Isogeny computation\hfill\uncover<2->{$\mathrm{poly}(\#G)$}}
-    Given an elliptic curve $E$ with Frobenius endomorphism $\pi$, and
-    a subgroup $G\subset E$ such that $\pi(G)=G$, compute the rational
-    fractions and the image curve of the separable isogeny
-    $\phi:E\to E/G$.
-  \end{block}
+% \begin{frame}{Isogeny problems}
+%   \begin{block}{Isogeny computation\hfill\uncover<2->{$\mathrm{poly}(\#G)$}}
+%     Given an elliptic curve $E$ with Frobenius endomorphism $\pi$, and
+%     a subgroup $G\subset E$ such that $\pi(G)=G$, compute the rational
+%     fractions and the image curve of the separable isogeny
+%     $\phi:E\to E/G$.
+%   \end{block}
 
-  \begin{block}{Explicit isogeny\hfill\uncover<3->{$\mathrm{poly}(d)$}}
-    Given two elliptic curves $E,E'$ over a finite field, isogenous of
-    known degree $d$, find an isogeny $\phi:E\to E'$ of degree $d$.
-  \end{block}
+%   \begin{block}{Explicit isogeny\hfill\uncover<3->{$\mathrm{poly}(d)$}}
+%     Given two elliptic curves $E,E'$ over a finite field, isogenous of
+%     known degree $d$, find an isogeny $\phi:E\to E'$ of degree $d$.
+%   \end{block}
 
-  \begin{block}{Isogeny walk\hfill\uncover<4->{\alert{$\exp(\log\#k)$}}}
-    Given two elliptic curves $E,E'$ over a finite field $k$, such
-    that $\#E=\#E'$, find an isogeny $\phi:E\to E'$ of smooth degree.
-  \end{block}
-\end{frame}
+%   \begin{block}{Isogeny walk\hfill\uncover<4->{\alert{$\exp(\log\#k)$}}}
+%     Given two elliptic curves $E,E'$ over a finite field $k$, such
+%     that $\#E=\#E'$, find an isogeny $\phi:E\to E'$ of smooth degree.
+%   \end{block}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}
-  \frametitle{Random walks and hash functions (circa 2006)}
+% \begin{frame}
+%   \frametitle{Random walks and hash functions (circa 2006)}
 
-  Any expander graph gives rise to a hash function.
+%   Any expander graph gives rise to a hash function.
 
-  \begin{center}
-    \begin{tikzpicture}
-      \coordinate (last) at (0,0);
-      \draw (last) node[anchor=east] {$v$};
-      \foreach \i in {1,...,6} {
-        \pgfmathparse{(-1)^\i}
-        \let\sign\pgfmathresult
-        \pgfmathparse{int(mod(\i+1,2))}
-        \let\bit\pgfmathresult
-        \pgfmathparse{int(mod(\i,2))}
-        \let\nbit\pgfmathresult
-        \draw[->] (last) -- (\i,\sign*0.1) node[blue,pos=0.5,yshift=\sign*0.2cm]{\small$\bit$};
-        \draw[dashed,->] (last) -- (\i,-\sign*0.5) node[gray,pos=0.5,yshift=-\sign*0.2cm]{\small$\nbit$};
-        \coordinate (last) at (\i,\sign*0.1);
-      }
-      \draw (last) node[anchor=west] {$v'$};
+%   \begin{center}
+%     \begin{tikzpicture}
+%       \coordinate (last) at (0,0);
+%       \draw (last) node[anchor=east] {$v$};
+%       \foreach \i in {1,...,6} {
+%         \pgfmathparse{(-1)^\i}
+%         \let\sign\pgfmathresult
+%         \pgfmathparse{int(mod(\i+1,2))}
+%         \let\bit\pgfmathresult
+%         \pgfmathparse{int(mod(\i,2))}
+%         \let\nbit\pgfmathresult
+%         \draw[->] (last) -- (\i,\sign*0.1) node[blue,pos=0.5,yshift=\sign*0.2cm]{\small$\bit$};
+%         \draw[dashed,->] (last) -- (\i,-\sign*0.5) node[gray,pos=0.5,yshift=-\sign*0.2cm]{\small$\nbit$};
+%         \coordinate (last) at (\i,\sign*0.1);
+%       }
+%       \draw (last) node[anchor=west] {$v'$};
 
-      \node[blue,anchor=west] at (7,0) {$H(010101)=v'$};
-    \end{tikzpicture}
-  \end{center}
+%       \node[blue,anchor=west] at (7,0) {$H(010101)=v'$};
+%     \end{tikzpicture}
+%   \end{center}
 
-  \begin{itemize}
-  \item Fix a starting vertex \emph{$v$};
-  \item The value to be hashed determines a random path to \emph{$v'$};
-  \item \emph{$v'$} is the hash.
-  \end{itemize}
+%   \begin{itemize}
+%   \item Fix a starting vertex \emph{$v$};
+%   \item The value to be hashed determines a random path to \emph{$v'$};
+%   \item \emph{$v'$} is the hash.
+%   \end{itemize}
 
-  \begin{block}{Provably secure hash functions}
-    \begin{itemize}
-    \item Use the expander graph of \alert{supersingular
-        $2$-isogenies};\footcite{charles+lauter+goren09,doliskani+barreto+hash}
-    \item \alert{Collision resistance} = hardness of finding cycles in the graph;
-    \item \alert{Preimage resistance} = hardness of finding a path
-      from \emph{$v$} to \emph{$v'$}.
-    \end{itemize}
-  \end{block}
-\end{frame}
+%   \begin{block}{Provably secure hash functions}
+%     \begin{itemize}
+%     \item Use the expander graph of \alert{supersingular
+%         $2$-isogenies};\footcite{charles+lauter+goren09,doliskani+barreto+hash}
+%     \item \alert{Collision resistance} = hardness of finding cycles in the graph;
+%     \item \alert{Preimage resistance} = hardness of finding a path
+%       from \emph{$v$} to \emph{$v'$}.
+%     \end{itemize}
+%   \end{block}
+% \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1409,495 +1438,495 @@
 
 \subsection{Key exchange}
 
-\begin{frame}{Let's get back to Diffie-Hellman}
-  \begin{center}
-    \begin{tikzpicture}[domain=-2.4566:4,samples=100]
-      \newcount\rotate
-      \animate<1-6>
-      \animatevalue<2-6>{\rotate}{0}{90}
-      \begin{scope}[rotate=-\the\rotate]
-        \draw plot (\x,{0.5*sqrt(\x*\x*\x-4*\x+5)});
-        \draw plot (\x,{-0.5*sqrt(\x*\x*\x-4*\x+5)});
-      \end{scope}
+% \begin{frame}{Let's get back to Diffie-Hellman}
+%   \begin{center}
+%     \begin{tikzpicture}[domain=-2.4566:4,samples=100]
+%       \newcount\rotate
+%       \animate<1-6>
+%       \animatevalue<2-6>{\rotate}{0}{90}
+%       \begin{scope}[rotate=-\the\rotate]
+%         \draw plot (\x,{0.5*sqrt(\x*\x*\x-4*\x+5)});
+%         \draw plot (\x,{-0.5*sqrt(\x*\x*\x-4*\x+5)});
+%       \end{scope}
       
-      \begin{uncoverenv}<1>
-        \begin{scope}[yscale=1/2]
-          \draw[thin,gray,-latex] (0,-7) -- (0,7);
-          \draw[thin,gray,-latex] (-3,0) -- (4,0);
+%       \begin{uncoverenv}<1>
+%         \begin{scope}[yscale=1/2]
+%           \draw[thin,gray,-latex] (0,-7) -- (0,7);
+%           \draw[thin,gray,-latex] (-3,0) -- (4,0);
           
-          \draw (-3,1) -- (4,8/3+3);
-          \begin{scope}[every node/.style={draw,circle,inner sep=1pt,fill},cm={1,2/3,0,0,(0,3)}]
-            \node at (-2.287980,0) {};
-            \node at (-0.535051,0) {};
-            \node at (3.267475,0) {};
-          \end{scope}
-          \begin{scope}[every node/.style={yshift=0.3cm},cm={1,2/3,0,0,(0,3)}]
-            \node at (-2.287980,0) {$P$};
-            \node at (-0.535051,0) {$Q$};
-            \node at (3.267475,0) {$R$};
-          \end{scope}
-          \draw[dashed] (3.267475,3.267475*2/3+3) -- (3.267475,-3.267475*2/3-3) 
-          node[draw,circle,inner sep=1pt,fill] {}
-          node[xshift=-0.1cm,anchor=east] {$P+Q$};
-        \end{scope}
-      \end{uncoverenv}
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
+%           \draw (-3,1) -- (4,8/3+3);
+%           \begin{scope}[every node/.style={draw,circle,inner sep=1pt,fill},cm={1,2/3,0,0,(0,3)}]
+%             \node at (-2.287980,0) {};
+%             \node at (-0.535051,0) {};
+%             \node at (3.267475,0) {};
+%           \end{scope}
+%           \begin{scope}[every node/.style={yshift=0.3cm},cm={1,2/3,0,0,(0,3)}]
+%             \node at (-2.287980,0) {$P$};
+%             \node at (-0.535051,0) {$Q$};
+%             \node at (3.267475,0) {$R$};
+%           \end{scope}
+%           \draw[dashed] (3.267475,3.267475*2/3+3) -- (3.267475,-3.267475*2/3-3) 
+%           node[draw,circle,inner sep=1pt,fill] {}
+%           node[xshift=-0.1cm,anchor=east] {$P+Q$};
+%         \end{scope}
+%       \end{uncoverenv}
+%     \end{tikzpicture}
+%   \end{center}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{Elliptic curves}
-  \transdissolve
-  \centering
-  \includegraphics[height=0.7\textheight]{ec-happy}
+% \begin{frame}{Elliptic curves}
+%   \transdissolve
+%   \centering
+%   \includegraphics[height=0.7\textheight]{ec-happy}
 
-  \Large\bf I power 70\% of WWW traffic!
-\end{frame}
+%   \Large\bf I power 70\% of WWW traffic!
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{The Q Menace}
-  \centering
-  \includegraphics[height=0.7\textheight]{qc}
-\end{frame}
+% \begin{frame}{The Q Menace}
+%   \centering
+%   \includegraphics[height=0.7\textheight]{qc-color}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{Post-quantum cryptographer?}
-  \centering
-  \includegraphics[height=0.7\textheight]{ec-broke}
-\end{frame}
+% \begin{frame}{Post-quantum cryptographer?}
+%   \centering
+%   \includegraphics[height=0.7\textheight]{ec-broke}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{Elliptic curves of the world, UNITE!}
-  \centering
-  \begin{tikzpicture}
-    \foreach \x/\y in {0/-0.5,4/2,8/-1}{
-      \node at (\x,\y) {\includegraphics[height=3cm]{ec-banderole}};
-    }
-    \foreach \x/\y in {1/3,4.5/-1,7/3}{
-      \node at (\x,\y) {\includegraphics[height=3.5cm]{ec-sign}};
-    }
-    \color{teal!70!blue}\itshape\bfseries\comicneue
-    \node[rotate=-3] at (5.9,3.6) {\parbox{0pt}{QUOUSQUE\\QUANTUM?}};
-    \node[rotate=-3] at (3.6,-0.4) {\parbox{0pt}{QUANTUM\\SUFFICIT!}};
-  \end{tikzpicture}
-\end{frame}
+% \begin{frame}{Elliptic curves of the world, UNITE!}
+%   \centering
+%   \begin{tikzpicture}
+%     \foreach \x/\y in {0/-0.5,4/2,8/-1}{
+%       \node at (\x,\y) {\includegraphics[height=3cm]{ec-banderole}};
+%     }
+%     \foreach \x/\y in {1/3,4.5/-1,7/3}{
+%       \node at (\x,\y) {\includegraphics[height=3.5cm]{ec-sign}};
+%     }
+%     \color{teal!70!blue}\itshape\bfseries\comicneue
+%     \node[rotate=-3] at (5.9,3.6) {\parbox{0pt}{QUOUSQUE\\QUANTUM?}};
+%     \node[rotate=-3] at (3.6,-0.4) {\parbox{0pt}{QUANTUM\\SUFFICIT!}};
+%   \end{tikzpicture}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}{And so, they found a way around the Q...}
-  \centering
-  \begin{tikzpicture}
-    \comicneue\itshape
-    \node at (0,0) {\includegraphics[height=2.5cm]{qc}};
+% \begin{frame}{And so, they found a way around the Q...}
+%   \centering
+%   \begin{tikzpicture}
+%     \comicneue\itshape
+%     \node at (0,0) {\includegraphics[height=2.5cm]{qc-color}};
     
-    \node(E0) at (-5,0) {\includegraphics[height=1cm]{ec-happy}};
+%     \node(E0) at (-5,0) {\includegraphics[height=1cm]{ec-happy}};
 
-    \uncover<2->{
-      \node(EA) at (0,3.5) {\includegraphics[height=1cm]{ec-happy}};
-      \node(EB) at (0,-3.5) {\includegraphics[height=1cm]{ec-happy}};
-      \draw[->,decorate,decoration=snake] (E0) to (EA);
-      \draw[->,decorate,decoration=snake] (E0) to (EB);
-      \node[right=0.3cm of EA] {\bl{Public curve}};
-      \node[right=0.3cm of EB] {\bl{Public curve}};
-    }
-    \uncover<3>{
-      \node(ES) at (5,0) {\includegraphics[height=1cm]{ec-happy}};
-      \draw[->,decorate,decoration=snake] (EA) to (ES);
-      \draw[->,decorate,decoration=snake] (EB) to (ES);
-      \node[below=1em of ES] {\rd{Shared secret}};
-    }
-  \end{tikzpicture}
-\end{frame}
+%     \uncover<2->{
+%       \node(EA) at (0,3.5) {\includegraphics[height=1cm]{ec-happy}};
+%       \node(EB) at (0,-3.5) {\includegraphics[height=1cm]{ec-happy}};
+%       \draw[->,decorate,decoration=snake] (E0) to (EA);
+%       \draw[->,decorate,decoration=snake] (E0) to (EB);
+%       \node[right=0.3cm of EA] {\bl{Public curve}};
+%       \node[right=0.3cm of EB] {\bl{Public curve}};
+%     }
+%     \uncover<3>{
+%       \node(ES) at (5,0) {\includegraphics[height=1cm]{ec-happy}};
+%       \draw[->,decorate,decoration=snake] (EA) to (ES);
+%       \draw[->,decorate,decoration=snake] (EB) to (ES);
+%       \node[below=1em of ES] {\rd{Shared secret}};
+%     }
+%   \end{tikzpicture}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}
-  \frametitle{Expander graphs from groups}
-  \begin{center}
-    \begin{tikzpicture}
-      \begin{scope}
-        \def\crater{12}
-        \def\jumpa{-8}
-        \def\jumpb{9}
-        \def\diam{3cm}
+% \begin{frame}
+%   \frametitle{Expander graphs from groups}
+%   \begin{center}
+%     \begin{tikzpicture}
+%       \begin{scope}
+%         \def\crater{12}
+%         \def\jumpa{-8}
+%         \def\jumpb{9}
+%         \def\diam{3cm}
 
-        \foreach \i in {1,...,\crater} {
-          \uncover<2->{\draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);}
-          \uncover<3->{\draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jumpa*360/\crater : \diam);}
-          \uncover<4->{\draw[green] (360/\crater*\i : \diam) to[bend right=50] (360/\crater*\i+\jumpb*360/\crater : \diam);}
-        }
-        \foreach \i in {1,...,\crater} {
-          \pgfmathparse{int(mod(2^\i,13))}
-          \let\exp\pgfmathresult
-          \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.4) node{$g^{\exp}$};
-        }
-      \end{scope}
-      \begin{scope}[xshift=4cm]
-        \draw (0,2.1) node[anchor=west] {\parbox{4cm}{
-            Let \emph{$G=\langle g\rangle$} be a cyclic group of order \emph{$p$}.
-            \uncover<5->{Let \emph{$S\subset(\Z/p\Z)^\times$} s.t. \emph{$S^{-1}\subset S$}.\\
-              The \emph{Schreier graph} of \emph{$(S,G\setminus\{1\})$} is (usually) an expander.}}};
-        \uncover<2->{\draw[blue] (0,0) -- (0.5,0) (0.5,0) node[anchor=west] {$x \mapsto x^{2}$};}
-        \uncover<3->{\draw[red] (0,-1) -- (0.5,-1) (0.5,-1) node[anchor=west] {$x \mapsto x^{3}$};}
-        \uncover<4->{\draw[green] (0,-2) -- (0.5,-2) (0.5,-2) node[anchor=west] {$x \mapsto x^{5}$};}
-      \end{scope}
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
+%         \foreach \i in {1,...,\crater} {
+%           \uncover<2->{\draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);}
+%           \uncover<3->{\draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jumpa*360/\crater : \diam);}
+%           \uncover<4->{\draw[green] (360/\crater*\i : \diam) to[bend right=50] (360/\crater*\i+\jumpb*360/\crater : \diam);}
+%         }
+%         \foreach \i in {1,...,\crater} {
+%           \pgfmathparse{int(mod(2^\i,13))}
+%           \let\exp\pgfmathresult
+%           \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.4) node{$g^{\exp}$};
+%         }
+%       \end{scope}
+%       \begin{scope}[xshift=4cm]
+%         \draw (0,2.1) node[anchor=west] {\parbox{4cm}{
+%             Let \emph{$G=\langle g\rangle$} be a cyclic group of order \emph{$p$}.
+%             \uncover<5->{Let \emph{$S\subset(\Z/p\Z)^\times$} s.t. \emph{$S^{-1}\subset S$}.\\
+%               The \emph{Schreier graph} of \emph{$(S,G\setminus\{1\})$} is (usually) an expander.}}};
+%         \uncover<2->{\draw[blue] (0,0) -- (0.5,0) (0.5,0) node[anchor=west] {$x \mapsto x^{2}$};}
+%         \uncover<3->{\draw[red] (0,-1) -- (0.5,-1) (0.5,-1) node[anchor=west] {$x \mapsto x^{3}$};}
+%         \uncover<4->{\draw[green] (0,-2) -- (0.5,-2) (0.5,-2) node[anchor=west] {$x \mapsto x^{5}$};}
+%       \end{scope}
+%     \end{tikzpicture}
+%   \end{center}
+% \end{frame}
 
-%% 
+% %% 
 
-{
-  \newcommand{\myedge}[3]{
-    \draw[#3] (360/\crater*#1 : \diam) to[bend right] (360/\crater*#2 : \diam);
-  }
+% {
+%   \newcommand{\myedge}[3]{
+%     \draw[#3] (360/\crater*#1 : \diam) to[bend right] (360/\crater*#2 : \diam);
+%   }
 
-\begin{frame}
-  \frametitle{Key exchange from Schreier graphs}
+% \begin{frame}
+%   \frametitle{Key exchange from Schreier graphs}
 
-  \begin{columns}
-    \begin{column}{0.55\textwidth}
-      \begin{tikzpicture}
-        \begin{scope}
-          \def\crater{12}
-          \def\jumpa{-8}
-          \def\jumpb{9}
-          \def\diam{2.5cm}
+%   \begin{columns}
+%     \begin{column}{0.55\textwidth}
+%       \begin{tikzpicture}
+%         \begin{scope}
+%           \def\crater{12}
+%           \def\jumpa{-8}
+%           \def\jumpb{9}
+%           \def\diam{2.5cm}
           
-          \foreach \i in {1,...,\crater} {
-            \pgfmathparse{int(mod(2^\i,13))}
-            \let\exp\pgfmathresult
-            \draw[fill] (360/\crater*\i: \diam) circle (2pt);
-          }
-          \uncover<2,6->{
-            % Alice 1
-            \myedge{0}{1}{blue}\myedge{1}{5}{red}\myedge{5}{6}{blue}\myedge{6}{3}{green}
-          }
-          \uncover<3,5>{
-            % Bob 1
-            \begin{scope}[dashed,thick]
-              \myedge{0}{4}{red}\myedge{4}{8}{red}\myedge{8}{5}{green}\myedge{5}{6}{blue}
-            \end{scope}
-          }
-          \uncover<5>{
-            % Alice 2
-            \myedge{6}{7}{blue}\myedge{7}{11}{red}\myedge{11}{0}{blue}\myedge{0}{9}{green}
-          }
-          \uncover<6->{
-            % Bob 2
-            \begin{scope}[dashed,thick]
-              \myedge{3}{7}{red}\myedge{7}{11}{red}\myedge{11}{8}{green}\myedge{8}{9}{blue}
-            \end{scope}
-          }
+%           \foreach \i in {1,...,\crater} {
+%             \pgfmathparse{int(mod(2^\i,13))}
+%             \let\exp\pgfmathresult
+%             \draw[fill] (360/\crater*\i: \diam) circle (2pt);
+%           }
+%           \uncover<2,6->{
+%             % Alice 1
+%             \myedge{0}{1}{blue}\myedge{1}{5}{red}\myedge{5}{6}{blue}\myedge{6}{3}{green}
+%           }
+%           \uncover<3,5>{
+%             % Bob 1
+%             \begin{scope}[dashed,thick]
+%               \myedge{0}{4}{red}\myedge{4}{8}{red}\myedge{8}{5}{green}\myedge{5}{6}{blue}
+%             \end{scope}
+%           }
+%           \uncover<5>{
+%             % Alice 2
+%             \myedge{6}{7}{blue}\myedge{7}{11}{red}\myedge{11}{0}{blue}\myedge{0}{9}{green}
+%           }
+%           \uncover<6->{
+%             % Bob 2
+%             \begin{scope}[dashed,thick]
+%               \myedge{3}{7}{red}\myedge{7}{11}{red}\myedge{11}{8}{green}\myedge{8}{9}{blue}
+%             \end{scope}
+%           }
 
-          \draw (0 : \diam + 0.4cm) node {$g$};
-          \uncover<2->{\draw (360/\crater*3 : \diam + 0.4cm) node {$g_A$};}
-          \uncover<3->{\draw (360/\crater*6 : \diam + 0.4cm) node {$g_B$};}
-          \uncover<5->{\draw (360/\crater*9 : \diam + 0.4cm) node {$g_{BA}\uncover<6->{=g_{AB}}$};}
-        \end{scope}
-      \end{tikzpicture}  
-    \end{column}    
-    \begin{column}{0.45\textwidth}
-      \begin{onlyenv}<-6>
-        \textbf{Public parameters:}
-        \begin{itemize}
-        \item A group \emph{$G=\langle g\rangle$} of order \emph{$p$};
-        \item A subset \emph{$S\subset(\Z/p\Z)^\times$}.
-        \end{itemize}
-        \begin{enumerate}
-        \item<2-> \textbf{Alice} takes a \alert{secret} random walk
-          \emph{$s_A:g\to g_A$} of length \emph{$O(\log p)$};
-        \item<3-> \textbf{Bob} does the same;
-        \item<4-> They publish \emph{$g_A$} and \emph{$g_B$};
-        \item<5-> \textbf{Alice} repeats her secret walk \emph{$s_A$}
-          starting from \emph{$g_B$}.
-        \item<6-> \textbf{Bob} repeats his secret walk \emph{$s_B$}
-          starting from \emph{$g_A$}.
-        \end{enumerate}
-      \end{onlyenv}
-      \begin{onlyenv}<7->
-        \textbf{Why does this work?}
-        \begin{align*}
-          g_A &= g^{\bl{2}\cdot\rd{3}\cdot\bl{2}\cdot\gr{5}},\\
-          g_B &= g^{\rd{3^2}\cdot\gr{5}\cdot\bl{2}},\\
-          g_{BA} &= g_{AB} = g^{\bl{2^3}\cdot\rd{3^3}\cdot\gr{5^2}};
-        \end{align*}
-        and $g_A,g_B,g_{AB}$ are uniformly distributed in $G$\dots
+%           \draw (0 : \diam + 0.4cm) node {$g$};
+%           \uncover<2->{\draw (360/\crater*3 : \diam + 0.4cm) node {$g_A$};}
+%           \uncover<3->{\draw (360/\crater*6 : \diam + 0.4cm) node {$g_B$};}
+%           \uncover<5->{\draw (360/\crater*9 : \diam + 0.4cm) node {$g_{BA}\uncover<6->{=g_{AB}}$};}
+%         \end{scope}
+%       \end{tikzpicture}  
+%     \end{column}    
+%     \begin{column}{0.45\textwidth}
+%       \begin{onlyenv}<-6>
+%         \textbf{Public parameters:}
+%         \begin{itemize}
+%         \item A group \emph{$G=\langle g\rangle$} of order \emph{$p$};
+%         \item A subset \emph{$S\subset(\Z/p\Z)^\times$}.
+%         \end{itemize}
+%         \begin{enumerate}
+%         \item<2-> \textbf{Alice} takes a \alert{secret} random walk
+%           \emph{$s_A:g\to g_A$} of length \emph{$O(\log p)$};
+%         \item<3-> \textbf{Bob} does the same;
+%         \item<4-> They publish \emph{$g_A$} and \emph{$g_B$};
+%         \item<5-> \textbf{Alice} repeats her secret walk \emph{$s_A$}
+%           starting from \emph{$g_B$}.
+%         \item<6-> \textbf{Bob} repeats his secret walk \emph{$s_B$}
+%           starting from \emph{$g_A$}.
+%         \end{enumerate}
+%       \end{onlyenv}
+%       \begin{onlyenv}<7->
+%         \textbf{Why does this work?}
+%         \begin{align*}
+%           g_A &= g^{\bl{2}\cdot\rd{3}\cdot\bl{2}\cdot\gr{5}},\\
+%           g_B &= g^{\rd{3^2}\cdot\gr{5}\cdot\bl{2}},\\
+%           g_{BA} &= g_{AB} = g^{\bl{2^3}\cdot\rd{3^3}\cdot\gr{5^2}};
+%         \end{align*}
+%         and $g_A,g_B,g_{AB}$ are uniformly distributed in $G$\dots
 
-        \bigskip
+%         \bigskip
         
-        \begin{uncoverenv}<8->
-          \dots Indeed, this is just a twisted presentation of the
-          \alert{classical Diffie-Hellman protocol!}
-        \end{uncoverenv}
-      \end{onlyenv}
-    \end{column}
-  \end{columns}
-\end{frame}
-}
+%         \begin{uncoverenv}<8->
+%           \dots Indeed, this is just a twisted presentation of the
+%           \alert{classical Diffie-Hellman protocol!}
+%         \end{uncoverenv}
+%       \end{onlyenv}
+%     \end{column}
+%   \end{columns}
+% \end{frame}
+% }
 
-%%
+% %%
 
-\begin{frame}
-  \frametitle{Key exchange in graphs of ordinary isogenies\footcite{Couv,R&S} (circa 2006)}
+% \begin{frame}
+%   \frametitle{Key exchange in graphs of ordinary isogenies\footcite{Couv,R&S} (circa 2006)}
   
-  \emph{Parameters:}
-  \begin{itemize}
-  \item \alert{$E/\F_p$ ordinary elliptic curve} with \textit{Frobenius
-      endomorphism} $\pi$,
-  \item primes \bl{$\ell_1$},\rd{$\ell_2$},\dots\
-    such that $\left(\frac{D_\pi}{\ell_i}\right)=1$.
-  \item A \textit{direction} for each $\ell_i$ (i.e.\ a choice of a root of
-    $\pi^2-t\pi+q\mod\ell$).
-  \end{itemize}
+%   \emph{Parameters:}
+%   \begin{itemize}
+%   \item \alert{$E/\F_p$ ordinary elliptic curve} with \textit{Frobenius
+%       endomorphism} $\pi$,
+%   \item primes \bl{$\ell_1$},\rd{$\ell_2$},\dots\
+%     such that $\left(\frac{D_\pi}{\ell_i}\right)=1$.
+%   \item A \textit{direction} for each $\ell_i$ (i.e.\ a choice of a root of
+%     $\pi^2-t\pi+q\mod\ell$).
+%   \end{itemize}
 
-  \emph{Secret data:} \alert{Random walks} $\a,\b\in\Cl(\O)$ in the
-  isogeny graph.
+%   \emph{Secret data:} \alert{Random walks} $\a,\b\in\Cl(\O)$ in the
+%   isogeny graph.
   
-  \begin{center}
-    \begin{tikzpicture}
-      \Large
-      \node[matrix of math nodes, ampersand replacement=\&, column sep=0cm, row sep=1cm] (diagram) {
-        \& |(1)| E \\
-        |(a)| \a\ast E \& \& |(b)| \b\ast E\\
-        \& |(ab)| \a\b\ast E = \b\a\ast E\\
-      };
-      \small
-      \path[->] (1) edge node[auto,swap]{$\bl{\ell_1^{a_1}}\rd{\ell_2^{a_2}}\cdots=\mathcal{N}(\a)$} (a);
-      \path[->] (1) edge node[auto]{$\mathcal{N}(\b)=\bl{\ell_1^{b_1}}\rd{\ell_2^{b_2}}\cdots$} (b);
-      \path[->] (a) edge (ab);
-      \path[->] (b) edge (ab);
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
+%   \begin{center}
+%     \begin{tikzpicture}
+%       \Large
+%       \node[matrix of math nodes, ampersand replacement=\&, column sep=0cm, row sep=1cm] (diagram) {
+%         \& |(1)| E \\
+%         |(a)| \a\ast E \& \& |(b)| \b\ast E\\
+%         \& |(ab)| \a\b\ast E = \b\a\ast E\\
+%       };
+%       \small
+%       \path[->] (1) edge node[auto,swap]{$\bl{\ell_1^{a_1}}\rd{\ell_2^{a_2}}\cdots=\mathcal{N}(\a)$} (a);
+%       \path[->] (1) edge node[auto]{$\mathcal{N}(\b)=\bl{\ell_1^{b_1}}\rd{\ell_2^{b_2}}\cdots$} (b);
+%       \path[->] (a) edge (ab);
+%       \path[->] (b) edge (ab);
+%     \end{tikzpicture}
+%   \end{center}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}
-  \frametitle{Key exchange with supersingular curves (2011)}
+% \begin{frame}
+%   \frametitle{Key exchange with supersingular curves (2011)}
   
-  \begin{description}
-  \item[Good news:] there is no action of a commutative class group.
-  \item[Bad news:] there is no action of a commutative class group.
-  \item[Idea:] Let \bl{Alice} and \rd{Bob} walk in two
-    \emph{different isogeny graphs} on the \emph{same vertex set}.
-  \end{description}
+%   \begin{description}
+%   \item[Good news:] there is no action of a commutative class group.
+%   \item[Bad news:] there is no action of a commutative class group.
+%   \item[Idea:] Let \bl{Alice} and \rd{Bob} walk in two
+%     \emph{different isogeny graphs} on the \emph{same vertex set}.
+%   \end{description}
 
-  \begin{columns}
-    \begin{column}{0.7\textwidth}
-      \centering
-      \begin{tikzpicture}[scale=1.4]
-        \begin{scope}[every node/.style={fill,black,circle,inner sep=2pt}]
-          \node at (0,0)  (1){};
-          \node at (0,4) (20){};
-          \node at (2,1)  (16z){};
-          \node at (-2,1)  (81z){};
-          \node at (-1,2) (77z){};
-          \node at (1,2)  (20z){};
-          \node at (-2,3)  (85z){};
-          \node at (2,3)  (12z){};
-        \end{scope}
+%   \begin{columns}
+%     \begin{column}{0.7\textwidth}
+%       \centering
+%       \begin{tikzpicture}[scale=1.4]
+%         \begin{scope}[every node/.style={fill,black,circle,inner sep=2pt}]
+%           \node at (0,0)  (1){};
+%           \node at (0,4) (20){};
+%           \node at (2,1)  (16z){};
+%           \node at (-2,1)  (81z){};
+%           \node at (-1,2) (77z){};
+%           \node at (1,2)  (20z){};
+%           \node at (-2,3)  (85z){};
+%           \node at (2,3)  (12z){};
+%         \end{scope}
 
-        \begin{uncoverenv}<1,3>
-          \begin{scope}[blue,every loop/.style={looseness=50}]
-            \path (1) edge (20) edge (16z) edge (81z);
-            \path (20) edge[loop left] (20) edge[loop right] (20);
-            \path (16z) edge (81z) edge (77z);
-            \path (81z) edge (20z);
-            \path (77z) edge (20z) edge (85z);
-            \path (20z) edge (12z);
-            \path (12z) edge[bend right=10] (85z) edge[bend left=10] (85z);
-          \end{scope}
-        \end{uncoverenv}
+%         \begin{uncoverenv}<1,3>
+%           \begin{scope}[blue,every loop/.style={looseness=50}]
+%             \path (1) edge (20) edge (16z) edge (81z);
+%             \path (20) edge[loop left] (20) edge[loop right] (20);
+%             \path (16z) edge (81z) edge (77z);
+%             \path (81z) edge (20z);
+%             \path (77z) edge (20z) edge (85z);
+%             \path (20z) edge (12z);
+%             \path (12z) edge[bend right=10] (85z) edge[bend left=10] (85z);
+%           \end{scope}
+%         \end{uncoverenv}
         
-        \begin{uncoverenv}<2->
-          \begin{scope}[red]
-            \path (1) edge (85z) edge (81z) edge (12z) edge (16z);
-            \path (20) edge (85z) edge (77z) edge (20z) edge (12z);
-            \path (81z) edge (85z) edge (77z) edge (16z);
-            \path (85z) edge (12z);
-            \path (12z) edge (16z);
-            \path (16z) edge (20z);
-            \path (20z) edge[bend right=10] (77z) edge[bend left=10] (77z);
-          \end{scope}
-        \end{uncoverenv}
-      \end{tikzpicture}
-    \end{column}
-    \begin{column}{0.3\textwidth}
-      \small
-      \emph{Figure:} \bl{$2$}- and \rd{$3$}-isogeny graphs on $\F_{97^2}$.
-    \end{column}
-  \end{columns}
-\end{frame}
+%         \begin{uncoverenv}<2->
+%           \begin{scope}[red]
+%             \path (1) edge (85z) edge (81z) edge (12z) edge (16z);
+%             \path (20) edge (85z) edge (77z) edge (20z) edge (12z);
+%             \path (81z) edge (85z) edge (77z) edge (16z);
+%             \path (85z) edge (12z);
+%             \path (12z) edge (16z);
+%             \path (16z) edge (20z);
+%             \path (20z) edge[bend right=10] (77z) edge[bend left=10] (77z);
+%           \end{scope}
+%         \end{uncoverenv}
+%       \end{tikzpicture}
+%     \end{column}
+%     \begin{column}{0.3\textwidth}
+%       \small
+%       \emph{Figure:} \bl{$2$}- and \rd{$3$}-isogeny graphs on $\F_{97^2}$.
+%     \end{column}
+%   \end{columns}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}
-  \frametitle{Key exchange with supersingular curves (2011)}
+% \begin{frame}
+%   \frametitle{Key exchange with supersingular curves (2011)}
 
-  \begin{itemize}
-  \item Fix small primes \bl{$\ell_A$}, \rd{$\ell_B$};
-  \item \emph{No canonical labeling} of the \bl{$\ell_A$}- and
-    \rd{$\ell_B$}-isogeny graphs; \emph{however\dots}
-  \end{itemize}
+%   \begin{itemize}
+%   \item Fix small primes \bl{$\ell_A$}, \rd{$\ell_B$};
+%   \item \emph{No canonical labeling} of the \bl{$\ell_A$}- and
+%     \rd{$\ell_B$}-isogeny graphs; \emph{however\dots}
+%   \end{itemize}
 
-  \begin{center}
-    \bf
-    Walk of length \bl{$e_A$}\\
-    $=$\\
-    Isogeny of degree \bl{$\ell_A^{e_A}$}\\
-    $=$\\
-    Kernel \bl{$\langle P\rangle\subset E[\ell_A^{e_A}]$}
-  \end{center}
+%   \begin{center}
+%     \bf
+%     Walk of length \bl{$e_A$}\\
+%     $=$\\
+%     Isogeny of degree \bl{$\ell_A^{e_A}$}\\
+%     $=$\\
+%     Kernel \bl{$\langle P\rangle\subset E[\ell_A^{e_A}]$}
+%   \end{center}
   
-  \begin{center}
-    \begin{tikzpicture}
-      \begin{scope}
-        \draw (0,1.2) node[anchor=east,blue] {$\ker\phi=〈P〉\subset E[\ell_A^{e_A}]$};
-        \draw (0,0.4) node[anchor=east,red] {$\ker\psi=〈Q〉\subset E[\ell_B^{e_B}]$};
-        \draw (0,-0.4) node[anchor=east,blue] {$\ker\phi' = 〈\rd{\psi}(P)〉$};
-        \draw (0,-1.2) node[anchor=east,red] {$\ker\psi' = 〈\bl{\phi}(Q)〉$};
-      \end{scope}
-      \begin{scope}[xshift=4.5cm,coils/.style={-angle 90,decorate,decoration={coil,aspect=0,amplitude=1pt}}]
-        \large
-        \node[matrix of nodes, ampersand replacement=\&, column sep=3cm, row sep=1.5cm] (diagram) {
-          |(E)| $E$ \& |(Es)| $E/〈\bl{P}〉$ \\
-          |(Ep)| {$E/〈\rd{Q}〉$} \& |(Eps)| {$E/〈\bl{P},\rd{Q}〉$}\\
-        };
-        \path[->,blue] (E) edge[coils] node[auto] {$\phi$} (Es);
-        \path[->,blue] (Ep) edge[coils] node[auto,swap] {$\phi'$} (Eps);
-        \path[->,red] (E) edge[coils] node[auto,swap] {$\psi$} (Ep);
-        \path[->,red] (Es) edge[coils] node[auto] {$\psi'$} (Eps);
-      \end{scope}
-    \end{tikzpicture}
-  \end{center}
-\end{frame}
+%   \begin{center}
+%     \begin{tikzpicture}
+%       \begin{scope}
+%         \draw (0,1.2) node[anchor=east,blue] {$\ker\phi=〈P〉\subset E[\ell_A^{e_A}]$};
+%         \draw (0,0.4) node[anchor=east,red] {$\ker\psi=〈Q〉\subset E[\ell_B^{e_B}]$};
+%         \draw (0,-0.4) node[anchor=east,blue] {$\ker\phi' = 〈\rd{\psi}(P)〉$};
+%         \draw (0,-1.2) node[anchor=east,red] {$\ker\psi' = 〈\bl{\phi}(Q)〉$};
+%       \end{scope}
+%       \begin{scope}[xshift=4.5cm,coils/.style={-angle 90,decorate,decoration={coil,aspect=0,amplitude=1pt}}]
+%         \large
+%         \node[matrix of nodes, ampersand replacement=\&, column sep=3cm, row sep=1.5cm] (diagram) {
+%           |(E)| $E$ \& |(Es)| $E/〈\bl{P}〉$ \\
+%           |(Ep)| {$E/〈\rd{Q}〉$} \& |(Eps)| {$E/〈\bl{P},\rd{Q}〉$}\\
+%         };
+%         \path[->,blue] (E) edge[coils] node[auto] {$\phi$} (Es);
+%         \path[->,blue] (Ep) edge[coils] node[auto,swap] {$\phi'$} (Eps);
+%         \path[->,red] (E) edge[coils] node[auto,swap] {$\psi$} (Ep);
+%         \path[->,red] (Es) edge[coils] node[auto] {$\psi'$} (Eps);
+%       \end{scope}
+%     \end{tikzpicture}
+%   \end{center}
+% \end{frame}
 
-%%
+% %%
 
-\begin{frame}
-  \frametitle{Supersingular Isogeny
-    Diffie-Hellman\footcite{jao+defeo2011,defeo+jao+plut12}}
+% \begin{frame}
+%   \frametitle{Supersingular Isogeny
+%     Diffie-Hellman\footcite{jao+defeo2011,defeo+jao+plut12}}
 
-  \vspace{-1cm}
+%   \vspace{-1cm}
 
-  \begin{columns}
-    \begin{column}{0.4\textwidth}
-      \begin{block}{}
-        \emph{Parameters:}
-        \begin{itemize}
-          \setlength{\itemsep}{1.5ex}
-        \item Prime $p$ such that $p+1 = \bl{\ell_A^a}\rd{\ell_B^b}$;
-        \item Supersingular curve \emph{$E\simeq (\Z/(p+1)\Z)^2$};
-        \item \bl{$E[\ell_A^a] = \cyc{P_A,Q_A}$};
-        \item \rd{$E[\ell_B^b] = \cyc{P_B,Q_B}$}.
-        \end{itemize}
+%   \begin{columns}
+%     \begin{column}{0.4\textwidth}
+%       \begin{block}{}
+%         \emph{Parameters:}
+%         \begin{itemize}
+%           \setlength{\itemsep}{1.5ex}
+%         \item Prime $p$ such that $p+1 = \bl{\ell_A^a}\rd{\ell_B^b}$;
+%         \item Supersingular curve \emph{$E\simeq (\Z/(p+1)\Z)^2$};
+%         \item \bl{$E[\ell_A^a] = \cyc{P_A,Q_A}$};
+%         \item \rd{$E[\ell_B^b] = \cyc{P_B,Q_B}$}.
+%         \end{itemize}
 
-        \emph{Secret data:}
-        \begin{itemize}
-          \setlength{\itemsep}{1.5ex}
-        \item \bl{$R_A = m_AP_A + n_AQ_A$},
-        \item \rd{$R_B = m_BP_B + n_BQ_B$},
-        \end{itemize}
-      \end{block}
-    \end{column}
-    \begin{column}{0.58\textwidth}
-      \begin{center}
-        \begin{tikzpicture}[coils/.style={-angle 90,decorate,decoration={coil,aspect=0,amplitude=1pt}}]
-          \large
-          \node[matrix of nodes, ampersand replacement=\&, column sep=4mm, row sep=2cm] (diagram) {
-            \& |(1)| $E$ \\
-            |(a)| \parbox{1.5cm}{$E/\cyc{\bl{R_A}}$\\\uncover<2->{{\footnotesize $\bl{\phi(}\rd{P_B}\bl{)}\\\bl{\phi(}\rd{Q_B}\bl{)}$}}} \& \&
-            |(b)| \parbox{1.5cm}{$E/\cyc{\rd{R_B}}$\\\uncover<2->{{\footnotesize $\rd{\psi(}\bl{P_A}\rd{)}\\\rd{\psi(}\bl{Q_A}\rd{)}$}}}\\
-            \normalsize $\frac{E/\cyc{\bl{R_A}}}{\alert{\bl{\phi(}\rd{R_B}\bl{)}}} \simeq$ \&
-            |(ab)|  $E/\cyc{\bl{R_A},\rd{R_B}}$ \&
-            \normalsize $\simeq \frac{E/\cyc{\rd{R_B}}}{\alert{\rd{\psi(}\bl{R_A}\rd{)}}}$\\
-          };
-          \small
-          \path[blue] (1) edge[coils] node[auto,swap](phia) {$\phi$} (a);
-          \path[red] (1) edge[coils] node[auto](phib) {$\psi$} (b);
-          \path[red] (a) edge[coils] node[auto,swap](psia){$\psi'$} (ab);
-          \path[blue] (b) edge[coils] node[auto](psib){$\phi'$} (ab);
-          \uncover<3>{\path[dashed,->] (phia) edge node[auto]{\footnotesize $\bl{\phi(}\rd{R_B}\bl{)}$} (psia);}
-          \uncover<3>{\path[dashed,->] (phib) edge node[auto,swap]{\footnotesize $\rd{\psi(}\bl{R_A}\rd{)}$} (psib);}
-        \end{tikzpicture}
-      \end{center}  
-    \end{column}
-  \end{columns}
-\end{frame}
+%         \emph{Secret data:}
+%         \begin{itemize}
+%           \setlength{\itemsep}{1.5ex}
+%         \item \bl{$R_A = m_AP_A + n_AQ_A$},
+%         \item \rd{$R_B = m_BP_B + n_BQ_B$},
+%         \end{itemize}
+%       \end{block}
+%     \end{column}
+%     \begin{column}{0.58\textwidth}
+%       \begin{center}
+%         \begin{tikzpicture}[coils/.style={-angle 90,decorate,decoration={coil,aspect=0,amplitude=1pt}}]
+%           \large
+%           \node[matrix of nodes, ampersand replacement=\&, column sep=4mm, row sep=2cm] (diagram) {
+%             \& |(1)| $E$ \\
+%             |(a)| \parbox{1.5cm}{$E/\cyc{\bl{R_A}}$\\\uncover<2->{{\footnotesize $\bl{\phi(}\rd{P_B}\bl{)}\\\bl{\phi(}\rd{Q_B}\bl{)}$}}} \& \&
+%             |(b)| \parbox{1.5cm}{$E/\cyc{\rd{R_B}}$\\\uncover<2->{{\footnotesize $\rd{\psi(}\bl{P_A}\rd{)}\\\rd{\psi(}\bl{Q_A}\rd{)}$}}}\\
+%             \normalsize $\frac{E/\cyc{\bl{R_A}}}{\alert{\bl{\phi(}\rd{R_B}\bl{)}}} \simeq$ \&
+%             |(ab)|  $E/\cyc{\bl{R_A},\rd{R_B}}$ \&
+%             \normalsize $\simeq \frac{E/\cyc{\rd{R_B}}}{\alert{\rd{\psi(}\bl{R_A}\rd{)}}}$\\
+%           };
+%           \small
+%           \path[blue] (1) edge[coils] node[auto,swap](phia) {$\phi$} (a);
+%           \path[red] (1) edge[coils] node[auto](phib) {$\psi$} (b);
+%           \path[red] (a) edge[coils] node[auto,swap](psia){$\psi'$} (ab);
+%           \path[blue] (b) edge[coils] node[auto](psib){$\phi'$} (ab);
+%           \uncover<3>{\path[dashed,->] (phia) edge node[auto]{\footnotesize $\bl{\phi(}\rd{R_B}\bl{)}$} (psia);}
+%           \uncover<3>{\path[dashed,->] (phib) edge node[auto,swap]{\footnotesize $\rd{\psi(}\bl{R_A}\rd{)}$} (psib);}
+%         \end{tikzpicture}
+%       \end{center}  
+%     \end{column}
+%   \end{columns}
+% \end{frame}
 
-% 20. timeline of ibc, I need a hero
+% % 20. timeline of ibc, I need a hero
 
-\begin{frame}{From 10 minutes to 10ms in 20 years}
-  \begin{tikzpicture}[gray,every node/.style={anchor=south}]
-    \draw[->] (0,0) -- (11,0);
-    \uncover<1->{
-      \node at (1,-0.5) {1996};
-      \draw (1,-0.1) -- +(0,0.3) node[blue]{Couveignes' key exchange};
-    }
-    \uncover<2->{
-      \node at (3,-0.5) {2006};
-      \draw (3,-0.1) -- +(0,1.3) node[blue]{Rostovstev \& Stolbunov (> 5 min)};
-    }
-    \uncover<3->{
-      \node at (4,-0.5) {2011};
-      \draw (4,-0.1) -- +(0,2.3) node[red]{Jao and D.'s SIDH (500ms)};
-    }
-    \uncover<4->{
-      \node at (5,-0.5) {2012};
-      \draw (5,-0.1) -- +(0,3.3) node[red]{D., Jao and Plût's SIDH (50ms)};
-    }
-    \uncover<5->{
-      \node at (6,-0.5) {2016};
-      \draw (6,-0.1) -- +(0,4.3) node[red]{Costello, Longa, Naherig's SIDH (30ms)};
-    }
-    \uncover<6->{
-      \node at (7,-0.5) {2017};
-      \draw (7,-0.1) -- +(0,5.3) node[red]{SIKE NIST candidate (10ms)};
-    }
-    \uncover<7->{
-      \node at (8,-0.5) {2018};
-      \draw (8,-0.1) -- +(0,2.3) node[blue]{CSIDH (100ms)};
-    }
-  \end{tikzpicture}
-\end{frame}
+% \begin{frame}{From 10 minutes to 10ms in 20 years}
+%   \begin{tikzpicture}[gray,every node/.style={anchor=south}]
+%     \draw[->] (0,0) -- (11,0);
+%     \uncover<1->{
+%       \node at (1,-0.5) {1996};
+%       \draw (1,-0.1) -- +(0,0.3) node[blue]{Couveignes' key exchange};
+%     }
+%     \uncover<2->{
+%       \node at (3,-0.5) {2006};
+%       \draw (3,-0.1) -- +(0,1.3) node[blue]{Rostovstev \& Stolbunov (> 5 min)};
+%     }
+%     \uncover<3->{
+%       \node at (4,-0.5) {2011};
+%       \draw (4,-0.1) -- +(0,2.3) node[red]{Jao and D.'s SIDH (500ms)};
+%     }
+%     \uncover<4->{
+%       \node at (5,-0.5) {2012};
+%       \draw (5,-0.1) -- +(0,3.3) node[red]{D., Jao and Plût's SIDH (50ms)};
+%     }
+%     \uncover<5->{
+%       \node at (6,-0.5) {2016};
+%       \draw (6,-0.1) -- +(0,4.3) node[red]{Costello, Longa, Naherig's SIDH (30ms)};
+%     }
+%     \uncover<6->{
+%       \node at (7,-0.5) {2017};
+%       \draw (7,-0.1) -- +(0,5.3) node[red]{SIKE NIST candidate (10ms)};
+%     }
+%     \uncover<7->{
+%       \node at (8,-0.5) {2018};
+%       \draw (8,-0.1) -- +(0,2.3) node[blue]{CSIDH (100ms)};
+%     }
+%   \end{tikzpicture}
+% \end{frame}
 
-% 20. Vélu to the rescue, Frobenius, CSIDH
+% % 20. Vélu to the rescue, Frobenius, CSIDH
 
-\begin{frame}{CSIDH {\small (pron.: \textit{sea-side})}}
-  \begin{block}{Speeding up the CRS key
-      exchange \parencite{10.1007/978-3-030-03332-3_14}}
-    \begin{itemize}
-    \item Choose \emph{$p$} such that \emph{$\ell\mid(p+1)$} for many
-      small primes \emph{$\ell$};
-    \item Look for random \emph{ordinary} curves such that: \hfill\alert{HARD!}
-      \begin{itemize}
-      \item \emph{$\ell\mid E(\F_p)$},
-      \item technical condition;
-      \end{itemize}
-    \item Use Vélu's formulas for \emph{those primes $\ell$}.
-    \item $\sim$5 minutes for a 128-bit secure key exchange \hfill\alert{\Sadey}
-    \end{itemize}
-  \end{block}
+% \begin{frame}{CSIDH {\small (pron.: \textit{sea-side})}}
+%   \begin{block}{Speeding up the CRS key
+%       exchange \parencite{10.1007/978-3-030-03332-3_14}}
+%     \begin{itemize}
+%     \item Choose \emph{$p$} such that \emph{$\ell\mid(p+1)$} for many
+%       small primes \emph{$\ell$};
+%     \item Look for random \emph{ordinary} curves such that: \hfill\alert{HARD!}
+%       \begin{itemize}
+%       \item \emph{$\ell\mid E(\F_p)$},
+%       \item technical condition;
+%       \end{itemize}
+%     \item Use Vélu's formulas for \emph{those primes $\ell$}.
+%     \item $\sim$5 minutes for a 128-bit secure key exchange \hfill\alert{\Sadey}
+%     \end{itemize}
+%   \end{block}
 
-  \begin{block}{CSIDH \parencite{10.1007/978-3-030-03332-3_15}}
-    \begin{itemize}
-    \item Choose \emph{$p$} such that \emph{$\ell\mid(p+1)$} for many
-      small primes \emph{$\ell$};
-    \item Select a \emph{supersingular} curve \emph{$E/\F_p$},
-      automatically \hfill\alert{EASY!}
-      \begin{itemize}
-      \item \emph{$\#E(\F_p)=p+1$},
-      \item technical condition always satisfied;
-      \end{itemize}
-    \item $\sim$100ms for a 128 bits secure key exchange \hfill\alert{\Smiley}
-    \end{itemize}
-  \end{block}
-\end{frame}
+%   \begin{block}{CSIDH \parencite{10.1007/978-3-030-03332-3_15}}
+%     \begin{itemize}
+%     \item Choose \emph{$p$} such that \emph{$\ell\mid(p+1)$} for many
+%       small primes \emph{$\ell$};
+%     \item Select a \emph{supersingular} curve \emph{$E/\F_p$},
+%       automatically \hfill\alert{EASY!}
+%       \begin{itemize}
+%       \item \emph{$\#E(\F_p)=p+1$},
+%       \item technical condition always satisfied;
+%       \end{itemize}
+%     \item $\sim$100ms for a 128 bits secure key exchange \hfill\alert{\Smiley}
+%     \end{itemize}
+%   \end{block}
+% \end{frame}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1905,45 +1934,45 @@
 
 \subsection{Proofs of knowledge and Signatures}
 
-\begin{frame}
-  \frametitle{Bonus: a ZK proof of knowledge\footcite{defeo+jao+plut12}}
+% \begin{frame}
+%   \frametitle{Bonus: a ZK proof of knowledge\footcite{defeo+jao+plut12}}
   
-  \emph{Secret}: knowledge of the \emph{kernel} of a degree
-  \bl{$\ell_A^{e_A}$} isogeny from $E$ to $E/\cyc{\bl{S}}$.
-  \vspace{-2mm}
-  \begin{center}
-    \begin{tikzpicture}
-      \large
-      \node[matrix of nodes, ampersand replacement=\&, column sep=3cm, row sep=1.5cm] (diagram) {
-        |(E)| $E$ \& |(Es)| $E/\cyc{\bl{S}}$ \\
-        |(Ep)| {\uncover<2->{$E/\cyc{\rd{P}}$}} \& |(Eps)| {\uncover<2->{$E/\cyc{\rd{P},\bl{S}}$}}\\
-      };
-      \path[blue] (E) edge node[auto] {$\phi$} (Es);
-      \uncover<2->{\path[blue] (Ep) edge node[auto,swap] {\alt<4->{$\phi'$}{\phantom{$\phi'$}?}} (Eps);}
-      \uncover<2->{\path[red] (E) edge node[auto,swap] {\alt<3>{$\psi$}{?}} (Ep);}
-      \uncover<2->{\path[red] (Eps) edge node[auto,swap] {\alt<3>{$\psi'$}{?}} (Es);}
-    \end{tikzpicture}  
-  \end{center}
-  \vspace{-4mm}
-  \begin{enumerate}
-  \item<2-> Choose a random point \rd{$P\in E[\ell_B^{e_B}]$}, compute the diagram;
-  \item<2-> Publish the curves $E/\cyc{\rd{P}}$ and $E/\cyc{\rd{P},\bl{S}}$;
-  \item<3-> The verifier asks one of the two questions:
-    \begin{itemize}
-    \item<3-> Reveal the degree \rd{$\ell_B^{e_B}$} isogenies;
-    \item<4-> Reveal the \bl{bottom} isogeny.
-    \end{itemize}
-  \end{enumerate}
+%   \emph{Secret}: knowledge of the \emph{kernel} of a degree
+%   \bl{$\ell_A^{e_A}$} isogeny from $E$ to $E/\cyc{\bl{S}}$.
+%   \vspace{-2mm}
+%   \begin{center}
+%     \begin{tikzpicture}
+%       \large
+%       \node[matrix of nodes, ampersand replacement=\&, column sep=3cm, row sep=1.5cm] (diagram) {
+%         |(E)| $E$ \& |(Es)| $E/\cyc{\bl{S}}$ \\
+%         |(Ep)| {\uncover<2->{$E/\cyc{\rd{P}}$}} \& |(Eps)| {\uncover<2->{$E/\cyc{\rd{P},\bl{S}}$}}\\
+%       };
+%       \path[blue] (E) edge node[auto] {$\phi$} (Es);
+%       \uncover<2->{\path[blue] (Ep) edge node[auto,swap] {\alt<4->{$\phi'$}{\phantom{$\phi'$}?}} (Eps);}
+%       \uncover<2->{\path[red] (E) edge node[auto,swap] {\alt<3>{$\psi$}{?}} (Ep);}
+%       \uncover<2->{\path[red] (Eps) edge node[auto,swap] {\alt<3>{$\psi'$}{?}} (Es);}
+%     \end{tikzpicture}  
+%   \end{center}
+%   \vspace{-4mm}
+%   \begin{enumerate}
+%   \item<2-> Choose a random point \rd{$P\in E[\ell_B^{e_B}]$}, compute the diagram;
+%   \item<2-> Publish the curves $E/\cyc{\rd{P}}$ and $E/\cyc{\rd{P},\bl{S}}$;
+%   \item<3-> The verifier asks one of the two questions:
+%     \begin{itemize}
+%     \item<3-> Reveal the degree \rd{$\ell_B^{e_B}$} isogenies;
+%     \item<4-> Reveal the \bl{bottom} isogeny.
+%     \end{itemize}
+%   \end{enumerate}
 
-  \uncover<5->{Can derive Fiat-Shamir \emph{signatures}: secure under
-    SIDH\dots but very slow!}
-\end{frame}  
+%   \uncover<5->{Can derive Fiat-Shamir \emph{signatures}: secure under
+%     SIDH\dots but very slow!}
+% \end{frame}  
 
-%%
+% %%
 
-\begin{frame}{SeaSign}
+% \begin{frame}{SeaSign}
   
-\end{frame}
+% \end{frame}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -1951,24 +1980,50 @@
 \subsection{Open Problems}
 
 
-%%
-%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{frame}[allowframebreaks]
-  \frametitle{References}
-
-  \defbibfilter{books}{\type{book} \or \type{booklet} \or \type{thesis}
-    \or \type{report} \or \type{collection} \or \type{manual}
-    \or \type{periodical} \or \type{proceedings}}
-  \defbibfilter{articles}{\not \(\type{book} \or \type{booklet} \or \type{thesis}
-    \or \type{report} \or \type{collection} \or \type{manual}
-    \or \type{periodical} \or \type{proceedings}\)}
-
-  \beamertemplatebookbibitems
-  \printbibliography[filter=books]
-  \beamertemplatearticlebibitems
-  \printbibliography[filter=articles]
+\begin{frame}
+  \centering
+  \begin{tikzpicture}
+    \begin{scope}[xscale=1.2,black!60]
+      \def\crater{7}
+      \foreach \i in {1,...,\crater} {
+        \draw[fill] (360/\crater*\i:3cm) circle (5pt);
+        \draw (360/\crater*\i : 3cm) -- (360/\crater*\i+360/\crater : 3cm);
+        \foreach \j in {-1,1} {
+          \draw[fill] (360/\crater*\i : 3cm) -- (360/\crater*\i + \j*360/\crater/4 : 4cm) circle (3pt);
+          \foreach \k in {-1,0,1} {
+            \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 4cm) --
+            (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 4.5cm) circle (1pt);
+          }
+        }
+      }
+    \end{scope}
+    
+    \draw (0,1) node{\Huge\bf Thank you};
+    \draw (0,-0.6) node{\large\url{https://defeo.lu/}};
+    \draw (0,-1.3) node{\large\includegraphics[height=0.9em]{twitter.png}~\href{https://twitter.com/luca_defeo}{@luca\_defeo}};
+  \end{tikzpicture}
 \end{frame}
+
+%%
+
+% \begin{frame}[allowframebreaks]
+%   \frametitle{References}
+
+%   \defbibfilter{books}{\type{book} \or \type{booklet} \or \type{thesis}
+%     \or \type{report} \or \type{collection} \or \type{manual}
+%     \or \type{periodical} \or \type{proceedings}}
+%   \defbibfilter{articles}{\not \(\type{book} \or \type{booklet} \or \type{thesis}
+%     \or \type{report} \or \type{collection} \or \type{manual}
+%     \or \type{periodical} \or \type{proceedings}\)}
+
+%   \beamertemplatebookbibitems
+%   \printbibliography[filter=books]
+%   \beamertemplatearticlebibitems
+%   \printbibliography[filter=articles]
+% \end{frame}
 
 \end{document}
 
