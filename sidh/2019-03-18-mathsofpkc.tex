@@ -1189,13 +1189,29 @@
       \draw (0,0) node {$\Cl(-4p)$};
     }
     \uncover<3->{
-      \draw (360/\crater:1.4cm) circle (0.4cm) node {$\Cl(-4)$};
+      \draw (360/\crater:1.5cm) circle (0.5cm) node {$\Cl(-4)$};
     }
     \uncover<4>{
       \draw (360/\crater*4:1.2cm) node[anchor=south east] {$j=0$};
     }
     \uncover<5->{
-      \draw (360/\crater*4:1.4cm) circle (0.4cm) node {$\Cl(-3)$};
+      \draw (360/\crater*4:1.5cm) circle (0.5cm) node {$\Cl(-3)$};
+    }
+    \uncover<6->{
+      \begin{scope}[shift={(360/\crater*6:1.7cm)}]
+        \foreach \i in {0,...,2} {
+          \draw[fill] (360/\crater*6 - 120*\i - 180 : 0.7cm) circle (1pt);
+          \draw (360/\crater*6 - 120*\i - 180 : 0.7cm) -- (360/\crater*6 - 120*\i+120 - 180 : 0.7cm);
+        }
+        \draw (0,0) node {$\Cl(-23)$};
+      \end{scope}
+      \begin{scope}[shift={(360/\crater*10:1.5cm)}]
+        \foreach \i in {0,...,4} {
+          \draw[fill] (360/\crater*10 - 72*\i - 180 : 0.5cm) circle (1pt);
+          \draw (360/\crater*10 - 72*\i - 180 : 0.5cm) -- (360/\crater*10 - 72*\i+72 - 180 : 0.5cm);
+        }
+        \draw (0,0) node {$\Cl(-31)$};
+      \end{scope}
     }
   \end{tikzpicture}
 \end{frame}
@@ -2009,21 +2025,63 @@
 
 %%
 
-% \begin{frame}[allowframebreaks]
-%   \frametitle{References}
+\begin{frame}[allowframebreaks]{References}
+  \begin{block}{Surveys}
+    \begin{itemize}
+    \item \fullcite{Galbraith2018}.
+    \item \fullcite{defeo2017isogenybased}.
+    \item \fullcite{defeo-hdr}.
+    \end{itemize}
+  \end{block}
 
-%   \defbibfilter{books}{\type{book} \or \type{booklet} \or \type{thesis}
-%     \or \type{report} \or \type{collection} \or \type{manual}
-%     \or \type{periodical} \or \type{proceedings}}
-%   \defbibfilter{articles}{\not \(\type{book} \or \type{booklet} \or \type{thesis}
-%     \or \type{report} \or \type{collection} \or \type{manual}
-%     \or \type{periodical} \or \type{proceedings}\)}
+  \begin{block}{Elliptic curves and isogenies}
+    \begin{itemize}
+    \item \fullcite{silverman:elliptic}.
+    \item \fullcite{milne1996elliptic}.
+    \item \fullcite{blake+seroussi+smart}.
+    \end{itemize}
+  \end{block}
 
-%   \beamertemplatebookbibitems
-%   \printbibliography[filter=books]
-%   \beamertemplatearticlebibitems
-%   \printbibliography[filter=articles]
-% \end{frame}
+  \begin{block}{Isogeny graphs}
+    \begin{itemize}
+    \item \fullcite{kohel}.
+    \item \fullcite{DelfsG16}.
+    \item \fullcite{cryptoeprint:2018:593}.
+    \end{itemize}
+  \end{block}
+  
+  \begin{block}{Complex multiplication}
+    \begin{itemize}
+    \item \fullcite{silverman:advanced}.
+    \item \fullcite{cox2011primes}.
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Quaternion algebras}
+    \begin{itemize}
+    \item \fullcite{vigneras1980arithmetic}.
+    \item \fullcite{Voight2018}.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}[allowframebreaks]
+  \frametitle{Article citations}
+
+  \defbibfilter{books}{\type{book} \or \type{booklet} \or \type{thesis}
+    \or \type{report} \or \type{collection} \or \type{manual}
+    \or \type{periodical} \or \type{proceedings}}
+  \defbibfilter{articles}{\not \(\type{book} \or \type{booklet} \or \type{thesis}
+    \or \type{report} \or \type{collection} \or \type{manual}
+    \or \type{periodical} \or \type{proceedings}\)}
+
+%  \beamertemplatebookbibitems
+%  \printbibliography[filter=books]
+  \beamertemplatearticlebibitems
+  \printbibliography[filter=articles]
+\end{frame}
 
 \end{document}
 
