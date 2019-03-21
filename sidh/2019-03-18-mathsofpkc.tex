@@ -12,7 +12,7 @@
 \usepackage{tikz}
 \usepackage{tikzsymbols}
 \usetikzlibrary{arrows,matrix,decorations,decorations.text,decorations.pathmorphing,calc,positioning}
-\usepackage[backend=biber,citestyle=authoryear-comp,bibstyle=beamer,doi=false,isbn=false,url=false,maxnames=10]{biblatex}
+\usepackage[backend=biber,citestyle=authoryear-comp,bibstyle=beamer,doi=false,isbn=false,url=true,maxnames=10]{biblatex}
 \bibliography{defeo}
 
 \mode<presentation>{%
@@ -2074,7 +2074,7 @@
       in \alert{$\sqrt{\#\Cl(\O)}$};
     \item[For $2^{128}$ security:] choose \alert{$\log p \sim 512$};
     \item[Time to evaluate the isogeny
-      action\footcite{defeo-kieffer-smith}:] Dozens of minutes!
+      action\footcite{10.1007/978-3-030-03332-3_14}:] Dozens of minutes!
     \end{description}
   \end{block}
 \end{frame}
@@ -2097,7 +2097,7 @@
     \begin{description}
     \item[Problem:] $H$ must be in $E(\F_p)$ for Vélu's formulas to be
       efficient.
-    \item[Idea\footcite{defeo-kieffer-smith}:] Force
+    \item[Idea\footcite{10.1007/978-3-030-03332-3_14}:] Force
       $\begin{cases}
         p = -1 &\mod\ell,\\
         \alert<2->{\lambda = 1} &\alert<2->{\mod\ell},
@@ -2123,7 +2123,7 @@
     \item[Choose] \alert{$p = -1 \bmod\ell$} for many primes $\ell$;
     \item[Hence,] \alert{$\lambda = 1 \mod \ell$}. Win!
     \item[Performance:] Same security as CRS in less than
-      50ms!\footcite{csidh}
+      50ms!\footcite{10.1007/978-3-030-03332-3_15}
     \end{description}
   \end{block}
 \end{frame}
