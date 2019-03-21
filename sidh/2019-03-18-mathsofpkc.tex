@@ -268,7 +268,8 @@
 \begin{frame}{What are elliptic curves?}
   \begin{block}{For mathematicians}
     \begin{itemize}
-    \item The \emph{smooth projective curves of genus 1};
+    \item The \emph{smooth projective curves of genus 1} (with a
+      distinguished point);
     \item The simplest \emph{abelian varieties} (dimension 1);
     \item Finitely generated abelian groups of mysterious free rank
       (aka \emph{BSD conjecture});
@@ -649,7 +650,7 @@
       \hfill $→$ \emph{two} isogenies
     \item \emph{$π|E[ℓ] \sim \mat{λ&*\\0&λ}$}
       \hfill $→$ \emph{one} isogeny
-    \item \emph{$π|E[ℓ]$} is not diagonalizable
+    \item \emph{$π|E[ℓ]$} is not diagonalizable over \emph{$ℤ/ℓℤ$}
       \hfill $→$ \emph{no} isogeny
     \end{itemize}
   \end{block}
@@ -754,7 +755,7 @@
     \medskip
     
     \textbf{\emph{Corollary:}} $E/\F_p$ and $E'/\F_p$ are isogenous
-    iff \emph{$\#E(\F_p)=\#E'(\F_p)$}.
+    over $\F_p$ iff \emph{$\#E(\F_p)=\#E'(\F_p)$}.
   \end{block}
 
 \end{frame}
@@ -1673,7 +1674,7 @@
     $\polylog(\#X)$).
   \end{itemize}
 
-  \begin{block}{(non)-Example (time-lock puzzles)}
+  \begin{block}{(non)-Example: time-lock puzzles}
     \begin{itemize}
     \item Take a \emph{trapdoor} group $G$ of (e.g., \emph{$G=ℤ/Nℤ$}
       with \emph{$N=pq$});
@@ -1699,9 +1700,9 @@
     \begin{enumerate}
     \item Verifier chooses a prime \emph{$ℓ$} in a set of \emph{small
         primes} $\mathcal{P}$;
-    \item Prover computes \emph{$2^T=aℓ+b$}, sends \emph{$g^{2^T},g^a,b$} to
+    \item Prover computes \emph{$2^T=aℓ+b$}, sends \emph{$g^{2^T},g^a$} to
       verifier;
-    \item Verifier checks that
+    \item Verifier computes \emph{$2^T=aℓ+b$}, checks that
       \[g^{2^T} = (g^a)^ℓg^b\]
     \end{enumerate}
     Can be made non-interactive via \emph{Fiat-Shamir}.
@@ -1718,7 +1719,7 @@
 
 %%
 
-\begin{frame}{VDFs from isogenies and pairings}
+\begin{frame}{VDFs from isogenies and pairings\footcite{cryptoeprint:2019:166}}
   \centering
   \begin{tikzpicture}[ampersand replacement=\&]
     \matrix(m)[matrix of math nodes,row sep=3em,column sep=4em]{
@@ -1752,7 +1753,7 @@
 
 \begin{frame}{Security}
   \begin{description}
-  \item[Obvious attack:] Pairing inversion must be hard (non
+  \item[Obvious attack:] Pairing inversion must be hard (not
     post-quantum).
   \item[Wanted:] No better way to evaluate $\hat{ϕ}:E'→E$ than
     \emph{composing $T$ degree $2$ isogenies}.
@@ -2145,7 +2146,7 @@
       solves the dHSP with a subexponential number of class group
       evaluations.
     \item Recent
-      work\footcite{cryptoeprint:2018:432,cryptoeprint:2018:537,biasse2018note}
+      work\footcite{cryptoeprint:2018:432,cryptoeprint:2018:537,biasse2018note,Jao-etal-kuperberg-2018,cryptoeprint:2018:1059}
       suggests that $2^{64}$-qbit security is achieved somewhere in
       $512 < \log p < 1024$.
     \end{itemize}
@@ -2350,10 +2351,14 @@
 \subsection{Open Problems}
 
 \begin{frame}{Open problems}
+  From easier to harder:
   \begin{itemize}
-  \item Precisely asses the quantum security of CRS/CSIDH.
   \item Give a convincing constant-time implementation of CSIDH.
+  \item Find new isogeny-based primitives/protocols.
+  \item Precisely asses the quantum security of CRS/CSIDH.
   \item Find an efficient post-quantum isogeny-based signature scheme.
+  \item Exploit the extra information transmitted in SIDH/SIKE for
+    cryptanalytic purposes.
   \item Sample supersingular curves without revealing endomorphism
     rings.
   \item Compute endomorphism rings of supersingular curves.
