@@ -473,32 +473,104 @@
 %%
 
 \begin{frame}{Performance}
-  
+  \begin{tabular}{l  c  c  c }
+    & \bf $t=1$ bit challenges
+    & \bf $t=16$ bits challenges
+    & \bf PK compression \\
+    \hline
+    Sig size
+    & \alert{20 KiB} & \gn{978 B} & 3136 B\\
+    PK size
+    & 64 B & \alert{4 MiB} & 32 B\\
+    SK size
+    & 32 B & 16 B & \alert{1 MiB} \\
+    Est. keygen time
+    & 30 ms & \alert{30 mins} & \alert{30 mins} \\
+    Est. sign time
+    & \alert{30 hours} & 6 mins & 6 mins \\
+    Est. verify time
+    & \alert{10 hours} & 2 mins & 2 mins \\
+    \hline
+    Asymptotic sig size
+    & $O(\lambda^2\log(\lambda))$ & $O(\lambda t\log(\lambda))$ & $O(\lambda^2 t)$\pause\\[2em]
+    \multicolumn{4}{c}{\bf Recent speed/size compromises by Decru, Panny and Vercauteren}\\
+    \hline
+    {Sig size}
+    & 36 KiB & 2 KiB & ---\\
+    {Est. sign time}
+    & 30 mins & 80 s & ---\\
+    {Est. verify time}
+    & 20 mins & 20 s & ---
+  \end{tabular}
 \end{frame}
 
 %%
 
 \begin{frame}{Security proofs}
+  \begin{block}{Standard proofs using forking lemma}
+    \begin{itemize}
+    \item \emph{ROM} only, non tight;
+    \item Secret key space \emph{$\#[-B,B]^n \gg \sqrt{\#\F_p}$} to
+      heuristically cover all the isogeny graph, but:
+      \begin{itemize}
+      \item Public keys \emph{not uniformly sampled} $\Rightarrow$
+        problematic random-self reduction;
+      \item Only managed to reduce to a \emph{one-out-of-$2^{2t}$
+          isogeny walk problem}.
+      \end{itemize}
+    \end{itemize}
+  \end{block}
+
+  \pause
   
+  \begin{block}{Alternative proofs based on \textit{lossy keys}
+      (Kiltz, Lyubashevsky and Schaffner 2018)}
+    \begin{itemize}
+    \item \emph{ROM}, \emph{QROM}, tight!
+    \item Requires \emph{$\#[-B,B]^n \ll \sqrt{\#\F_p}$}:
+      \begin{itemize}
+      \item Public keys cover a small fraction of the isogeny graph;
+      \item Asymptotically \emph{natural choice} for quantum security;
+      \end{itemize}
+    \item Additional assumption on \emph{indistinguishability of public
+      keys}.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Wrap up}
+  \begin{itemize}
+  \item By combining ideas from \emph{isogeny + lattice + hash} based
+    signatures, we give work to all cryptanalysts in this room.
+  \item Post-quantum isogeny signatures are still \emph{far from
+      practical}.
+  \item Post-post-quantum isogeny signatures look \emph{more
+      realistic}, you can start using them now if you are an isogeny
+    hippie.
+  \item Tons of open questions on classical and quantum security, and
+    proofs.
+  \item \emph{The isogenista dream:} a one-pass post-quantum signature
+    scheme based on walks in isogeny graphs.
+  \end{itemize}
 \end{frame}
 
 %%
 
 \begin{frame}
   \centering
-  \begin{tikzpicture}
-    \begin{scope}[xscale=1.2,black!60]
-      \def\crater{7}
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[xscale=1.7,opacity=0.8]
+      \def\crater{12}
+      \def\jumpa{-8}
+      \def\jumpb{9}
+      \def\diam{5cm}
+
       \foreach \i in {1,...,\crater} {
-        \draw[fill] (360/\crater*\i:3cm) circle (5pt);
-        \draw (360/\crater*\i : 3cm) -- (360/\crater*\i+360/\crater : 3cm);
-        \foreach \j in {-1,1} {
-          \draw[fill] (360/\crater*\i : 3cm) -- (360/\crater*\i + \j*360/\crater/4 : 4cm) circle (3pt);
-          \foreach \k in {-1,0,1} {
-            \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 4cm) --
-            (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 4.5cm) circle (1pt);
-          }
-        }
+        \draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+        \draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jumpa*360/\crater : \diam);
+        \draw[green] (360/\crater*\i : \diam) to[bend right=50] (360/\crater*\i+\jumpb*360/\crater : \diam);
       }
     \end{scope}
     
