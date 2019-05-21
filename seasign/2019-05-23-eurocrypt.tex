@@ -22,21 +22,7 @@
 
 %\let\footcite\footnote
 
-\newcommand{\C}{\mathbb{C}}
-\newcommand{\R}{\mathbb{R}}
-\newcommand{\Z}{\mathbb{Z}}
-\newcommand{\N}{\mathbb{N}}
-\newcommand{\Q}{\mathbb{Q}}
 \newcommand{\F}{\mathbb{F}}
-\renewcommand{\O}{\mathcal{O}}
-\newcommand{\tildO}{\mathcal{\tilde{O}}}
-\newcommand{\End}{\operatorname{End}}
-\newcommand{\chr}{\operatorname{char}}
-\newcommand{\Cl}{\operatorname{Cl}}
-\renewcommand{\a}{{\mathfrak{a}}}
-\renewcommand{\b}{{\mathfrak{b}}}
-\newcommand{\cyc}[1]{{\langle #1 \rangle}}
-\newcommand{\ord}{\operatorname{ord}}
 \newcommand{\bl}[1]{\textcolor{blue}{#1}}
 \newcommand{\rd}[1]{\textcolor{red}{#1}}
 \newcommand{\gn}[1]{\textcolor{green}{#1}}
@@ -390,12 +376,103 @@
 %%
 
 \begin{frame}{Key/signature size compromise}
-  
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{block}{}
+        \begin{itemize}
+        \item One key pair \emph{$(\vec{s},E_s)$};
+        \item Challenge \emph{$b\in\{0,1\}$};
+        \item Reveal \emph{$\vec{r}-b\vec{s}$};
+        \item[$\to$] \emph{$\lambda$} iterations;
+        \item[$\to$]<3-> Sample \emph{$r\from[-\lambda nB,\lambda nB]$}.
+        \end{itemize}
+      \end{block}
+
+      \begin{block}{Compromise: \alert{$\mathbf{t}$}-bit challenges}<2->
+        \begin{itemize}
+        \item \alert{$\mathbf{2^t}$} key pairs \emph{$(\vec{s_i},E_i)$};
+        \item Challenge \emph{$b\in\{0,2^t\}$};
+        \item Reveal \emph{$\vec{r}-\vec{s_b}$};
+        \item[$\to$] \emph{$\lambda\alert{\mathbf{/t}}$} iterations;
+        \item[$\to$]<4-> Sample
+          \emph{$r\from[-\lambda nB\alert{\mathbf{/t}},\lambda
+            nB\alert{\mathbf{/t}}]$}.
+        \end{itemize}
+      \end{block}
+    \end{column}  
+    \begin{column}{0.5\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \node (E) at (0:0) {$E_1$};
+        \uncover<1>{
+          \node (Es) at (45:3) {$E_s$};
+          \path[->] (E) edge node[above]{\small$\vec{s}$} (Es);
+        }
+        \uncover<2->{
+          \foreach \i in {1,...,4} {
+            \node (E\i) at (-30*\i + 75 : 3) {$E_\i$};
+            \path[->] (E) edge node[above]{\small$\vec{s_\i}$} (E\i);
+          }
+        }
+        \node (Er) at (-50:5) {$E_r$};
+        \path[dashed,->] (E) edge[bend right] node[left]{\small$\vec{r}$} (Er);
+        \uncover<2->{
+          \path[dashed,->] (E2) edge[bend left] node[right]{\small$\vec{r}-\vec{s_2}$} (Er);
+        }
+      \end{tikzpicture}
+    \end{column}  
+  \end{columns}
 \end{frame}
 
 %%
 
 \begin{frame}{Public key compression}
+  \begin{center}
+    \begin{tikzpicture}
+      \node (E) at (0,0) {$E_1$};
+      \foreach \i in {1,...,4} {
+        \node (E\i) at (3,2.5-\i) {$E_\i$};
+        \path[->] (E) edge (E\i);
+        \uncover<2->{
+          \node (H0\i) at (5,2.5-\i) {$H(E_\i)$};
+          \path[->] (E\i) edge (H0\i);
+        }
+      }
+      \uncover<2->{
+        \foreach \l in {1,2} {
+          \foreach \i in {1,...,2^(2-\l)} {
+            \pgfmathparse{int(\l-1)}
+            \let\pl\pgfmathresult
+            \pgfmathparse{int(2*\i-1)}
+            \let\ca\pgfmathresult
+            \pgfmathparse{int(2*\i)}
+            \let\cb\pgfmathresult
+            \node (H\l\i) at (5 + 3*\l, 2 + 0.5*2^\l - \i*2^\l) {$H(\bullet,\bullet)$};
+            \path[->]
+            (H\pl\ca) edge (H\l\i)
+            (H\pl\cb) edge (H\l\i);
+          }
+        }
+        \node at (12.3,0) {$=pk$};
+        \uncover<3->{
+          \path[->,blue,very thick]
+          (E) edge (E2)
+          (H01) edge (H11)
+          (H12) edge (H21);
+        }
+      }
+    \end{tikzpicture}
+  \end{center}
+  \medskip
+  \begin{itemize}
+  \item<2-> Construct Merkle tree on top of public keys, \emph{root is the new public key};
+  \item<3-> Include Merkle proof in the signature.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Performance}
   
 \end{frame}
 
