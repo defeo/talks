@@ -1,0 +1,440 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{amsmath,amsthm}
+\usepackage{tikz}
+\usetikzlibrary{matrix,decorations,decorations.text,calc,arrows,snakes,shapes,positioning}
+
+\usepackage[nosfdefault]{comicneue}
+\usepackage{sourcesanspro}
+\usepackage[amssymb,amsfonts]{concmath}
+\usefonttheme[onlymath]{serif}
+\usepackage{ulem}
+
+\mode<presentation>{%
+  \usetheme{Boadilla}
+}
+\beamertemplatenavigationsymbolsempty
+
+\renewcommand{\emph}[1]{{\usebeamercolor[fg]{structure}#1}}
+
+%\let\footcite\footnote
+
+\newcommand{\C}{\mathbb{C}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\F}{\mathbb{F}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\tildO}{\mathcal{\tilde{O}}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\chr}{\operatorname{char}}
+\newcommand{\Cl}{\operatorname{Cl}}
+\renewcommand{\a}{{\mathfrak{a}}}
+\renewcommand{\b}{{\mathfrak{b}}}
+\newcommand{\cyc}[1]{{\langle #1 \rangle}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\bl}[1]{\textcolor{blue}{#1}}
+\newcommand{\rd}[1]{\textcolor{red}{#1}}
+\newcommand{\gn}[1]{\textcolor{green}{#1}}
+\newcommand{\myedge}[3]{
+  \draw[#3] (360/\crater*#1 : \diam) to[bend right] (360/\crater*#2 : \diam);
+}
+\newcommand{\from}{\overset{\$}{\leftarrow}}
+
+\title[SeaSign: isogeny signatures]{SeaSign: Compact isogeny signatures from class group actions}
+\author[L. De Feo, S. Galbraith]{
+  \textit{Luca De Feo}\footnotemark[1],
+  Steven D. Galbraith\footnotemark[2]}
+\date[Eurocrypt 2019 --- \url{https://defeo.lu/docet}]{May 23, 2019, Eurocrypt, Darmstadt\\
+  \medskip
+  Slides online at \url{https://defeo.lu/docet}}
+\institute[UVSQ, UniAuckland]{
+  \footnotemark[1]Université Paris Saclay -- UVSQ, France\\
+  \footnotemark[2]University of Auckland, New Zeland}
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+%%
+
+\begin{frame}{Post-quantum isogeny primitives}
+  \begin{columns}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{SIDH (Jao, De Feo 2011)}
+        \begin{itemize}
+        \item Pronounce \emph{S--I--D--H};
+        \item Based on random isogeny walks in the \emph{full
+            supersingular graph} over $\F_{p^2}$;
+        \item Basis for the NIST KEM candidate \emph{SIKE};
+        \item Better asymptotic quantum security;
+        \item Short keys, slow.
+        \item<2-> Crappy signatures (slow, large).\\
+          \alert{Not this talk.}
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \begin{block}{CSIDH (Couveignes 1996; Rostovtsev Stolbunov 2006;
+          Castryck, Lange, Martindale, Panny, Renes 2018)}
+        \begin{itemize}
+        \item Pronounce \emph{Sea--Side};
+        \item Based on random isogeny walks in the \emph{$\F_p$-restricted
+            supersingular isogeny graph};
+        \item Straightforward generalization of Diffie--Hellman;
+        \item More ``natural'' security assumption;
+        \item Shorter keys, slower.
+        \item<3-> Also crappy signatures, but different!\\
+          \alert{This talk.}
+        \end{itemize}
+      \end{block}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{What is CSIDH?}
+  \begin{columns}
+    \begin{column}{0.57\textwidth}
+      \begin{itemize}
+      \item A set of \emph{supersingular elliptic} curves over $\F_p$;
+      \item<2-> A \emph{group action} by an abelian group \emph{$G$};
+      \item<3-> Only efficient to evaluate the action of some
+        \emph{small degree generators} $g\in G$, e.g.:
+        \begin{itemize}
+        \item
+          \uncover<4->{\bl{degree 2},}
+          \uncover<5->{\rd{degree 3},}
+          \uncover<6->{\gn{degree 5}, \ldots}
+        \end{itemize}
+      \item<7-> Graph structure isomorphic to a \emph{Cayley graph};
+      \item<8-> Good algorithm to do random walks in the graph.
+      \end{itemize}
+
+      \begin{uncoverenv}<9->
+        \emph{Key exchange:}
+        \begin{itemize}
+        \item<10-> Alice picks secret $a = \bl{g_2^{a_2}}\rd{g_3^{a_3}}\gn{g_5^{a_5}}\cdots$,
+        \item<11-> Bob picks secret $b = \bl{g_2^{b_2}}\rd{g_3^{b_3}}\gn{g_5^{b_5}}\cdots$,
+        \item<12-> They exchange \emph{$E_A=a*E_1$} and \emph{$E_B=b*E_1$},
+        \item<13-> Shared secret is \emph{$E_{AB}=(ab)*E_1 = a*E_B = b*E_A$}.
+        \end{itemize}
+      \end{uncoverenv}
+    \end{column}
+    \begin{column}{0.43\textwidth}
+      \begin{tikzpicture}
+        \begin{scope}
+          \def\crater{12}
+          \def\jumpa{-8}
+          \def\jumpb{9}
+          \def\diam{2.5cm}
+
+          \uncover<2>{
+            \draw[shorten >=3,->] (360/\crater : \diam) to[bend right] node[auto,swap]{$g$} (180 : \diam);
+            \draw[shorten >=3,->] (180 : \diam) to[bend right] node[auto,swap]{$g^{-1}$} (360/\crater : \diam);
+          }
+          
+          \foreach \i in {1,...,\crater} {
+            \uncover<4-9>{\draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);}
+            \uncover<5-9>{\draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jumpa*360/\crater : \diam);}
+            \uncover<6-9>{\draw[green] (360/\crater*\i : \diam) to[bend right=50] (360/\crater*\i+\jumpb*360/\crater : \diam);}
+          }
+          \foreach \i in {1,...,\crater} {
+            \draw[fill] (360/\crater*\i: \diam) circle (2pt);
+            \uncover<-9>{
+              \draw (360/\crater*\i: \diam + 0.4cm) node{$E_{\i}$};
+            }
+          }
+
+          \uncover<10>{
+            % Alice 1
+            \myedge{0}{1}{blue}\myedge{1}{2}{blue}\myedge{2}{6}{red}\myedge{6}{3}{green}
+          }
+          \uncover<11>{
+            % Bob 1
+            \begin{scope}[dashed,thick]
+              \myedge{0}{4}{red}\myedge{4}{8}{red}\myedge{8}{5}{green}\myedge{5}{6}{blue}
+            \end{scope}
+          }
+          \uncover<13->{
+            % Alice 2
+            \myedge{6}{7}{blue}\myedge{7}{8}{blue}\myedge{8}{0}{red}\myedge{0}{9}{green}
+          }
+          \uncover<13->{
+            % Bob 2
+            \begin{scope}[dashed,thick]
+              \myedge{3}{7}{red}\myedge{7}{11}{red}\myedge{11}{8}{green}\myedge{8}{9}{blue}
+            \end{scope}
+          }
+          
+          \uncover<10->{\draw (360/\crater*3 : \diam + 0.4cm) node {$E_A$};}
+          \uncover<11->{\draw (360/\crater*6 : \diam + 0.4cm) node {$E_B$};}
+          \uncover<13->{\draw (360/\crater*9 : \diam + 0.4cm) node {$E_{AB}$};}
+        \end{scope}
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{A $\Sigma$-protocol from Diffie--Hellman\footnote{Kids, do
+      not try this at home! Use Schnorr!}}
+  \begin{columns}
+    \begin{column}{0.55\textwidth}
+      \begin{itemize}
+      \item<1-> A key pair \emph{$(s, g^s)$};
+      \item<2-> Commit to a \emph{random element $g^r$};
+      \item<3-> Challenge with bit \emph{$b\in\{0,1\}$};
+      \item<4-> Respond with \emph{$c = \alert<6->{r - b\cdot s\mod\#G}$};
+      \item<5-> Verify that \emph{$g^c(g^s)^b = g^r$}.
+      \end{itemize}
+
+      \begin{block}{Zero-knowledge}<6->
+        \centering
+        Does not leak because:\\
+        \alert{$c$ is uniformly distributed} and independent from $s$.
+      \end{block}
+
+      \begin{uncoverenv}<7->
+        Unlike Schnorr, compatible with\\
+        \emph{group action Diffie--Hellman}.
+      \end{uncoverenv}
+    \end{column}  
+    \begin{column}{0.40\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \node (g) at (0,0) {\alt<-6>{$g$}{$E_1$}};
+        \node (gs) at (3,0) {\alt<-6>{$g^s$}{$E_s$}};
+        \path[->] (g) edge node[auto]{\alt<-6>{$s$}{$g^s$}} (gs);
+        \uncover<2->{
+          \node (gr) at (1.5,-3) {\alt<-6>{$g^r$}{$E_r$}};
+          \path[->] (g) edge node[auto,swap]{\alt<-6>{$r$}{$g^r$}} (gr);
+        }
+        \uncover<4->{
+          \path[dashed,->] (gs) edge node[auto]{\alt<-6>{$r-s$}{$g^{r-s}$}} (gr);
+        }
+      \end{tikzpicture}
+    \end{column}  
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{The trouble with groups of unknown structure}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      In CSIDH secrets look like:
+      $s = \bl{g_2^{s_2}}\rd{g_3^{s_3}}\gn{g_5^{s_5}}\cdots$
+      \begin{itemize}
+      \item the elements $g_i$ are fixed,
+      \item the secret is the exponent vector
+        \emph{$(s_2,s_3,\dots)\in[-B,B]^n$},
+      \item secrets must be sampled in a box \emph{$[-B,B]^n$} ``large
+        enough''\dots
+      \end{itemize}
+
+      \begin{block}{The leakage}<2->%
+        With \emph{$s,r\from[-B,B]^n$}, the distribution of
+        \emph{$r-s$} \alert{depends on the long term secret $s$!}
+      \end{block}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.3]
+        \draw (-2,2) node{$+B$} (-2,-2) node{$-B$};
+        \draw (0,0) -- (18,0);
+        \draw[dotted] (0,2) -- (18,2) (0,-2) -- (18,-2);
+
+        \draw (8,-4) node {\Large$-$};
+        
+        \draw (-2,-6) node{$+B$} (-2,-10) node{$-B$};
+        \draw (0,-8) -- (18,-8);
+        \draw[dotted] (0,-6) -- (18,-6) (0,-10) -- (18,-10);
+
+        \uncover<2->{
+          \draw (8,-12) node {\Large$=$};
+        
+          \draw (-2,-15) node{$+B$} (-2,-19) node{$-B$};
+          \draw (0,-17) -- (18,-17);
+          \draw[dotted] (0,-15) -- (18,-15) (0,-19) -- (18,-19);
+        }
+      
+        \foreach \i in {0,...,18} {
+          \pgfmathparse{round(2.2*sin(140*\i))}
+          \let\s\pgfmathresult
+          \pgfmathparse{round(2.2*cos(125*\i))}
+          \let\r\pgfmathresult
+          \draw[very thick] (\i,0) -- (\i,\s);
+          \draw[very thick] (\i,-8) -- (\i,-8+\r);
+          \uncover<2->{
+            \draw[very thick] (\i,-17) -- (\i,-17+\r-\s);
+          }
+        }
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{The two fixes}
+  \begin{block}{Compute the group structure and stop whining}
+    \begin{itemize}
+    \item Already suggested by Couveignes (1996) and Rostovtsev--Stolbunov (2006).
+    \item Computationally intensive (\emph{subexponential parameter generation}).
+    \item Technically not post-quantum (rather, \emph{post-post-quantum}).
+    \item Done last week by Beullens, Kleinjung and Vercauteren. See
+      \url{https://ia.cr/2019/498}.
+    \item Decent parameters, e.g.: \emph{263 bytes, 390 ms, @NIST-1.}
+    \item \alert{Not this work.}
+    \end{itemize}
+  \end{block}
+
+  \pause
+  
+  \begin{block}{Do like the lattice people}
+    \begin{itemize}
+    \item Use \emph{Fiat--Shamir with aborts} (Lyubashevsky 2009).
+    \item Huge increase in signature size and time.
+    \item Compromise signature size/time with public key size.
+    \item \alert{This work.}
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Rejection sampling}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item Sample \emph{long term secret $s$} in the usual box \emph{$[-B,B]^n$},
+      \item Sample \emph{ephemeral $r$} in a larger box
+        \emph{$[-(\delta+1)B,(\delta+1)B]^n$},
+      \item Throw away \emph{$r-s$} if it is out of the box
+        \emph{$[-\delta B,\delta B]^n$}.
+      \end{itemize}
+
+      \begin{block}{Zero-knowledge}
+        \emph{Theorem:} $r-s$ is uniformly distributed in
+        \emph{$[-\delta B,\delta B]^n$}.
+      \end{block}
+
+      \emph{Problem:} set $\delta$ so that rejection probability is
+      low.
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.3]
+        \draw (-3,3) node{$+(\delta+1)B$} (-3,-3) node{$-(\delta+1)B$};
+        \draw (0,0) -- (18,0);
+        \draw[dotted] (0,3) -- (18,3) (0,-3) -- (18,-3);
+
+        \draw (8,-5) node {\Large$-$};
+        
+        \draw (-2,-7.5) node{$+B$} (-2,-8.5) node{$-B$};
+        \draw (0,-8) -- (18,-8);
+        \draw[dotted] (0,-7.5) -- (18,-7.5) (0,-8.5) -- (18,-8.5);
+
+        \draw (8,-12) node {\Large$=$};
+        
+        \draw (-2,-14.5) node{$+\delta B$} (-2,-19.5) node{$-\delta B$};
+        \draw (0,-17) -- (18,-17);
+        \draw[dotted] (0,-14.5) -- (18,-14.5) (0,-19.5) -- (18,-19.5);
+      
+        \foreach \i in {0,...,18} {
+          \pgfmathparse{round(60*random()-30)/10}
+          \let\r\pgfmathresult
+          \pgfmathparse{round(2*random()-1)/2}
+          \let\s\pgfmathresult
+          \draw[very thick] (\i,0) -- (\i,\r);
+          \draw[very thick] (\i,-8) -- (\i,-8+\s);
+          \draw[very thick] (\i,-17) -- (\i,-17+\r-\s);
+        }
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Performance}
+  \begin{itemize}
+  \item For $\lambda$-bit security, protocol must be \emph{repeated
+      $\lambda$ times} in parallel;
+  \item \emph{$\delta = \lambda n$} for a rejection probability
+    \emph{$\le 1/3$};
+  \item Signature size \emph{$\approx \lambda n$ coefficients $\in[-B,B]$};
+  \item Sign/verify time linear in \emph{$\lVert r-s\rVert_\infty\approx \lambda nB$}.
+  \end{itemize}
+
+  \begin{block}{CSIDH instantiation (NIST-1)}
+    \begin{description}
+    \item[Parameters:] $\lambda=128, n=74, B=5$;
+    \item[PK size:] 64 B
+    \item[SK size:] 32 B
+    \item[Signature:] 20 KiB
+    \item[Verify time:] \alert{10 hours}
+    \item[Sign time:] $3\times$ verify
+    \end{description}
+  \end{block}
+
+\end{frame}
+
+%%
+
+\begin{frame}{Key/signature size compromise}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Public key compression}
+  
+\end{frame}
+
+%%
+
+\begin{frame}{Security proofs}
+  
+\end{frame}
+
+%%
+
+\begin{frame}
+  \centering
+  \begin{tikzpicture}
+    \begin{scope}[xscale=1.2,black!60]
+      \def\crater{7}
+      \foreach \i in {1,...,\crater} {
+        \draw[fill] (360/\crater*\i:3cm) circle (5pt);
+        \draw (360/\crater*\i : 3cm) -- (360/\crater*\i+360/\crater : 3cm);
+        \foreach \j in {-1,1} {
+          \draw[fill] (360/\crater*\i : 3cm) -- (360/\crater*\i + \j*360/\crater/4 : 4cm) circle (3pt);
+          \foreach \k in {-1,0,1} {
+            \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 4cm) --
+            (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 4.5cm) circle (1pt);
+          }
+        }
+      }
+    \end{scope}
+    
+    \draw (0,1) node{\Huge\bf Thank you};
+    \draw (0,-0.6) node{\large\url{https://defeo.lu/}};
+    \draw (0,-1.3) node{\large\includegraphics[height=0.9em]{twitter.png}~\href{https://twitter.com/luca_defeo}{@luca\_defeo}};
+  \end{tikzpicture}
+\end{frame}
+
+\end{document}
+
+
+% LocalWords:  Isogeny abelian isogenies hyperelliptic supersingular Frobenius
+% LocalWords:  isogenous
+
+
