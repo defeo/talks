@@ -226,8 +226,8 @@
       \end{itemize}
 
       \begin{block}{The leakage}<2->%
-        With \emph{$s,r\from[-B,B]^n$}, the distribution of
-        \emph{$r-s$} \alert{depends on the long term secret $s$!}
+        With \emph{$\vec{s},\vec{r}\from[-B,B]^n$}, the distribution of
+        \emph{$\vec{r}-\vec{s}$} \alert{depends on the long term secret $\vec{s}$!}
       \end{block}
     \end{column}
     \begin{column}{0.45\textwidth}
@@ -256,8 +256,8 @@
           \let\s\pgfmathresult
           \pgfmathparse{round(2.2*cos(125*\i))}
           \let\r\pgfmathresult
-          \draw[very thick] (\i,0) -- (\i,\s);
-          \draw[very thick] (\i,-8) -- (\i,-8+\r);
+          \draw[very thick] (\i,0) -- (\i,\r);
+          \draw[very thick] (\i,-8) -- (\i,-8+\s);
           \uncover<2->{
             \draw[very thick] (\i,-17) -- (\i,-17+\r-\s);
           }
@@ -300,15 +300,15 @@
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{itemize}
-      \item Sample \emph{long term secret $s$} in the usual box \emph{$[-B,B]^n$},
-      \item Sample \emph{ephemeral $r$} in a larger box
+      \item Sample \emph{long term secret $\vec{s}$} in the usual box \emph{$[-B,B]^n$},
+      \item Sample \emph{ephemeral $\vec{r}$} in a larger box
         \emph{$[-(\delta+1)B,(\delta+1)B]^n$},
-      \item Throw away \emph{$r-s$} if it is out of the box
+      \item Throw away \emph{$\vec{r}-\vec{s}$} if it is out of the box
         \emph{$[-\delta B,\delta B]^n$}.
       \end{itemize}
 
       \begin{block}{Zero-knowledge}
-        \emph{Theorem:} $r-s$ is uniformly distributed in
+        \emph{Theorem:} $\vec{r}-\vec{s}$ is uniformly distributed in
         \emph{$[-\delta B,\delta B]^n$}.
       \end{block}
 
@@ -357,7 +357,7 @@
   \item \emph{$\delta = \lambda n$} for a rejection probability
     \emph{$\le 1/3$};
   \item Signature size \emph{$\approx \lambda n$ coefficients $\in[-B,B]$};
-  \item Sign/verify time linear in \emph{$\lVert r-s\rVert_\infty\approx \lambda nB$}.
+  \item Sign/verify time linear in \emph{$\lVert \vec{r}-\vec{s}\rVert_\infty\approx \lambda nB$}.
   \end{itemize}
 
   \begin{block}{CSIDH instantiation (NIST-1)}
