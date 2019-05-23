@@ -216,11 +216,11 @@
   \begin{columns}
     \begin{column}{0.5\textwidth}
       In CSIDH secrets look like:
-      $s = \bl{g_2^{s_2}}\rd{g_3^{s_3}}\gn{g_5^{s_5}}\cdots$
+      $g^{\vec{s}} = \bl{g_2^{s_2}}\rd{g_3^{s_3}}\gn{g_5^{s_5}}\cdots$
       \begin{itemize}
       \item the elements $g_i$ are fixed,
       \item the secret is the exponent vector
-        \emph{$(s_2,s_3,\dots)\in[-B,B]^n$},
+        \emph{$\vec{s}=(s_2,s_3,\dots)\in[-B,B]^n$},
       \item secrets must be sampled in a box \emph{$[-B,B]^n$} ``large
         enough''\dots
       \end{itemize}
@@ -275,8 +275,8 @@
     \item Already suggested by Couveignes (1996) and Rostovtsev--Stolbunov (2006).
     \item Computationally intensive (\emph{subexponential parameter generation}).
     \item Technically not post-quantum (rather, \emph{post-post-quantum}).
-    \item Done last week by Beullens, Kleinjung and Vercauteren. See
-      \url{https://ia.cr/2019/498}.
+    \item Done last week by Beullens, Kleinjung and Vercauteren: \emph{CSI-FiSh}
+      (\href{https://ia.cr/2019/498}{eprint:2019/498}).
     \item Decent parameters, e.g.: \emph{263 bytes, 390 ms, @NIST-1.}
     \item \alert{Not this work.}
     \end{itemize}
@@ -356,8 +356,8 @@
       $\lambda$ times} in parallel;
   \item \emph{$\delta = \lambda n$} for a rejection probability
     \emph{$\le 1/3$};
-  \item Signature size \emph{$\approx \lambda n$ coefficients $\in[-B,B]$};
-  \item Sign/verify time linear in \emph{$\lVert \vec{r}-\vec{s}\rVert_\infty\approx \lambda nB$}.
+  \item Signature size \emph{$\approx \lambda n$ coefficients $\in[-\delta B,\delta B]$};
+  \item Sign/verify time linear in \emph{$\lVert \vec{r}-\vec{s}\rVert_\infty\approx \lambda^2n^2B$}.
   \end{itemize}
 
   \begin{block}{CSIDH instantiation (NIST-1)}
@@ -511,7 +511,7 @@
     \begin{itemize}
     \item \emph{ROM} only, non tight;
     \item Secret key space \emph{$\#[-B,B]^n \gg \sqrt{\#\F_p}$} to
-      heuristically cover all the isogeny graph, but:
+      (heuristically) cover all the isogeny graph, but:
       \begin{itemize}
       \item Public keys \emph{not uniformly sampled} $\Rightarrow$
         problematic random-self reduction;
@@ -540,7 +540,7 @@
 
 %%
 
-\begin{frame}{Wrap up}
+\begin{frame}{Take home $(\mathrm{msg},\sigma)$}
   \begin{itemize}
   \item By combining ideas from \emph{isogeny + lattice + hash} based
     signatures, we give work to all cryptanalysts in this room.
