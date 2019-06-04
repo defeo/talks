@@ -65,18 +65,27 @@
 \newcommand{\from}{\overset{\$}{\leftarrow}}
 
 \title{How to prove a secret isogeny}
-\author[Luca De Feo]{
-  Luca De Feo\\[1em]
-  {\footnotesize based on joint work with}\\
-  J. Burdges, S. Galbraith, S. Masson, C. Petit, A. Sanso}
-\date[\url{https://defeo.lu/docet}]{June 4, 2019, CTCrypt, Svetlogorsk\\
-  \medskip
-  Slides online at \url{https://defeo.lu/docet}}
+\author{Luca De Feo}
 \institute[UVSQ]{Université Paris Saclay -- UVSQ, France}
+\date[\url{https://defeo.lu/docet}]{June 4, 2019, CTCrypt, Svetlogorsk\\[1em]
+  {\footnotesize based on joint work with}\\
+  J. Burdges, S. Galbraith,\\ S. Masson, C. Petit, A. Sanso}
 
 \begin{document}
 
-\frame[plain]{\titlepage}
+\frame[plain]{
+  \begin{tikzpicture}[remember picture,overlay]
+    \node[at=(current page.center), opacity=0.6] {
+      \includegraphics[width=1\paperwidth]{2019-06-04-ctcrypt.jpg}
+    };
+  \end{tikzpicture}
+  \vspace{-1cm}
+  \usebeamercolor[fg]{titlegraphic}
+  {\titlepage}
+  \begin{center}
+    Slides online at~~~~~\textcolor{blue!80!black}{\href{https://defeo.lu/docet/}{https://defeo.lu/docet/}}
+  \end{center}
+}
 
 %%
 
