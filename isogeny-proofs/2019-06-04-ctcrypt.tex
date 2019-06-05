@@ -708,7 +708,7 @@
     \begin{itemize}
     \item For interactive identification;
     \item For signing messages;
-    \item For validating public keys (esp. CSIDH);
+    \item For validating public keys (esp. SIDH);
     \item More\dots
     \end{itemize}
   \end{block}
@@ -854,7 +854,7 @@
 
 \begin{frame}{Rejection sampling}
   \begin{columns}
-    \begin{column}{0.55\textwidth}
+    \begin{column}{0.52\textwidth}
       \begin{itemize}
       \item Sample \emph{long term secret $\vec{s}$} in the usual box \emph{$[-B,B]^n$},
       \item Sample \emph{ephemeral $\vec{r}$} in a larger box
@@ -871,10 +871,10 @@
       \emph{Problem:} set $\delta$ so that rejection probability is
       low.
     \end{column}
-    \begin{column}{0.42\textwidth}
+    \begin{column}{0.45\textwidth}
       \centering
       \begin{tikzpicture}[yscale=0.3,xscale=0.2]
-        \draw (-3,3) node{$+(\delta+1)B$} (-3,-3) node{$-(\delta+1)B$};
+        \draw (-4.3,3) node{$+(\delta+1)B$} (-4.3,-3) node{$-(\delta+1)B$};
         \draw (0,0) -- (18,0);
         \draw[dotted] (0,3) -- (18,3) (0,-3) -- (18,-3);
 
@@ -886,7 +886,7 @@
 
         \draw (8,-12) node {\Large$=$};
         
-        \draw (-2,-14.5) node{$+\delta B$} (-2,-19.5) node{$-\delta B$};
+        \draw (-2.5,-14.5) node{$+\delta B$} (-2.5,-19.5) node{$-\delta B$};
         \draw (0,-17) -- (18,-17);
         \draw[dotted] (0,-14.5) -- (18,-14.5) (0,-19.5) -- (18,-19.5);
       
@@ -1049,7 +1049,7 @@
     & \alert{10 hours} & 2 mins & 2 mins \\
     \hline
     Asymptotic sig size
-    & $O(\lambda^2\log(\lambda))$ & $O(\lambda t\log(\lambda))$ & $O(\lambda^2 t)$\pause\\[2em]
+    & $O(\lambda^2\log(\lambda))$ & $O(\lambda t\log(\lambda))$ & $O(\lambda^2 t)$\\[2em]
     \multicolumn{4}{c}{\bf Recent speed/size compromises by Decru, Panny and Vercauteren}\\
     \hline
     {Sig size}
