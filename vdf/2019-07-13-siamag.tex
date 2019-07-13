@@ -79,7 +79,7 @@
     \begin{itemize}
     \item Each participant \emph{$x$} broadcasts a random string
       \emph{$s_x$};
-    \item Winning ticket is \emph{$H(s_A, \dots, s_b)$}.
+    \item Winning ticket is \emph{$H(s_A, \dots, s_Z)$}.
     \end{itemize}
   \end{block}
 
@@ -88,14 +88,14 @@
   \begin{block}{Fixes}
     \begin{itemize}
     \item Make the hash function \textbf{sloooooooooooooooooooooooooooow};
-    \item<3> Make it possible to verify \emph{$w = H(s_A, \dots, s_b)$} \textbf{fast}.
+    \item<3> Make it possible to verify \emph{$w = H(s_A, \dots, s_Z)$} \textbf{fast}.
     \end{itemize}
   \end{block}
 \end{frame}
 
 %%
 
-\begin{frame}{Verifiable Delay Functions}
+\begin{frame}{Verifiable Delay Functions (Boneh, Bonneau, Bünz, Fisch 2018)}
   \begin{block}{Wanted}
     Function (family) \emph{$f:X\to Y$} s.t.:
 
