@@ -8,6 +8,7 @@
 \usepackage[american]{babel}
 \usepackage{amsmath,amsthm}
 \usepackage{array}
+\usepackage{multirow}
 \usepackage{ifthen}
 \usepackage{tikz}
 \usetikzlibrary{matrix,decorations,decorations.text,calc,arrows,snakes,shapes,positioning}
@@ -151,7 +152,7 @@
     \item<1-> An \emph{isogeny} is a \emph{map} between two
       \emph{elliptic curves};
     \item<2-> It is a \emph{group morphism}:
-      \[ϕ(P+Q) = ϕ(P+Q);\]
+      \[ϕ(P+Q) = ϕ(P)+ϕ(Q);\]
     \item<3-> It is an \emph{algebraic map}:
       \[ϕ(x,y) = \left( \frac{g(x)}{h(x)}, y\left(\frac{g(x)}{h(x)}\right)' \right);\]
     \item<4-> It is entirely determined by its \emph{kernel} (i.e., by a single \emph{point});
@@ -801,6 +802,44 @@
       \end{uncoverenv}
     \end{tikzpicture}
   \end{center}
+\end{frame}
+
+%%
+
+\begin{frame}{Running-time: measured clock cycles}
+  Clock cycle counts for constant-time CSIDH implementations,
+  averaged over 1024 experiments. 
+  The ratio is computed using MCR 2018 as baseline implementation.
+
+  \bigskip
+  \centering
+  \begin{tabular}{c@{\;}|@{\;}c@{\;}|r|r}
+    \textbf{Implementation} & \textbf{CSIDH algorithm} & \textbf{Mcycles} & \textbf{Ratio} 
+    \\ \hline
+    Castryck et al.
+                            & unprotected, unmodified
+                                                       & 155
+                                                                          & 0.39
+    \\ \hline
+    Meyer--Campos--Reith
+                            & unmodified 
+                                                       & 395 
+                                                                          & 1.00
+    \\ \hline
+    \multirow{3}{*}{This work} 
+                            & MCR-style 
+                                                       & 337
+                                                                          & 0.85
+    \\ \cline{2-4}
+                            & OAYT-style
+                                                       & 239
+                                                                          & 0.61
+    \\ \cline{2-4}
+                            & No-dummy
+                                                       & 481
+                                                                          & 1.22
+    \\ \hline
+  \end{tabular}
 \end{frame}
 
 %%
