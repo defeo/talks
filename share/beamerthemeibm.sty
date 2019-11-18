@@ -1,0 +1,46 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{beamerthemeibm}[2019/11/17 beamer theme inspired by IBM graphical chart, V1.0]
+
+\RequirePackage[T1]{fontenc}
+\RequirePackage[nosfdefault]{comicneue}
+\RequirePackage{sourcesanspro}
+\RequirePackage[amssymb,amsfonts]{concmath}
+
+\mode<presentation>
+
+\usetheme{Boadilla}
+
+\usecolortheme[RGB={0,98,255}]{structure}
+\definecolor{ibmblue}{RGB}{0,98,255}
+\setbeamercolor*{title}{fg=ibmblue}
+
+\usefonttheme[onlymath]{serif}
+\setbeamertemplate{navigation symbols}{}
+
+\renewcommand{\emph}[1]{{\usebeamercolor[fg]{structure}#1}}
+  
+\setbeamertemplate{title page}{
+  \begin{beamercolorbox}[sep=2em,left,wd=\paperwidth,ht=\paperheight,dp=0px]{palette tertiary}
+    \begin{flushright}
+      \includegraphics[width=3cm]{ibm-logo-white}
+      \hspace*{2ex}      
+    \end{flushright}
+
+    \vspace{2cm}
+
+    {\usebeamerfont{title}{\inserttitle}\par}
+    {\usebeamerfont{subtitle}{\insertsubtitle}\par}
+    \vspace{1.5\baselineskip}
+    {\usebeamerfont{author}\insertauthor\par}
+    \smallskip
+    {
+      \usebeamerfont{institute}\insertinstitute\par
+      \vspace{\baselineskip}
+      \usebeamerfont{date}\insertdate\par
+    }
+  \end{beamercolorbox}
+  \setbeamertemplate{footline}{}
+}
+
+
+\mode<all>
