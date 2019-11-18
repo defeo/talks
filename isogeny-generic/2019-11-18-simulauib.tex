@@ -38,6 +38,9 @@
 \newcommand{\GL}{\operatorname{GL}}
 \renewcommand{\a}{{\mathfrak{a}}}
 \renewcommand{\b}{{\mathfrak{b}}}
+\newcommand{\g}{{\mathfrak{g}}}
+\newcommand{\G}{{\mathcal{G}}}
+\newcommand{\E}{{\mathcal{E}}}
 \newcommand{\cyc}[1]{{〈 #1 〉}}
 \newcommand{\ord}{\operatorname{ord}}
 \newcommand{\mat}[1]{\left(\begin{smallmatrix}#1\end{smallmatrix}\right)}
@@ -167,13 +170,13 @@
   \begin{quotation}
     ``We found that CECPQ2 ([NTRU] the ostrich) outperformed CECPQ2b
     ([SIKE] the turkey), for the majority of connections in the
-    experiment, indicating that fast algorithms with large keys may be
-    more suitable for TLS than slow algorithms with small
-    keys. However, we observed the opposite---that CECPQ2b
-    outperformed CECPQ2---for the slowest connections on some devices,
-    including Windows computers and Android mobile devices. One
-    possible explanation for this is packet fragmentation and packet
-    loss.''
+    experiment, indicating that \textbf{fast algorithms with large
+      keys may be more suitable for TLS than slow algorithms with
+      small keys}. However, \textbf{we observed the opposite}---that
+    CECPQ2b outperformed CECPQ2---\textbf{for the slowest connections
+      on some devices}, including Windows computers and Android mobile
+    devices. One possible explanation for this is packet fragmentation
+    and packet loss.''
   \end{quotation}
 
   \begin{flushright}
@@ -692,7 +695,7 @@
 \begin{frame}{Algebras, orders}
   \begin{itemize}
   \item A \emph{quadratic imaginary number field} is an extension of
-    $\Q$ of the form $Q(\sqrt{-D})$ for some non-square $D>0$.
+    $\Q$ of the form $\Q(\sqrt{-D})$ for some non-square $D>0$.
   \item A \emph{quaternion algebra} is an algebra of the form
     $\Q + \alpha\Q + \beta\Q + \alpha\beta\Q$, where the generators
     satisfy the relations
@@ -757,7 +760,7 @@
         \begin{itemize}
         \item Any order $\O\subset K$ can be written as $\O=\Z+f\O_K$ for
           an integer $f$, called the \emph{conductor} of $\O$, denoted by
-          $[\O_k:\O]$.
+          $[\O_K:\O]$.
         \item If $d_K$ is the \emph{discriminant} of $K$, the discriminant
           of $\O$ is $f^2d_K$.
         \item If $\O,\O'$ are two orders with discriminants $d,d'$, then
@@ -902,10 +905,10 @@
   \begin{tabular}{c | c | c c c}
     && \textbf{Horizontal} & \textbf{Ascending} & \textbf{Descending}\\
     \hline
-    $\ell\nmid[\O_K:\O]]$ & $\ell\nmid[\O:ℤ[π]]$ &$1+\left(\frac{D_K}{ℓ}\right)$& &\\
-    $\ell\nmid[\O_K:\O]]$ & $\ell\mid[\O:ℤ[π]]$ &$1+\left(\frac{D_K}{ℓ}\right)$& &$\ell-\left(\frac{D_K}{ℓ}\right)$\\
-    $\ell\mid[\O_K:\O]]$ & $\ell\mid[\O:ℤ[π]]$ &  &$1$&$\ell$\\
-    $\ell\mid[\O_K:\O]]$ & $\ell\nmid[\O:ℤ[π]]$ & &$1$& 
+    $\ell\nmid[\O_K:\O]$ & $\ell\nmid[\O:ℤ[π]]$ &$1+\left(\frac{D_K}{ℓ}\right)$& &\\
+    $\ell\nmid[\O_K:\O]$ & $\ell\mid[\O:ℤ[π]]$ &$1+\left(\frac{D_K}{ℓ}\right)$& &$\ell-\left(\frac{D_K}{ℓ}\right)$\\
+    $\ell\mid[\O_K:\O]$ & $\ell\mid[\O:ℤ[π]]$ &  &$1$&$\ell$\\
+    $\ell\mid[\O_K:\O]$ & $\ell\nmid[\O:ℤ[π]]$ & &$1$& 
   \end{tabular}
 \end{frame}
 
@@ -1300,7 +1303,8 @@
 
 \begin{frame}{Executive summary}
   \begin{itemize}
-  \item Separable $ℓ$-isogeny = finite kernel = subgroup of $E[ℓ]$,
+  \item Separable $ℓ$-isogeny = finite kernel = subgroup of $E[ℓ]$ (=
+    ideal of norm $\ell$),
   \item Isogeny graphs have $j$-invariants for vertices and ``some''
     isogenies for edges.
   \item By varying the choices for the vertex and the isogeny set, we
@@ -1384,10 +1388,10 @@
 
 %%
 
-\begin{frame}{History of isogeny-based cryptography}
+\begin{frame}{Brief history of isogeny-based cryptography}
   \begin{description}
-  \item[1996] Couveignes introduces the \emph{Hard Homogeneous
-      Spaces}. His work stays unpublished for 10 years.
+  \item[1997] Couveignes introduces the \emph{Hard Homogeneous Spaces}
+    framework. His work stays unpublished for 10 years.
   \item[2006] Rostovtsev \& Stolbunov independently rediscover
     Couveignes ideas, suggest isogeny-based Diffie--Hellman as a
     \emph{quantum-resistant} primitive.
@@ -1400,8 +1404,12 @@
     \emph{SIKE}, only isogeny-based candidate).
   \item[2018] D., Kieffer \& Smith \textit{resurrect} the
     Couveignes--Rostovtsev--Stolbunov protocol, Castryck, Lange,
-    Martindale, Panny \& Renes publish an efficient variant named
+    Martindale, Panny \& Renes create an efficient variant named
     \emph{CSIDH}.
+  \item[2019] The year of proofs of isogeny knowledge: \emph{SeaSign}
+    (D. \& Galbraith; Decru, Panny \& Vercauteren), \emph{CSI-FiSh}
+    (Beullens, Kleinjung \& Vercauteren), \emph{VDF} (D., Masson,
+    Petit \& Sanso), \emph{threshold} (D. \& Meyer).
   \end{description}
 \end{frame}
 
@@ -1463,7 +1471,7 @@
 
 %%
 
-\begin{frame}{Basically every isogeny-based protocol...}
+\begin{frame}{Basically every isogeny-based key-exchange...}
   \centering
   \begin{tikzpicture}
     \comicneue\itshape
@@ -1490,11 +1498,132 @@
 
 %%
 
-\begin{frame}{Hard Homogeneous Spaces}
-  
+\begin{frame}{Hard Homogeneous Spaces\footcite{Couv}}
+  \begin{block}{Principal Homogeneous Space}
+    \emph{$\G\circlearrowright\E$}: A (finite) set $\E$ \emph{acted
+      upon} by a group $\G$ \emph{faithfully} and \emph{transitively}:
+    \begin{align*}
+      * : \G × \E &→ \E\\
+      \g * E &↦ E'
+    \end{align*}
+    \par\begin{description}
+    \item[Compatibility:] \emph{$\g' * (\g * E) = (\g'\g)*E$} for all
+      $\g,\g'\in\G$ and $E\in\E$;
+    \item[Identity:] \emph{$\mathfrak{e} * E = E$} if and only if
+      $\mathfrak{e}\in\G$ is the identity element;
+    \item[Transitivity:] for all $E,E'\in\E$ there exist a
+      \emph{unique $\g\in\G$} such that \emph{$\g*E'=E$}.
+      \setlength{\itemsep}{2em}
+    \item[Example:] the set of \emph{elliptic curves with complex
+        multiplication} by $\O$\\
+      is a PHS for the \emph{class group} $\Cl(\O)$.
+    \end{description}
+  \end{block}
 \end{frame}
 
 %%
+
+\begin{frame}{Hard Homogeneous Spaces}
+  \begin{block}{Hard Homogeneous Space (HHS)}
+    A Principal Homogeneous Space \emph{$\G\circlearrowright\E$} such
+    that:
+    \begin{itemize}
+    \item \emph{Evaluating} $E' = \g*E$ is \emph{easy};
+    \item \emph{Inverting} the action is \emph{hard}.
+    \end{itemize}
+  \end{block}
+
+  Discrete logarithms in $\G=〈\g〉$ are easy $\quad⇔\quad$ there is
+  an effective isomorphism
+  \begin{align*}
+    \Z/N\Z &\longleftrightarrow \G\\
+    a &↦ \g^a
+  \end{align*}
+  Then we like to see $\E$ as an \emph{HHS for $\Z/N\Z$}:
+  \begin{align*}
+    \Z/N\Z × \E &→ \E\\
+    [a]E &↦ \g^a*E
+  \end{align*}
+
+  \centering
+  \textbf{Warning:}~~~~~~\emph{$[a][b]E = [a+b]E$}~~~~~~!!!
+\end{frame}
+
+%%
+
+\begin{frame}{HHS Diffie--Hellman}
+  \begin{description}
+  \item[Goal:] Alice and Bob have never met before. They are chatting
+    over a public channel, and want to agree on a \emph{shared secret}
+    to start a private conversation.
+  \item[Setup:] They agree on a (large) \emph{HHS
+      $\langle g\rangle\circlearrowright \E$} of order $N$.
+  \end{description}
+
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (0,0) {\bf Alice};
+      \node at (7,0) {\bf Bob};
+      \node at (0,-1) {pick random \alert{$a\in\Z/N\Z$}};
+      \node at (0,-1.5) {compute $E_A=[a]E_0$};
+      \node at (7,-1) {pick random \alert{$b\in\Z/N\Z$}};
+      \node at (7,-1.5) {compute $E_B=[b]E_0$};
+      \draw[->]
+      (1,-2) to node[auto] {$E_A$} (6,-2);
+      \draw[->] (6,-2.5) to node[auto] {$E_B$} (1,-2.5);
+      \node at (3.5,-3.5) {\emph{Shared secret} is \alert{$[a]E_B=[a+b]E_0=[b]E_A$}};
+    \end{tikzpicture}
+  \end{center}  
+\end{frame}
+
+%%
+
+\begin{frame}{HHSDH from complex multiplication}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \textbf{Obstacles:}
+      \begin{itemize}
+      \item \emph{We don't want to wait for a quantum computer} for
+        solving discrete logs in $\Cl(\O)$!
+      \item Until then, even the \emph{group size} of $\Cl(\O)$ is
+        \emph{unknown}.
+      \item Only ideals of small norm (\emph{isogenies of small degree})
+        are efficient to evaluate.
+      \end{itemize}
+
+      \textbf{Solution:}
+      \begin{itemize}
+      \item Restrict to elements of $\Cl(\O)$ of the form
+        \[\g = \prod \a_i^{e_i}\]
+        for a basis of $\a_i$ of \emph{small norm}.
+      \item Equivalent to doing \emph{isogeny walks} of \emph{smooth
+          degree}.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{scope}
+          \def\crater{12}
+          \def\jumpa{-8}
+          \def\jumpb{9}
+          \def\diam{2cm}
+
+          \foreach \i in {1,...,\crater} {
+            \draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+            \draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jumpa*360/\crater : \diam);
+            \draw[green] (360/\crater*\i : \diam) to[bend right=50] (360/\crater*\i+\jumpb*360/\crater : \diam);
+          }
+          \foreach \i in {1,...,\crater} {
+            \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.4) node{$E_{\i}$};
+          }
+        \end{scope}
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%% 
 
 \begin{frame}
   \frametitle{CSIDH key exchange}
@@ -1590,91 +1719,6 @@
     j =\;\; &\mathtt{0x23baf75419531a44f3b97cc9d8291a275047fcdae0c9a0c0ebb993964f821f2}\\
             &\mathtt{0c11058a4200ff38c4a85e208345300033b0d3119ff4a7c1be0acd62a622002a9}
   \end{align*}
-\end{frame}
-
-%%
-
-\begin{frame}{Isogeny evaluation}
-  \begin{columns}
-    \begin{column}{0.45\textwidth}
-      \textbf{Repeat:}
-      \begin{itemize}
-      \item Take a \emph{random point} $P\in E(\F_p)$;
-      \item Set \emph{$Q=[c]P$},\\
-        where \emph{$c$} is an \emph{appropriate cofactor}, so that
-        \emph{$N = \#〈Q〉$} contains only \emph{useful} prime
-        factors;
-      \item Advance by the \emph{degree $N$} isogeny of \emph{kernel
-        $〈Q〉$}.
-      \end{itemize}
-    \end{column}  
-    \begin{column}{0.4\textwidth}
-      \centering
-      \transdissolve<2->
-      \begin{tikzpicture}
-        \begin{scope}
-          \def\crater{12}
-          \def\jumpa{-8}
-          \def\jumpb{9}
-          \def\diam{2cm}
-          
-          \foreach \i in {1,...,\crater} {
-            \pgfmathparse{int(mod(2^\i,13))}
-            \let\exp\pgfmathresult
-            \draw[fill] (360/\crater*\i: \diam) circle (2pt);
-          }
-
-          \draw (0 : \diam + 0.4cm) node {$E_0$};
-          \uncover<18>{\draw (360/\crater*8 : \diam + 0.4cm) node {$E_A$};}
-          
-          \uncover<3-5,18>{
-            \myedge{0}{1}{blue}\myedge{1}{5}{red}
-            \myedge{5}{2}{green}\myedge{2}{9}{orange}
-          }
-          \uncover<6-8,18>{
-            \myedge{9}{10}{blue}\myedge{10}{2}{red}\myedge{2}{11}{green}
-          }
-          \uncover<9-11,18>{\myedge{11}{8}{green}}
-          \uncover<12-14,18>{\myedge{8}{0}{red}}
-          \uncover<15-16,18>{\myedge{0}{4}{red}}
-          \uncover<17->{\myedge{4}{8}{red}}
-        \end{scope}
-
-        \begin{scope}[yshift=-3cm]
-          \uncover<2-3>{
-            \node at (0,0) {$\#〈P〉 = \bl{3}\cdot\rd{5}\cdot\gr{7}\cdot\og{11}$};
-          }
-          \uncover<3>{
-            \node at (0,-1) {$Q = P$}; 
-          }
-          \uncover<5-6>{
-            \node at (0,0) {$\#〈P〉 = \bl{3}\cdot\rd{5}\cdot\gr{7}\cdot\og{11}$};
-            \node at (0,-1) {$Q = [\og{11}]P$};
-          }
-          \uncover<8-9>{
-            \node at (0,0) {$\#〈P〉 = \bl{3}\cdot\gr{7}\cdot\og{11}$};
-            \node at (0,-1) {$Q = [\bl{3}\cdot\og{11}]P$};
-          }
-          \uncover<11,12,14,16>{
-            \node at (0,0) {$\#〈P〉 = \bl{3}\cdot\rd{5}\cdot\gr{7}\cdot\og{11}$};
-            \node at (0,-1) {$Q = [\bl{3}\cdot\gr{7}\cdot\og{11}]P$};
-          }
-        \end{scope}
-        
-        \begin{scope}[xshift=2.5cm,yshift=-3.5cm,xscale=0.3,yscale=0.2]
-          \draw (0,0) -- (4,0);
-          \draw[dotted] (0,5) -- (4,5) (0,-5) -- (4,-5);
-
-          \uncover<-3,18>{\sk{2}{5}{-3}{1}}
-          \uncover<4-6>{\sk{1}{4}{-2}{0}}
-          \uncover<7-9>{\sk{0}{3}{-1}{0}}
-          \uncover<10-12>{\sk{0}{3}{0}{0}}
-          \uncover<13-14>{\sk{0}{2}{0}{0}}
-          \uncover<15-16>{\sk{0}{1}{0}{0}}
-        \end{scope}
-      \end{tikzpicture}
-    \end{column}
-  \end{columns}
 \end{frame}
 
 %%
@@ -2205,8 +2249,31 @@
 
 %%
 
-\begin{frame}{CSI-FiSh}
+\begin{frame}{CSI-FiSh~\footcite{beullens:2019}}
+  \begin{itemize}
+  \item Record breaking class group computation for CSIDH-512, hard to
+    scale to larger primes;
+  \item Effectively (but not asymptotically) makes CSIDH into an HHS:
+    \begin{itemize}
+    \item Compatible with secret sharing in the exponent, yields decent
+      threshold signatures.\footcite{cryptoeprint:2019:1288}
+    \end{itemize}
+  \end{itemize}
   
+  \centering
+  \begin{tabular}{r r r | r r r | r r r }
+    $S$ & $t$ & $k$ & $|\mathrm{sk}|$ & $|\mathrm{sk}|$ & $|\mathrm{sig}|$ & KeyGen & Sign & Verify \\
+    \hline
+    $2^1$    & $56$ & $16$ & 16 B & 128 B & 1880 B & 100 ms & 2.92 s & 2.92 s\\
+    $2^2$    & $38$ & $14$ & 16 B & 256 B & 1286 B & 200 ms & 1.98 s & 1.97 s\\
+    $2^3$    & $28$ & $16$ & 16 B & 512 B &  956 B & 400 ms & 1.48 s & 1.48 s\\
+    $2^4$    & $23$ & $13$ & 16 B &  1 KB &  791 B & 810 ms & 1.20 s & 1.19 s\\
+    $2^6$    & $16$ & $16$ & 16 B &  4 KB &  560 B & 3.3 s  & 862 ms & 859 ms\\
+    $2^8$    & $13$ & $11$ & 16 B & 16 KB &  461 B & 13 s   & 671 ms & 670 ms\\
+    $2^{10}$ & $11$ &  $7$ & 16 B & 64 KB &  395 B & 52 s   & 569 ms & 567 ms\\
+    $2^{12}$ &  $9$ & $11$ & 16 B &256 KB &  329 B & 3.5 m  & 471 ms & 469 ms\\
+    $2^{15}$ &  $7$ & $16$ & 16 B &  2 MB &  263 B & 28 m   & 395 ms & 393 ms
+  \end{tabular}
 \end{frame}
 
 %%
@@ -2411,18 +2478,17 @@
 \begin{frame}{Conclusion}
   \begin{itemize}
   \item Repeat with me: \emph{I need isogeny-based crypto!}
-  \item ...
-  \item \emph{Different} isogeny graphs enable different \emph{styles
-      of proofs}, different \emph{security assumptions}.
+  \item \emph{Different} isogeny graphs enable different applications,
+    different \emph{security assumptions}.
+  \item Public key encryption based on isogenies \emph{is a reality},
+    although maybe not your \#1 choice for TLS.
   \item Post-quantum isogeny signatures are still \emph{far from
       practical}.
   \item \emph{Practical} isogeny signatures do exists (CSI-FiSh); you
-    can start using them now if you are an isogeny hippie, but they
-    \emph{do not scale}.
-  \item Pairing-based proofs are usable, but not interesting for
-    signatures: look into \emph{succinctness}, instead!
-  \item Proofs can be \emph{chained} easily: useful for multi-party
-    supersingular curve generation (work in progress with J. Burdges).
+    can start using them now if you are an isogeny hippie, are ok
+    for threshold signatures, but they \emph{do not scale}.
+  \item Pairing-based isogeny proofs are usable, but not interesting
+    for signatures: look into \emph{succinctness}, instead!
   \end{itemize}
 \end{frame}
 
