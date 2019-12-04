@@ -1,11 +1,10 @@
 \documentclass[aspectratio=169]{beamer}
 
-%\includeonlyframes{current}
-
 \usepackage[T1]{fontenc}
 \usepackage[utf8]{inputenc}
 \usepackage[american]{babel}
 \usepackage{amsmath,amsthm}
+\usepackage{multirow}
 \usepackage{tikz}
 \usetikzlibrary{matrix,decorations,decorations.text,calc,arrows,snakes,shapes,positioning}
 
@@ -21,14 +20,18 @@
 
 \newcommand{\F}{\mathbb{F}}
 \newcommand{\Z}{\mathbb{Z}}
+\newcommand{\Q}{\mathbb{Q}}
 \DeclareMathOperator{\End}{End}
+\DeclareMathOperator{\Cl}{Cl}
+\DeclareMathOperator{\poly}{poly}
+\DeclareMathOperator{\polylog}{polylog}
 
 
 \title[VDFs from Isogenies and Pairings]{Verifiable Delay Functions and More from Isogenies and Pairings}
 \author[Luca De Feo]{
   Luca De Feo\\[1em]
   based on joint work with J.~Burdges, S.~Masson, C.~Petit, A.~Sanso}
-\date[ECC 2019]{December 4, 2019, ECC, Bochum\\
+\date[\url{https://defeo.lu/docet}~~~~~~ECC 2019]{December 4, 2019, ECC, Bochum\\
   \medskip
   Slides online at \url{https://defeo.lu/docet}}
 \institute{IBM Research Zürich}
@@ -112,14 +115,14 @@
 
   \begin{itemize}
   \item \emph{Sequential} assuming hash output ``unpredictability'',
-  \item but how do you verify?
+  \item but how do you verify? \textcolor{gray}{(you're not allowed to say ``SNARKs'')}
   \end{itemize}
 \end{frame}
 
 %%
 
 \begin{frame}{VDFs from groups of unknown order
-    {\small (inspired by time-lock puzzles)}}
+    {\small (inspired by Rivest--Shamir--Wagner \emph{time-lock puzzle})}}
   \begin{columns}
     \begin{column}{0.6\textwidth}
       \begin{block}{Setup}
@@ -480,7 +483,31 @@
 %%
 
 \begin{frame}{Implementation}
-  
+  \begin{itemize}
+  \item PoC implementation in SageMath (re-implemented Montgomery isogenies);
+  \item \emph{$p+1 = N\cdot 2^{1244}\cdot 63$}, enables
+    \emph{time/memory compromise} in evaluation.
+  \end{itemize}
+
+  \bigskip
+  \begin{table}
+    \centering
+    \begin{tabular}{c c r r r}
+      \textbf{Protocol} & \textbf{Step} & \textbf{Parameters size} ($T\approx 2^{16}$)
+      & ~~~~\textbf{Time}~~~~ & \textbf{Throughput}	\\
+      \hline
+      \multirow{3}{*}{$\F_p$ graph} & Setup & 238 kb & --- & 0.75 isog/ms\\
+      & Evaluation & --- &  --- & 0.75 isog/ms\\
+      & Verification & --- & $0.3$ s & ---\\
+      \hline
+      \multirow{3}{*}{$\F_{p^2}$ graph} & Setup & 491 kb & --- & 0.35 isog/ms\\
+      & Evaluation & --- &  --- & 0.23 isog/ms\\
+      & Verification & --- & $4$ s & ---\\
+    \end{tabular}
+    
+    \caption{Benchmarks (Intel Core i7-8700 @3.20GHz) at 128 bits of
+      security (aggressively optimizing for size).}
+  \end{table}
 \end{frame}
 
 %%
@@ -488,15 +515,16 @@
 \begin{frame}{Attacks}
   \begin{block}{Security goal}
     Given the isogeny \emph{$\phi:E\to E$}, the adversary is allowed
-    $\mathrm{poly}(T)$ precomputation.
+    $\poly(T)$ precomputation.
 
-    \smallskip
+    \bigskip
     Later, it is given a \emph{random $Q\in Y_2$}:\\
     its probability of computing \emph{$\hat\phi(Q)$} in \emph{less
-      than $T$ steps} must be negligible.
+      than ``$T$ steps''} must be negligible.
   \end{block}
 
-  \textbf{Attack avenues:}
+  \smallskip
+  \emph{Attack avenues:}
   \begin{enumerate}
   \item Speed-up/parallelize isogeny computation;
   \item Solve the pairing equation;
@@ -507,13 +535,15 @@
 %%
 
 \begin{frame}{Attacking the computation?}
-  \large\centering
+  \large
   RSA: \hfill $x \longmapsto x^2\mod N$ \hspace{4em}
 
   \vfill
-  Isogenies: \hfill $\displaystyle x \longmapsto x\frac{x\alpha_i-1}{x-\alpha_i}\mod p$ \hspace{4em}
-
+  Isogenies: \hfill $\displaystyle x \longmapsto x\frac{x\alpha_i-1}{x-\alpha_i}\mod p$ \hspace{4em}\strut\\
+  {\normalsize\color{gray} ($\alpha_1,\dots,\alpha_T$ depend on the chosen isogeny)}
+  
   \vfill
+  \centering
   No speedup? Even with unlimited parallelism? Really?
   
   \medskip
@@ -524,7 +554,18 @@
 %%
 
 \begin{frame}{Attacking the pairing}
-  
+  \large
+
+  A pairing inversion problem:
+  \[e(P, \alert{???}) = e(\phi(P), Q)\]
+
+  \bigskip
+  \begin{description}
+  \item[Quantum:] Broken by Shor's algorithm;
+  \item[Classical:] Subexponential \emph{$L_p(1/3)$} attack.\\[1em]
+  \item[Note:] Solving the equation gives the \emph{true value of
+      $\hat\phi(Q)$} (perfect soundness)
+  \end{description}
 \end{frame}
 
 %%
@@ -533,7 +574,7 @@
   \begin{columns}
     \begin{column}{0.5\textwidth}
       \begin{itemize}
-      \item Isogeny degree $= 2^T \leftrightarrow$ \emph{walk length $= T$};
+      \item Isogeny degree $= \ell^T \leftrightarrow$ \emph{walk length $= T$};
         \begin{itemize}
         \item e.g., for delay $\approx$ 1 hour, \emph{$T\approx 2^{20}$};
         \item<2-> Typically much larger than graph diameter (\emph{$= O(\log p) \approx 2^{10}$}).
@@ -568,37 +609,260 @@
 %%
 
 \begin{frame}{$\End(E)$ gives shortcuts}
-  
+  \begin{columns}
+    \begin{column}{0.48\textwidth}
+      \begin{block}{$\F_p$ case}
+        \begin{itemize}
+        \item \emph{$\End_{\F_p}(E) \subset \Q(\sqrt{-p})$}:\\
+          the class group $\Cl(-4p)$ acts on the set of supersingular
+          curves $/\F_p$;
+        \item \emph{Structure of $\Cl(-4p)$}\\
+          $\qquad\Updownarrow$\\
+          relations between ideal classes\\
+          $\qquad\Updownarrow$\\
+          \emph{shortcuts} in the graph.
+          \begin{itemize}
+          \item see CSI-FiSh signatures (Beullens--Kleinjung--Vercauteren);
+          \item akin to attack on \emph{class group VDF}.
+          \end{itemize}
+        \item Some additional work to find \emph{endomorphism $\omega$}
+          such that \emph{$\omega\circ\hat\psi(Q) = \hat\phi(Q)$}.
+        \end{itemize}
+      \end{block}
+    \end{column}
+    \pause
+    \begin{column}{0.48\textwidth}
+      \begin{block}{General case (both $\F_p$ and $\F_{p^2}$)}
+        \begin{itemize}
+        \item \emph{$\End(E)$} isomorphic to an\\
+          \emph{order in a quaternion algebra};
+        \item \emph{Structure of $\End(E)$} (or $\End(E')$)\\
+          $\qquad\Updownarrow$\\
+          \emph{shortcuts} (through $\F_{p^2}$).
+          \begin{itemize}
+          \item Related to attacks on the Charles--Goren--Lauter hash
+            function.
+          \end{itemize}
+        \item Additional work to find \emph{$\omega\in\End(E)$}.
+        \end{itemize}
+
+        \begin{uncoverenv}<3->
+          \begin{center}
+            \alert{\bf WE HAVE A PROBLEM!}
+          \end{center}
+          
+          No known way to construct supersingular curves
+          without knowledge of $\End(E)$.
+
+          \medskip
+          Only known fix: \emph{\bf Trusted setup}.
+
+        \end{uncoverenv}
+      \end{block}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 %%
 
-\begin{frame}{Quantum annoyance}
+\begin{frame}{Trusted setup}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.2]
+        \pgfmathsetseed{2};
+        \coordinate (P) at (0,0);
+        \draw[red,fill] (P) circle (5pt) +(0,2) node[auto] {$y^2=x^3+x$};
+        \uncover<2>{
+          \foreach \i in {1,...,100} {
+            \coordinate (Q) at ($(P) + (150*rand:1)$);
+            \draw (P) -- (Q);
+            \coordinate (P) at (Q);
+          }
+        }
+        \uncover<2->{
+          \draw[red,fill] (Q) circle (5pt) +(1.2,0) node[auto] {$E$};}
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item<1-> Start from a well known supersingular curve,
+      \item<2-> Do a random walk,
+      \item<3-> Forget it.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+
+  \begin{uncoverenv}<4->
+    \begin{center}
+      \begin{tabular}{p{10em} | c c | c c}
+        & \multicolumn{2}{c|}{Classical} & \multicolumn{2}{c}{Quantum} \\
+        & $\F_p$ graph & $\F_{p^2}$ graph & $\F_p$ graph & $\F_{p^2}$ graph \\
+        \hline
+        Computing shortcuts & $L_p(1/2)$ & $O(\sqrt{p})$ & $\polylog(p)$ & $O(\sqrt[4]{p})$\\
+        Pairing inversion & $L_p(1/3)$ & $L_p(1/3)$ & $\polylog(p)$ & $\polylog(p)$\\
+      \end{tabular}
+    \end{center}
   
+    \emph{\it Quantum annoyance:}
+    \begin{itemize}
+    \item Computing \emph{shortcuts} in $\F_{p^2}$ is \emph{quantumly
+        hard};
+    \item Pairing inversion attacks must be run \emph{online}, useless
+      if Shor's algorithm takes \emph{much longer than target delay}.
+    \end{itemize}
+  \end{uncoverenv}
 \end{frame}
 
 %%
 
 \begin{frame}{Distributed trusted setups}
-  
+  \begin{columns}
+    \begin{column}{0.4\textwidth}
+      \begin{tikzpicture}[scale=0.2]
+        \pgfmathsetseed{2};
+        \coordinate (P) at (0,0);
+        \draw[red,fill] (P) circle (5pt) +(1,-1) node[auto] {$y^2=x^3+x$};
+        \foreach \r in {1,...,3} {
+          \coordinate (R) at (P);
+          \uncover<+>{
+            \foreach \i in {1,...,100} {
+              \coordinate (Q) at ($(P) + (360*rand:1)$);
+              \draw (P) -- (Q);
+              \coordinate (P) at (Q);
+            }
+          }
+          \uncover<.->{
+            \draw[red,fill] (Q) circle (5pt) +(1.2,0) node[auto] {$E_\r$};}
+          \uncover<+->{
+            \draw[dotted] (R) edge[bend right] node[auto,swap] {$\pi_\r$} (Q);}
+        }
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.55\textwidth}
+      Mitigate trusted setup woes by \emph{distributing trust}:
+      \begin{itemize}
+      \item<1-> Participant $i$ performs a random walk (in $\F_p$),
+      \item<2-> Publishes a \emph{proof} of isogeny knowledge,
+      \item<3-> Repeat.
+      \end{itemize}
+
+      \smallskip
+      \begin{uncoverenv}<7->
+        Proof options:
+        \begin{itemize}
+        \item Generic ZK proofs,
+        \item Isogeny ZK proofs (SeaSign),
+        \item Pairing proofs (not ZK!):
+          \begin{gather*}
+            P, Q = \mathcal{H}(E_i,E_{i+1}),\\
+            e_i(P,\hat\phi_i(Q)) = e_{i+1}(\phi_i(P),Q).
+          \end{gather*}
+        \end{itemize}
+      
+        \smallskip \emph{Properties:} asynchronous, robust against
+        $n-1$ coalition, verification scales linearly, updatable,
+        \dots
+      \end{uncoverenv}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 %%
 
-\begin{frame}{Beyond VDFs: Watermarking}
-  
+\begin{frame}[plain]
+  \begin{beamercolorbox}[sep=0.1px,center,wd=\paperwidth,ht=\paperheight]{palette tertiary}
+    \begin{columns}
+      \begin{column}{0.55\textwidth}
+        \Huge\centering\color{white} Beyond VDFs
+      \end{column}
+      \begin{column}{0.45\textwidth}
+        \includegraphics[height=\paperheight]{db.jpg}
+      \end{column}
+    \end{columns}
+  \end{beamercolorbox}
 \end{frame}
 
 %%
 
-\begin{frame}{Beyond VDFs: Time-locks}
-  
+\begin{frame}{Watermarking}
+  \def\Emid{E_{\mathrm{mid}}}
+  \def\emid{e_{\mathrm{mid}}}
+  \begin{description}
+  \item[Goal:] reward evaluator for its effort.
+  \item[Watermarking:] issue proof of evaluation \emph{tied to
+      evaluator identity}
+  \end{description}
+
+  \centering
+  \begin{tikzpicture}[x=5cm]
+    \node (E) at (0,0) {$E$};
+    \node (Em) at (1,0) {$\Emid$};
+    \node (E1) at (2,0) {$E'$};
+    
+    \draw[auto,->] (E1) edge[bend right] node {$\hat\phi_1$} (Em)
+    (Em) edge[bend right] node {$\hat\phi_2$} (E)
+    (E1) edge[bend left] node[swap] {$\hat\phi = \hat\phi_2\circ\hat\phi_1$} (E);
+  \end{tikzpicture}
+
+  \begin{description}
+  \item[Secret key:] scalar $s\in\Z/N\Z$,
+  \item[Public key:] $s\phi(P) \in E'$ \textcolor{gray}{(+ proof of exponent knowledge)},
+  \item[Proof of work:] $s\hat\phi_1(Q) \in \Emid$,
+  \item[Verification:] $\emid(\phi_2(P),s\hat\phi_1(Q)) = e'(s\phi(P),Q)$.
+  \item[Properties:] blind (can be checked before the computation is
+    complete).
+  \end{description}
 \end{frame}
 
 %%
 
-\begin{frame}{Conclusion}
-  
+\begin{frame}{Encryption to the future (time-locks)}
+  \begin{description}
+  \item[Goal:] encrypt now, decryption only possible after delay.
+  \item[Applications:] auctions, voting, \dots
+  \item[Idea:] start from Boneh--Franklin IBE, just add
+    isogenies\texttrademark.
+  \end{description}
+
+  \bigskip
+  \centering
+  \begin{tabular}{c c c}
+    \textbf{Bidder} && \textbf{Auctioneer}\\
+                    && Publishes auction key \emph{$Q = \mathcal{H}(\mathsf{sid})$}\\
+                    && starts evaluating \emph{$\hat\phi(Q)$}\\
+    samples random \emph{$s\in\Z/N\Z$}\\
+    computes \emph{$k = e(\phi(P), Q)^s$}\\
+    encrypts offer \emph{$o_k = \mathrm{Enc}_{k}(o)$}\\
+    \hfill sends \emph{$(o_k,sP)$} & $\longrightarrow$\\
+                    && $\vdots$\\
+                    && computes \emph{$k = e(sP, \hat\phi(Q))$}\\
+                    && decrypts \emph{$o_k$}
+  \end{tabular}
+\end{frame}
+
+%%
+
+\begin{frame}{Open questions}
+  \begin{itemize}
+  \item<+-> Understand the impact of large memory requirements in
+    evaluation; is a time/memory trade-off reasonable?
+  \item<+-> Remove trusted setup:
+    \begin{itemize}
+    \item Hash into the supersingular set, or
+    \item Construct ordinary pairing friendly curves with large
+      discriminant.
+    \end{itemize}
+  \item<+-> Explore more advanced pairing+delay constructions.
+  \item<+-> Spend millions on dedicated hardware for $2$-isogenies.
+  \end{itemize}
+
+  \bigskip
+  \begin{uncoverenv}<+->
+    \begin{center}
+      \Large Just Add Isogenies\texttrademark!
+    \end{center}
+  \end{uncoverenv}
 \end{frame}
 
 %%
