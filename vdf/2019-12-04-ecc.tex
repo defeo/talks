@@ -7,6 +7,7 @@
 \usepackage{multirow}
 \usepackage{tikz}
 \usetikzlibrary{matrix,decorations,decorations.text,calc,arrows,snakes,shapes,positioning}
+\usepackage{multimedia}
 
 \usepackage[nosfdefault]{comicneue}
 \usepackage{sourcesanspro}
@@ -40,7 +41,28 @@
 
 \frame[plain]{\titlepage}
 
-%%
+% {
+%   \setbeamercolor{background canvas}{bg=black}
+%   \begin{frame}[plain]
+%     \begin{tikzpicture}[remember picture,overlay]
+%       \node(pic)[at=(current page.center)] {
+%         \includegraphics[width=\paperwidth]{pool.jpg}
+%       };
+%     \end{tikzpicture}
+%   \end{frame}
+  
+%   %% 
+  
+%   \begin{frame}[plain]
+%     \begin{tikzpicture}[remember picture,overlay]
+%     \node(pic)[at=(current page.center)] {
+%       \includegraphics[width=\paperwidth]{hodl.jpg}
+%       };
+%     \end{tikzpicture}
+%   \end{frame}
+% }
+
+%% 
 
 \begin{frame}{Distributed lottery}
   Participants \textbf{A, B, \dots, Z} want to agree on a random
@@ -512,6 +534,21 @@
 
 %%
 
+\begin{frame}[plain]
+  \begin{beamercolorbox}[sep=0.1px,center,wd=\paperwidth,ht=\paperheight]{palette tertiary}
+    \begin{columns}
+      \begin{column}{0.3\textwidth}
+        \includegraphics[height=\paperheight]{labyrinth}
+      \end{column}
+      \begin{column}{0.7\textwidth}
+        \Huge\centering Security
+      \end{column}
+    \end{columns}
+  \end{beamercolorbox}
+\end{frame}
+
+%%
+
 \begin{frame}{Attacks}
   \begin{block}{Security goal}
     Given the isogeny \emph{$\phi:E\to E$}, the adversary is allowed
@@ -541,6 +578,9 @@
   \vfill
   Isogenies: \hfill $\displaystyle x \longmapsto x\frac{x\alpha_i-1}{x-\alpha_i}\mod p$ \hspace{4em}\strut\\
   {\normalsize\color{gray} ($\alpha_1,\dots,\alpha_T$ depend on the chosen isogeny)}
+
+  \vfill
+  e.g., \emph{$\quad\log_2 N \approx 2048,\quad \log_2 p \approx 1500$}.
   
   \vfill
   \centering
@@ -774,7 +814,7 @@
   \begin{beamercolorbox}[sep=0.1px,center,wd=\paperwidth,ht=\paperheight]{palette tertiary}
     \begin{columns}
       \begin{column}{0.55\textwidth}
-        \Huge\centering\color{white} Beyond VDFs
+        \Huge\centering Beyond VDFs
       \end{column}
       \begin{column}{0.45\textwidth}
         \includegraphics[height=\paperheight]{db.jpg}
