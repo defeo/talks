@@ -231,7 +231,7 @@
       \centering
       \begin{tikzpicture}[x=2cm,y=2cm]
         \def\crater{17}
-        \foreach \i in {0,...,\crater - 1} {
+        \foreach \i in {0,...,16} {
           \draw[fill] (360/\crater*\i:1) circle (1pt)
           +(360/\crater*\i:1em) node {\alt<2->{$E_{\i}$}{$x^{2^{\i}}$}};
           \draw (360/\crater*\i : 1) edge[bend right] (360/\crater*\i+360/\crater : 1);
