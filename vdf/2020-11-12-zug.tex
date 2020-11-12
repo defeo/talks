@@ -31,12 +31,11 @@
 
 \include{isographs}
 
-\title[VDFs from Supersingular Isogenies and Pairings]{Verifiable Delay Functions from Supersingular Isogenies and Pairings}
-\author[Luca De Feo]{
-  Luca De Feo\\[1em]
-  based on joint work with J.~Burdges, S.~Masson, C.~Petit, A.~Sanso}
+\title[VDFs from Supersingular Isogenies and Pairings]{Verifiable Delay Functions\\from Supersingular Isogenies and Pairings}
+\author[Luca De Feo]{Luca De Feo}
 \date{November 12, 2020, CV Labs}
-\institute{IBM Research Zürich}
+\institute[IBM Research Zürich]{IBM Research Zürich\\[0.5em]
+  based on joint work with J.~Burdges (@jeffburdges), S.~Masson (@SimonMasson2), C.~Petit, A.~Sanso (@asanso)}
 
 \begin{document}
 
@@ -134,12 +133,8 @@
     \item Other bids are opened with SlowKDF. \textcolor{gray}{(can
         get quite expensive, though)}
     \end{itemize}
-    
-    \smallskip\pause More efficient solution provided by
-    \emph{Homomorphic TL} or \emph{Delay Encryption}: not this talk.
   \end{block}
 
-  \pause
   Other applications: Voting, key escrow, \dots
 \end{frame}
 
@@ -180,7 +175,7 @@
 
 %%
 
-\begin{frame}{Example: distributed lotteries}
+\begin{frame}{Example application: distributed lotteries}
   Participants \textbf{A, B, \dots, Z} want to agree on a random
   winning ticket.
 
@@ -213,7 +208,7 @@
 
 %%
 
-\begin{frame}{Applications}
+\begin{frame}{More applications}
   \begin{block}{Randomness beacons}
     \begin{description}
     \item[Goal:] Generate a public stream of provably random numbers.
@@ -266,6 +261,42 @@
     \end{itemize}
   \item[More resources:] \url{https://vdfresearch.org/}.
   \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{Delay Encryption (\url{https://ia.cr/2020/638})}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{center}
+        \begin{tikzpicture}
+          \node (fred) at (0,2) {\includegraphics[height=6em]{fred.png}};
+          \node (barney) at (0,0) {\includegraphics[height=6em]{barney.png}};
+          \node (scooby) at (3,-2.5) {\includegraphics[height=6em]{scoobydoo.png}};
+          \node (jets) at (4,2.2) {\includegraphics[height=7em]{jetsons.png}};
+          
+          \node (chest) at (6,0) {\includegraphics[width=2em]{chest-closed.png}};
+          \node at (6,-1) {\comicneue\bfseries\footnotesize OPEN IN 2112};
+
+          \draw[thick,->] (fred) edge (chest)
+          (barney) edge (chest)
+          (scooby) edge (chest)
+          (jets) edge (chest);
+        \end{tikzpicture}
+      \end{center}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{itemize}
+      \item Trapdoor-less time capsule.
+      \item Delay Encryption $\Rightarrow$ Time-lock Puzzles.
+      \item Delay Encryption $\Rightarrow$ VDF.
+      \item Only known from isogenies.
+      \item Applications: better auctions, voting, \dots
+      \end{itemize}
+      \pause
+      Not this talk.
+    \end{column}
+  \end{columns}
 \end{frame}
 
 %%
