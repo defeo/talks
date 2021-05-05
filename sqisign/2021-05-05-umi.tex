@@ -1,0 +1,1242 @@
+\documentclass[aspectratio=169]{beamer}
+
+%\includeonlyframes{current}
+
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{amsmath,amsthm}
+\usepackage{unicode}
+\usepackage{array,tabularx}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usetikzlibrary{matrix,decorations,decorations.text,calc,arrows,snakes,shapes,positioning}
+\usepackage{tikzsymbols}
+\usepackage[backend=biber,citestyle=authoryear-comp,bibstyle=beamer,doi=false,isbn=false,url=true,maxnames=10]{biblatex}
+\bibliography{refs}
+
+\usepackage{ulem}
+
+\mode<presentation>{%
+  \usetheme{ibm}
+}
+
+\newcommand{\C}{ℂ}
+\newcommand{\R}{ℝ}
+\newcommand{\Z}{ℤ}
+\newcommand{\N}{ℕ}
+\newcommand{\Q}{ℚ}
+\newcommand{\F}{\mathbb{F}}
+\renewcommand{\P}{\mathbb{P}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\tildO}{\mathcal{\tilde{O}}}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\polylog}{\operatorname{polylog}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\chr}{\operatorname{char}}
+\newcommand{\Cl}{\operatorname{Cl}}
+\newcommand{\GL}{\operatorname{GL}}
+\renewcommand{\a}{{\mathfrak{a}}}
+\renewcommand{\b}{{\mathfrak{b}}}
+\newcommand{\p}{{\mathfrak{p}}}
+\newcommand{\q}{{\mathfrak{q}}}
+\newcommand{\g}{{\mathfrak{g}}}
+\newcommand{\G}{{\mathcal{G}}}
+\newcommand{\E}{{\mathcal{E}}}
+\newcommand{\cyc}[1]{{〈 #1 〉}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\mat}[1]{\left(\begin{smallmatrix}#1\end{smallmatrix}\right)}
+\newcommand{\from}{\overset{\$}{\leftarrow}}
+
+\newcommand{\bl}[1]{\textcolor{blue}{#1}}
+\newcommand{\rd}[1]{\textcolor{red}{#1}}
+\newcommand{\gr}[1]{\textcolor{green}{#1}}
+\newcommand{\og}[1]{\textcolor{orange}{#1}}
+
+\definecolor{light blue}{RGB}{0,102,204}
+
+\newcommand{\myedge}[3]{
+  \draw[#3] (360/\crater*#1 : \diam) to[bend right] (360/\crater*#2 : \diam);
+}
+\newcommand{\sk}[4]{
+  \draw[very thick,blue]   (0,0) -- (0,#1);
+  \draw[very thick,red]    (1,0) -- (1,#2);
+  \draw[very thick,green]  (2,0) -- (2,#3);
+  \draw[very thick,orange] (3,0) -- (3,#4);
+}
+\newcommand{\axes}[4]{
+  \clip (#1,#3) rectangle (#2,#4);
+  \draw [thin, gray, -latex] (#1,0) -- (#2,0);% Draw x axis
+  \draw [thin, gray, -latex] (0,#3) -- (0,#4);% Draw y axis
+}
+\pgfkeys{/lattice/.code n args={4}{\tikzset{cm={#1,#2,#3,#4,(0,0)}}}}
+\newcommand{\lattice}[2]{
+  \draw[style=help lines,dashed] (#1-1,#1-1) grid[step=1] (#2+1,#2+1);
+  \foreach \x in {#1,...,#2}{
+    \foreach \y in {#1,...,#2}{
+      \node[draw,circle,inner sep=2pt,fill] at (\x,\y) {};
+      % Places a dot at those points
+    }
+  }
+}
+
+\newenvironment<>{goodblock}[1]{%
+  \begin{actionenv}#2%
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=green!60!black,bg=green!50!white}
+       \setbeamercolor{block body}{bg=green!20!white}
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}}
+\newenvironment<>{mehblock}[1]{%
+  \begin{actionenv}#2%
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=yellow!50!black,bg=yellow!50!white}
+       \setbeamercolor{block body}{bg=yellow!20!white}
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}}
+\newenvironment<>{badblock}[1]{%
+  \begin{actionenv}#2%
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=red!60!black,bg=red!50!white}
+       \setbeamercolor{block body}{bg=red!20!white}
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}}
+
+
+\include{isographs}
+
+\title{The effective Deuring correspondence}
+\subtitle{the key to the next generation of isogeny based cryptography?}
+\author{Luca De Feo}
+\date[May 5, 2021, UMI 2021]{May 5, 2021\\
+  Seminario UMI Crittografia e Codici}
+\institute{IBM Research Zürich}
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+%%
+
+\begin{frame}{Why isogenies?}
+  
+  \begin{block}{Quantum-safe crypto}
+    \begin{itemize}
+    \item Shortest ciphertexts and public keys for \emph{Encryption}:\hfill
+      SIDH/SIKE\\
+      \hfill CSIDH*
+    \item Shortest public key + \emph{Signature}:\hfill SQISign
+    \item Only efficient \emph{Non-Interactive Key Exchange}:\hfill CSIDH*
+    \item Acceptable \emph{Threshold Signatures}:\hfill CSI-FiSh*
+    \end{itemize}
+
+    \medskip
+    \rule{4em}{0.1px}\\
+    \small
+    *Secure parameter sizes still debated, big impact on performance.
+  \end{block}
+  
+  \begin{block}{Time-delay crypto (not quantum safe)}
+    \begin{itemize}
+    \item Only efficient alternative to group-based \emph{Verifiable Delay
+        Functions}\hfill Asiacrypt '19
+    \item Only known instantiation of \emph{Delay Encryption}
+      \hfill Eurocrypt '21
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Brief history of isogeny-based cryptography}
+  \begin{description}
+  \item[1997] Couveignes introduces the \emph{Hard Homogeneous Spaces}
+    framework. His work stays unpublished for 10 years.
+  \item[2006] Rostovtsev \& Stolbunov independently rediscover
+    Couveignes ideas, suggest isogeny-based Diffie--Hellman as a
+    \emph{quantum-resistant} primitive.
+  \item[2006-2010] Other isogeny-based protocols by Teske and Charles,
+    Goren \& Lauter.
+  \item[2011-2012] D., Jao \& Plût introduce \emph{SIDH}, an
+    efficient post-quantum key exchange inspired by Couveignes,
+    Rostovtsev, Stolbunov, Charles, Goren, Lauter.
+  \item[2017] SIDH is submitted to the NIST competition (with the name
+    \emph{SIKE}, only isogeny-based candidate).
+  \item[2018] Castryck, Lange, Martindale, Panny \& Renes create an
+    efficient variant of the Couveignes--Rostovtsev--Stolbunov
+    protocol, named \emph{CSIDH}.
+  \item[2019] Isogeny signature craze: \emph{SeaSign}
+    (D. \& Galbraith; Decru, Panny \& Vercauteren), \emph{CSI-FiSh}
+    (Beullens, Kleinjung \& Vercauteren), \emph{VDF} (D., Masson,
+    Petit \& Sanso).
+  \item[2020] Isogeny signatures get interesting: \emph{SQISign}
+    (D., Kohel, Leroux, Petit, Wesolowski).\\
+    SIKE is an \emph{Alternate candidate finalist} in NIST's 3rd round.
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{A cyclic group}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{scope}
+          \def\crater{13}
+          \def\diam{2.5cm}
+
+          \foreach \i in {1,...,\crater} {
+            \uncover<1>{
+              \draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+            }
+            \uncover<2->{
+              \draw[blue!20!white] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+            }          
+          }
+          
+          \pgfmathparse{\crater-1}
+          \let\last\pgfmathresult
+          \foreach \i in {0,...,\last} {
+            \uncover<-2>{
+              \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.4) node{$g^{\i}$};
+            }
+            \uncover<3>{
+              \pgfmathparse{hex(random(4096,65536))}
+              \let\h\pgfmathresult
+              \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.6) node{$\h$};
+            }
+            \uncover<4->{
+              \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.5) node{$[\i]$};
+            }
+          }
+
+          \uncover<2->{
+            \draw[->] (360/\crater : \diam) edge
+            node[yshift=1em,rotate=360/\crater*(7+1)/2-90]{discrete log} (360/\crater*7 : \diam-4);
+          }
+        \end{scope}  
+      \end{tikzpicture} 
+    \end{column}
+    \begin{column}{0.3\textwidth}
+      \begin{uncoverenv}<4->
+        The axioms of a dlog group:
+        \begin{itemize}
+        \item[prod:] $[a][b] = [a+b]$,
+        \item[exp:] $n[a] = [na]$.
+        \end{itemize}
+
+        \bigskip
+        The hard problem:
+        \begin{itemize}
+        \item[dlog:] $[a] \mapsto a$.
+        \end{itemize}
+      \end{uncoverenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Diffie--Hellman}
+
+  \begin{center}
+    \begin{tikzpicture}[x=1.4cm]
+      \node at (0,0) {\bf Alice};
+      \node at (7,0) {\bf Bob};
+      \node at (0,-1) {pick random \alert{$a\in(\Z/N\Z)^\times$}};
+      \node at (7,-1) {pick random \alert{$b\in(\Z/N\Z)^\times$}};
+      \draw[->]
+      (1,-2) to node[auto] {$[a]$} (6,-2);
+      \draw[->] (6,-2.5) to node[auto] {$[b]$} (1,-2.5);
+      \node at (3.5,-3.5) {\emph{Shared secret} is \alert{$a[b]=[ab]=b[a]$}};
+    \end{tikzpicture}
+  \end{center}  
+\end{frame}
+
+%%
+
+\begin{frame}{A cyclic group}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{uncoverenv}<-3>
+          \begin{scope}
+            \def\crater{13}
+            \def\jumpa{-8}
+            \def\diam{2.5cm}
+
+            \uncover<1>{
+              \foreach \i in {1,...,\crater} {
+                \draw[blue!20!white] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+              }
+            }
+
+            \uncover<2->{
+              \pgfmathparse{int(\crater/2)}
+              \let\last\pgfmathresult
+              \foreach \i in {1,...,\last} {
+                \pgfmathparse{mod(pow(2,\i-1),\crater)}
+                \let\e\pgfmathresult
+                \draw[red] (360/\crater*\e : \diam) to[bend left] (360/\crater*\e*2 : \diam);
+                \draw[red] (-360/\crater*\e : \diam) to[bend right] (-360/\crater*\e*2 : \diam);
+              }
+            }
+
+            \uncover<3->{
+              \pgfmathparse{int(\crater/2)}
+              \let\last\pgfmathresult
+              \foreach \i in {1,...,\last} {
+                \pgfmathparse{mod(pow(6,\i-1),\crater)}
+                \let\e\pgfmathresult
+                \draw[blue] (360/\crater*\e : \diam) to[bend right] (360/\crater*\e*6 : \diam);
+                \draw[blue] (-360/\crater*\e : \diam) to[bend left] (-360/\crater*\e*6 : \diam);
+              }
+            }
+            
+            \pgfmathparse{\crater-1}
+            \let\last\pgfmathresult
+            \foreach \i in {0,...,\last} {
+              \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.5) node{$[\i]$};
+            }
+          \end{scope}
+        \end{uncoverenv}
+        
+        \begin{uncoverenv}<4->
+          \begin{scope}
+            \def\crater{12}
+            \def\jumpa{5}
+            \def\diam{2.5cm}
+
+            \foreach \i in {1,...,\crater} {
+              \draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+              \draw[blue] (360/\crater*\i : \diam) to[bend right=10] (360/\crater*\i+\jumpa*360/\crater : \diam);
+            }
+
+            \foreach \i in {1,...,\crater} {
+              \pgfmathparse{int(mod(pow(2,\i-1),\crater+1))}
+              \let\e\pgfmathresult
+              \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.5) node{$[\e]$};
+            }
+          \end{scope}
+        \end{uncoverenv}
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      The axioms of a dlog group:
+      \begin{itemize}
+      \item[\sout{prod:}] \sout{$[a][b] = [a+b]$,}
+      \item[exp:] $n[a] = [na]$.
+      \end{itemize}
+
+      \bigskip
+      The hard problem:
+      \begin{itemize}
+      \item[dlog:] $[a] \mapsto a$.
+      \end{itemize}
+
+      \bigskip
+      \begin{tikzpicture}
+        \uncover<2->{\draw[red] (0,0) node[anchor=east]{$[a]$} -- (1,0) node[anchor=west] {$2[a]$};}
+        \uncover<3->{\draw[blue] (0,-1) node[anchor=east]{$[a]$} -- (1,-1) node[anchor=west] {$6[a]$};}
+      \end{tikzpicture}
+
+      \bigskip
+      \begin{uncoverenv}<5->
+        Automorphism group: \emph{$(\Z/13\Z)^\times$}.
+      \end{uncoverenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \begin{block}{Group action}
+    \emph{$\G\circlearrowright\E$}: A (finite) set $\E$ \emph{acted
+      upon} by a group $\G$ \emph{freely} and \emph{transitively}:
+    \begin{align*}
+      * : \G × \E &→ \E\\
+      \g * E &↦ E'
+    \end{align*}
+    \par\begin{description}
+    \item[Compatibility:] \emph{$\g' * (\g * E) = (\g'\g)*E$} for all
+      $\g,\g'\in\G$ and $E\in\E$;
+    \item[Identity:] \emph{$\mathfrak{e} * E = E$} if and only if
+      $\mathfrak{e}\in\G$ is the identity element;
+    \item[Regularity:] for all $E,E'\in\E$ there exist a \emph{unique
+        $\g\in\G$} such that \emph{$\g*E'=E$}.
+      \setlength{\itemsep}{2em}
+    \end{description}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Cryptographic Group Actions \small(Alamati, D., Montgomery, Patranabis 2021)}
+  \begin{block}{Hard Homogeneous Space (HHS) --- Couveignes 1997 \small(eprint:2006/291)}
+    \emph{$\G\circlearrowright\E$} such that $\G$ is commutative and:
+    \begin{itemize}
+    \item \emph{Evaluating} $E' = \g*E$ is \emph{easy};
+    \item \emph{Inverting} the action is \emph{hard}.
+    \end{itemize}
+  \end{block}
+
+  \begin{block}{Example}
+    Let $G$ be a group of order $13$, then \emph{$(\Z/13\Z)^\times \circlearrowright G$} defined by
+    \[a * g := g^a\]
+    is an HHS\dots\pause
+    But
+    \[\alert{g^a \cdot g^b = g^{a+b}}\]
+    has no interpretation as a group action!
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Key exchange from group actions}
+  \begin{description}
+  \item[Public parameters:]\
+    \begin{itemize}
+    \item A \emph{HHS $\G\circlearrowright \E$} of order $N$ (large,
+      but not necessarily prime);
+    \item A \emph{starting} set element $E_0\in\E$.
+    \end{itemize}
+  \item[Notation:] $[\a] := \a*E_0$.
+  \end{description}
+
+  \bigskip
+  
+  \begin{center}
+    \begin{tikzpicture}[x=1.4cm]
+      \node at (0,0) {\bf Alice};
+      \node at (7,0) {\bf Bob};
+      \node at (0,-1) {pick random \alert{$\a\in\G$}};
+      \node at (7,-1) {pick random \alert{$\b\in\G$}};
+      \draw[->]
+      (1,-2) to node[auto] {$[\a]$} (6,-2);
+      \draw[->] (6,-2.5) to node[auto] {$[\b]$} (1,-2.5);
+      \node at (3.5,-3.5) {\emph{Shared secret} is \alert{$\a[\b]=[\a\b]=\b[\a]$}};
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%%
+
+\begin{frame}{Quantum security}
+
+  \textbf{Fact:} Shor's algorithm \emph{does not apply} to Diffie-Hellman
+  protocols from \emph{group actions}.
+
+  \begin{block}{Subexponential attack\hfill\emph{$\exp(\sqrt{\log p\log\log p})$}}
+    \begin{itemize}
+    \item Reduction to the \emph{hidden shift problem} by evaluating
+      the class group action in \emph{quantum
+        supersposition} (subexpoential cost);
+    \item Well known reduction from the hidden shift to the
+      \emph{dihedral (non-abelian) hidden subgroup problem};
+    \item Kuperberg's algorithm solves the dHSP with a subexponential
+      number of class group evaluations.
+    \item Recent work suggests that $2^{64}$-qbit security is achieved
+      somewhere in $512 < \log p < 2048$.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \centering
+  \begin{tikzpicture}
+    \draw[blue,thick] (90:3.5) -- (210:3.5) -- (330:3.5) -- (90:3.5);
+    
+    \node[rotate=0] at (270:2.5) {Modular functions};
+    \node[rotate=60] at (150:2.5) {Class field theory};
+    \node[rotate=-60] at (30:2.5) {Elliptic curves};
+
+    \begin{uncoverenv}<1>
+      \begin{scope}[gray]
+        \node[rotate=0] at (270:3.2) {$j(z) = \frac{1}{q} + 744 + 196884q + \cdots$};
+        \node[anchor=east] at (150:3.2) {$H(j) = j - 1728$};
+        \node[anchor=west] at (30:3.2) {$y^2 = x^3 - ax - b$};
+      \end{scope}
+    \end{uncoverenv}
+
+    \begin{uncoverenv}<2>
+      \begin{scope}[yshift=0.5cm]
+        \node[anchor=east] (C) at (150:4.5) {Abelian extensions};
+        \node[anchor=east,below of=C] {of $\Q(\sqrt{-D})$};
+        \node[anchor=west] (E) at (30:4.5) {Elliptic curves with};
+        \node[anchor=west,below of=E] {$\End(E) \subset \Q(\sqrt{-D})$};
+      \end{scope}
+    \end{uncoverenv}
+    
+    \begin{uncoverenv}<3>
+      \begin{scope}[yshift=1.5cm]
+        \node[anchor=east] (C) at (150:3) {Galois group of $K/\Q(\sqrt{-D})$};
+        \node[anchor=east,below of=C] (C1) {$\simeq$};
+        \node[anchor=east,below of=C1] {Class group $\Cl(-D)$};
+        \node[anchor=west] (E) at (30:3) {$\Cl(-D)$ acts on set of $E$ s.t.};
+        \node[anchor=west,below of=E] {$\End(E) \subset \Q(\sqrt{-D})$};
+      \end{scope}
+    \end{uncoverenv}
+    
+    \begin{scope}
+      \Large
+      \node at (0,0.3) {\emph{Complex}};
+      \node at (0,-0.5) {\emph{Multiplication}};
+    \end{scope}
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\begin{frame}{Complex tori}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{tikzpicture}[scale=2]
+        \axes{-1}{3.5}{-0.5}{3}
+
+        \begin{scope}[/lattice={1}{0.2}{0.4}{0.7}]
+          \begin{uncoverenv}<1>
+            \draw[fill,black!10] (0,0) -- (1,0) -- (1,1) -- (0,1) -- (0,0);
+            \node at (0.5,0.5) {$\C/\Lambda$};
+            \node at (0.9,-0.1) {$\omega_1$};
+            \node at (-0.1,0.9) {$\omega_2$};
+          \end{uncoverenv}
+
+          \lattice{-3}{4}
+
+          \begin{uncoverenv}<2-5>
+            \node[red] at (0.7,0.65) {$a$}; 
+            \node[draw,circle,inner sep=1pt,fill,red] at (0.8,0.5) {};
+            \node[red] at (0.2,0.9) {$b$}; 
+            \node[draw,circle,inner sep=1pt,fill,red] at (0.3,0.7) {};
+            
+            \begin{uncoverenv}<3-4>
+              \node[red] at (1.2,1.3) {$a+b$}; 
+              \node[draw,circle,inner sep=1pt,fill,red] at (1.1,1.2) {};
+              \begin{uncoverenv}<3>
+                \draw[red,thin] (0,0) -- (0.8,0.5) -- (1.1,1.2);
+                \draw[red,thin] (0,0) -- (0.3,0.7) -- (1.1,1.2);          
+              \end{uncoverenv}
+            \end{uncoverenv}
+
+            \transdissolve<5>
+            \begin{uncoverenv}<5>
+              \node[red] at (0.2,0.3) {$a+b$}; 
+              \node[draw,circle,inner sep=1pt,fill,red] at (0.1,0.2) {};
+            \end{uncoverenv}
+          \end{uncoverenv}
+        \end{scope}  
+      \end{tikzpicture}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \begin{onlyenv}<1>
+        Let $\omega_1,\omega_2\in\C$ be linearly independent complex
+        numbers. Set
+        \[\emph{\Lambda = \omega_1\Z \oplus \omega_2\Z}\]
+
+        $\C/\Lambda$ is a \emph{complex torus}.
+      \end{onlyenv}
+
+      \begin{onlyenv}<2->
+        Addition law induced by addition on $\mathbb{C}$.
+      \end{onlyenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Homotheties}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{tikzpicture}[scale=2]
+        \axes{-1}{3.3}{-0.5}{3}
+
+        \newcount\scale
+        \animate<1-21>
+        \animatevalue<1-21>{\scale}{0}{20}
+        \begin{uncoverenv}<1-22>
+          \begin{scope}[/lattice={1}{0.2}{0.4}{0.7},scale=1+\the\scale/20,rotate=\the\scale]
+            \lattice{-3}{4}
+            \node[red,yshift=0.2cm] at (0.8,0.5) {$a$}; 
+            \node[draw,circle,inner sep=1pt,fill,red] at (0.8,0.5) {};
+          \end{scope}
+        \end{uncoverenv}
+      \end{tikzpicture}      
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      Two lattices are \emph{homothetic} if there exist $\alpha\in\C$
+      such that
+      \[\emph{\alpha\Lambda_1 = \Lambda_2}\]
+    \end{column}
+  \end{columns}
+\end{frame}  
+
+%%
+
+\begin{frame}{Uniformization theorem}
+  \begin{center}
+    One to one correspondence: \emph{Complex tori $\leftrightarrow$
+      Elliptic curves over $\C$}
+  \end{center}
+
+  \begin{itemize}
+  \item Isomorphic as Riemann surfaces,
+  \item Isomorphic as groups,
+  \item Homotheties of lattices = Isomorphisms of elliptic curves.
+  \end{itemize}
+
+  \begin{block}{The $j$-invariant}
+    \[j(E) = 1728\frac{4a^3}{4a^3-27b^2}\]
+    classifies curves/tori up to isomorphism/homothety.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Multiplication}
+
+  \centering
+  \begin{tikzpicture}[scale=2.2]
+    \axes{-2}{5}{-0.5}{3}
+
+    \begin{scope}[/lattice={1}{0.2}{0.4}{0.7}]
+      \lattice{-4}{5}
+    
+      \node[red,yshift=0.2cm] at (0.8,0.6) {$a$}; 
+      \draw[red] (0.8,0.6) node[fill,circle,inner sep=1pt] {};
+
+      \begin{uncoverenv}<2>
+        \node[red,yshift=0.2cm] at (2.4,1.8) {$[3]a$}; 
+        \draw[red] (0,0) -- (1.6,1.2) node[fill,circle,inner sep=1pt] {} 
+        -- (2.4,1.8) node[fill,circle,inner sep=1pt] {};
+      \end{uncoverenv}
+
+      \transdissolve<3>
+      \begin{uncoverenv}<3>
+        \node[red,yshift=0.3cm] at (0.4,0.8) {$[3]a$}; 
+        \draw[red] (0.4,0.8) node[fill,circle,inner sep=1pt] {};
+      \end{uncoverenv}
+    \end{scope}
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Endomorphisms}
+
+  \begin{columns}
+    \begin{column}{0.65\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.8]
+        \axes{-0.3}{4.5}{-0.5}{4};
+
+        \begin{scope}[/lattice={3}{0.6}{1.2}{2.1}]
+          \lattice{-1}{2}
+
+          \foreach \i in {0,...,2} {
+            \foreach \j in {0,...,2} {
+              \draw[red] (\i/3,\j/3) node[fill,circle,inner sep=1pt] {};
+            }
+          }
+          \draw[red] (0,0) -- (1/3,0) node[yshift=0.2cm] {$a$};
+          \draw[red] (0,0) -- (0,1/3) node[yshift=0.2cm] {$b$};
+        \end{scope}
+      \end{tikzpicture}  
+    \end{column}
+    \begin{column}{0.35\textwidth}
+      Let $\alpha$ be such that \emph{$\alpha\Lambda\subset\Lambda$},
+      then
+      \[\phi_\alpha \;:\; z \mapsto \alpha z \mod \Lambda\]
+      is an \emph{endomorphism} of $\C/\Lambda$.
+
+      \bigskip
+      
+      Let $\ell$ be an integer, the kernel of $\phi_\ell$ is:
+      \begin{align*}
+        (\C/\Lambda)[\ell] &= \langle a,b \rangle\\
+                           &\simeq (\Z/\ell\Z)^2
+      \end{align*}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Complex Multiplication (CM)}
+  Endomorphisms form a subring of $\C$: indeed
+  \emph{$\alpha\Lambda \subset \Lambda$} and
+  \emph{$\beta\Lambda \subset \Lambda$} imply
+  \begin{itemize}
+  \item $(\alpha+\beta)\Lambda \subset \Lambda$,
+  \item $(\alpha\beta)\Lambda \subset \Lambda$.
+  \end{itemize}
+
+  \begin{theorem}
+    Let $C/\Lambda$ be a complex torus, its endomorphism ring is one
+    of:
+    \begin{itemize}
+    \item The ring of integers $\Z$,
+    \item An order in an imaginary quadratic field
+      $\Q(\sqrt{-D})$.\footnote{A subring that is a lattice of
+        dimension $2$.}
+    \end{itemize}
+  \end{theorem}
+
+  \begin{corollary}
+    For any endomorphism $\phi_\alpha$ there exist integers $t,n$ such
+    that
+    \[\phi_\alpha^2 - t\phi_\alpha + n = 0.\]
+  \end{corollary}
+\end{frame}
+
+%%
+
+\begin{frame}<1-3>
+  \frametitle{Isogenies}
+
+  \begin{columns}
+    \begin{column}{0.65\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=1.8]
+        \axes{-0.3}{4.5}{-0.5}{4};
+        
+        \begin{scope}[/lattice={3}{0.6}{1.2}{2.1}]
+          \uncover<1->{\lattice{-1}{2}}
+          
+          \begin{uncoverenv}<1-3>
+            \draw[red] (0,0) -- (1/3,0) node[yshift=0.3cm] {$a$};
+          \end{uncoverenv}
+          \begin{uncoverenv}<4->
+            \draw[red] (0,0) -- (0,1/3) node[yshift=0.3cm] {$b$};
+          \end{uncoverenv}
+
+          \begin{uncoverenv}<1-2>
+            \draw[blue] (0.8,0.5) node[yshift=0.3cm] {$p$};
+            \draw[blue] (0.8,0.5) node[fill,circle,inner sep=1pt] {};
+          \end{uncoverenv}
+        \end{scope}
+        
+        \begin{scope}[/lattice={1}{0.2}{1.2}{2.1}]
+          \transdissolve<2>
+          \begin{scope}[opacity=0.3]
+            \uncover<2-4>{\lattice{-3}{5}}
+          \end{scope}
+          
+          \transdissolve<3>
+          \begin{uncoverenv}<3-5>
+            \draw[blue] (0.4,0.5) node[yshift=0.3cm] {$p$};
+            \draw[blue] (0.4,0.5) node[fill,circle,inner sep=1pt] {};
+          \end{uncoverenv}
+        \end{scope}
+
+        \begin{scope}[/lattice={1}{0.2}{0.4}{0.7}]
+          \transdissolve<5>
+          \begin{scope}[opacity=0.3]
+            \uncover<5->{\lattice{-3}{5}}
+          \end{scope}
+          
+          \transdissolve<6>
+          \begin{uncoverenv}<6->
+            \draw[blue] (0.4,0.5) node[yshift=0.3cm] {$p$};
+            \draw[blue] (0.4,0.5) node[fill,circle,inner sep=1pt] {};
+          \end{uncoverenv}
+        \end{scope}
+        
+        \begin{scope}[/lattice={3}{0.6}{1.2}{2.1}]
+          \foreach \i in {0,...,2} {
+            \foreach \j in {0,...,2} {
+              \draw[red] (\i/3,\j/3) node[fill,circle,inner sep=1pt] {};
+            }
+          }
+        \end{scope}
+      \end{tikzpicture}  
+    \end{column}
+    \begin{column}{0.35\textwidth}
+      \begin{onlyenv}<1-3>
+        Let \emph{$\alpha\Lambda \subset \Lambda'$}, the map
+        \begin{align*}
+          \phi_\alpha \;:\; \C/\Lambda &\to \C/\Lambda'\\
+          z &\mapsto \alpha z \mod \Lambda'
+        \end{align*}
+        is a morphism of complex Lie groups.
+
+        \bigskip
+
+        It is called an \emph{isogeny}, and it is completely
+        characterized by its \emph{kernel} $\alpha^{-1}\Lambda'$.
+      \end{onlyenv}
+      \begin{onlyenv}<4-> 
+        Taking a point $\rd{b}$ not in the kernel of \emph{$\phi$}, we
+        obtain a new degree $\ell$ cover
+        \[\emph{\hat{\phi}:\C/\Lambda_2\to\C/\Lambda_3}\]
+
+        The composition \emph{$\hat{\phi}\circ\phi$} has degree
+        $\ell^2$ and is \alert{homothetic to the multiplication} by
+        $\ell$ map.
+
+        \emph{$\hat{\phi}$} is called the \alert{dual isogeny} of
+        \emph{$\phi$}.
+      \end{onlyenv}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Isogenies $\leftrightarrow$ ideals}
+  \begin{itemize}
+  \item Let $E$ be an elliptic curve/complex torus with endomorphism
+    ring \emph{$\O\subset\Q(\sqrt{-D})$}.
+  \item Let \emph{$G\subset E(\C)$} be a finite subgroup.
+  \end{itemize}
+  Define the \emph{kernel ideal}
+
+  \[\mathrm{Ann}(G) = \{ \alpha\in\O \;|\; \alpha(G) = 0 \}.\]
+
+  Conversely, given an ideal \emph{$\a\subset \O$}, define
+
+  \[E[\a] = \bigcap_{\alpha\in\a}\ker\alpha.\]
+
+  Finally, let $\mathcal{I}(\O)$ be the group of (fractional) ideals
+  of $\O$ and let $\mathcal{P}(\O)$ be the subgroup of principal
+  ideals, define the \emph{class group}
+  \[\Cl(\O) = \mathcal{I}(\O)/\mathcal{P}(\O).\]
+\end{frame}
+
+%%
+
+\begin{frame}{CM dictionary}
+  \centering\large
+  \setlength{\tabcolsep}{2em}
+  \renewcommand{\arraystretch}{2}
+  \begin{tabular}{r l}
+    \emph{Quadratic imaginary fields} & \emph{Elliptic curves}\\
+    \hline
+    Integers of $\Q(\sqrt{-D})$ & Endomorphisms of $E$\\
+    Integral ideals of $\Q(\sqrt{-D})$ & Isogenies of $E$\\
+    Ideal classes in $\Cl(-D)$ & Isogenies \raisebox{-0.8em}{\tikz{\node (E) at (0,0) {$\bullet$}; \node (E1) at (2,0) {$\bullet$}; \draw[->] (E) edge[bend left] (E1) edge[bend right] (E1);}}\\
+    Ideal norm & Isogeny degree\\
+    Conjugate ideal & Dual isogeny\\
+  \end{tabular}
+\end{frame}
+
+%%
+
+\begin{frame}{The fundamental theorem of CM}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}
+      \item Let $E$ be an elliptic curve with CM by a quadratic imaginary
+        order $\O$.
+      \item Let $\a\subset\O$ be an integral ideal.
+      \item Denote by $E/E[\a]$ the image curve of the unique isogeny
+        $\phi_\a$ of kernel $E[\a]$.
+      \end{itemize}
+
+      \begin{theorem}
+        The operator \emph{$\a * E := E/E[\a]$} defines a transitive
+        action of the group of fractional ideals of $\O$ on the (finite)
+        set \emph{$\E(\O)$} of elliptic curves with complex
+        multiplication by $\O$.
+
+        The action factors through principal ideals. In other words, the
+        class group \emph{$\Cl(\O)$} acts regularly on \emph{$\E(\O)$}.
+      \end{theorem}
+    \end{column}
+    \begin{column}{0.35\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{scope}
+          \def\crater{12}
+          \def\jumpa{5}
+          \def\diam{2cm}
+
+          \foreach \i in {1,...,\crater} {
+            \draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+            \draw[blue] (360/\crater*\i : \diam) to[bend right=10] (360/\crater*\i+\jumpa*360/\crater : \diam);
+          }
+
+          \pgfmathparse{\crater - 1}
+          \let\last\pgfmathresult
+          \foreach \i in {0,...,\last} {
+            \draw[fill] (360/\crater*\i: \diam) circle (2pt) +(360/\crater*\i: 0.5) node{$E_{\i}$};
+          }
+        \end{scope}
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Reduction at $\p$}
+  \begin{center}
+    Complex multiplication over $\C \sim$ Discrete log in $\Q(e^{2i\pi/N})$
+  \end{center}
+
+  \begin{theorem}
+    Let $E$ be an elliptic curve over a number field $L$, with CM by
+    an order $\O\subset\Q(\sqrt{-D})$.  Let $p$ be a prime split in
+    $L$, denote by $E_p$ the reduction of $E$ at a place above $p$,
+    and assume that $E_p$ is non-singular.
+    \begin{itemize}
+    \item If \emph{$\left(\frac{-D}{p}\right)=1$} then $E_p$ is said
+      to be \emph{ordinary} and \emph{$\End(E_p)\simeq\O$}.
+    \item If \emph{$\left(\frac{-D}{p}\right)=-1$} then $E_p$ is said
+      to be \emph{supersingular} and \emph{$\O\subsetneq\End(E_p)$}.
+    \end{itemize}
+  \end{theorem}
+
+  \bigskip
+  
+  Complex multiplication over $\F_p$: \emph{Couveignes} '06,
+  \emph{Rostovtsev--Stolbunov} '06, \emph{CSIDH} '18, \dots
+\end{frame}
+
+%%
+
+\begin{frame}{A partial converse}
+  \begin{block}{Deuring's lifting theorem}
+    Let $E_p$ be an elliptic curve in characteristic $p$, with an
+    endomorphism $ω_p$ which is not trivial. %
+    Then there exists an elliptic curve $E$ defined over a number
+    field $L$, an endomorphism $ω$ of $E$, and a non-singular
+    reduction of $E$ at a place $\frak{p}$ of $L$ lying above $p$,
+    such that $E_p$ is isomorphic to $E(\frak{p})$, and $ω_p$
+    corresponds to $ω(\frak{p})$ under the isomorphism.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{The full endomorphism ring}
+  \begin{block}{Theorem (Deuring)}
+    Let $E$ be a \emph{supersingular} elliptic curve, then
+    \begin{itemize}
+    \item $E$ is isomorphic to a curve defined over \emph{$\F_{p^2}$};
+    \item Every \emph{isogeny} of $E$ is defined over \emph{$\F_{p^2}$};
+    \item Every \emph{endomorphism} of $E$ is defined over
+      \emph{$\F_{p^2}$};
+    \item $\End(E)$ is isomorphic to a \emph{maximal order} in a
+      \emph{quaternion algebra} ramified at $p$ and $∞$.
+    \end{itemize}
+  \end{block}
+
+  In particular:
+  \begin{itemize}
+  \item If $E$ is defined over $\F_p$, then \emph{$\End_{\F_p}(E)$ is
+      strictly contained in $\End(E)$}.
+  \item Some endomorphisms \emph{do not commute}!
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{An example}
+  The curve of $j$-invariant \emph{$1728$}
+  \[E: y^2 = x^3 + x\]
+  is supersingular over $\F_p$ iff $p=-1\mod 4$.
+
+  \begin{block}{Endomorphisms}
+    \emph{$\End(E) = ℤ〈ι,π〉$}, with:
+    \begin{itemize}
+    \item $π$ the Frobenius endomorphism, s.t. \emph{$π^2=-p$};
+    \item $ι$ the map
+      \[ι(x,y) = (-x,iy),\]
+      where \emph{$i∈\F_{p^2}$} is a 4-th root of unity.
+      Clearly, \emph{$ι^2=-1$}.
+    \end{itemize}
+    And \emph{$ιπ=-πι$}.
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Class group action party}
+  \centering
+  \begin{tikzpicture}[scale=2]
+    \def\crater{11}
+    \draw[fill] (360/\crater:1cm) circle (1pt);
+    \uncover<1-2>{
+      \draw (360/\crater:1.1cm) node[anchor=west] {$j=1728$};
+    }
+    \uncover<2->{
+      \foreach \i in {1,...,\crater} {
+        \draw[fill] (360/\crater*\i:1cm) circle (1pt);
+        \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+      }
+      \draw (0,0) node {$\Cl(-4p)$};
+    }
+    \uncover<3->{
+      \draw (360/\crater:1.5cm) circle (0.5cm) node {$\Cl(-4)$};
+    }
+    \uncover<4>{
+      \draw (360/\crater*4:1.2cm) node[anchor=south east] {$j=0$};
+    }
+    \uncover<5->{
+      \draw (360/\crater*4:1.5cm) circle (0.5cm) node {$\Cl(-3)$};
+    }
+    \uncover<6->{
+      \begin{scope}[shift={(360/\crater*6:1.7cm)}]
+        \foreach \i in {0,...,2} {
+          \draw[fill] (360/\crater*6 - 120*\i - 180 : 0.7cm) circle (1pt);
+          \draw (360/\crater*6 - 120*\i - 180 : 0.7cm) -- (360/\crater*6 - 120*\i+120 - 180 : 0.7cm);
+        }
+        \draw (0,0) node {$\Cl(-23)$};
+      \end{scope}
+      \begin{scope}[shift={(360/\crater*10:1.5cm)}]
+        \foreach \i in {0,...,4} {
+          \draw[fill] (360/\crater*10 - 72*\i - 180 : 0.5cm) circle (1pt);
+          \draw (360/\crater*10 - 72*\i - 180 : 0.5cm) -- (360/\crater*10 - 72*\i+72 - 180 : 0.5cm);
+        }
+        \draw (0,0) node {$\Cl(-79)$};
+      \end{scope}
+    }
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\begin{frame}{Quaternion algebra?! WTF?\footnote{What The Field?}}
+  The quaternion algebra \emph{$B_{p,∞}$} is:
+  \begin{itemize}
+  \item A \emph{$4$-dimensional} $ℚ$-vector space with basis
+    \emph{$(1,i,j,k)$}.
+  \item A non-commutative \emph{division algebra}%
+    \footnote{All elements have inverses.} %
+    $B_{p,∞} = ℚ〈i,j〉$ with the relations:
+    \[i^2 = a, \quad j^2 = -p, \quad ij = -ji = k,\]
+    for some $a<0$ (depending on $p$).
+  \item All elements of $B_{p,∞}$ are \emph{quadratic algebraic
+      numbers}.
+  \item $B_{p,∞}⊗ℚ_ℓ≃\mathcal{M}_{2×2}(ℚ_ℓ)$ for all $ℓ≠p$.\\
+    I.e., endomorphisms restricted to $E[ℓ^e]$ are \emph{just $2×2$
+      matrices $\bmod ℓ^e$}.
+  \item $B_{p,∞}⊗ℝ$ is isomorphic to Hamilton's quaternions.
+
+  \item $B_{p,∞}⊗ℚ_p$ is a division algebra.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{The Deuring correspondence}
+  Let $\O,\O'\subset B_{p,\infty}$ be two \emph{maximal orders}.
+  They have the same \emph{type} if there exists $\alpha$ s.t.
+  \[\O = \alpha\O'\alpha^{-1}.\]
+
+  \begin{theorem}[Deuring]
+    Maximal order types of $B_{p,\infty}$ are in one-to-one
+    correspondence with supersingular curves up to Galois conjugation
+    in $\F_{p^2}/\F_p$.
+  \end{theorem}
+\end{frame}
+
+%%
+
+\begin{frame}{The Deuring correspondence}
+  Two \emph{left ideals} $\a,\b\subset\O$ are in the same \emph{class}
+  if there exists $\beta$ s.t. $\a = \b\beta$.
+
+  \begin{block}{An equivalence of categories (Kohel, roughly)}
+    \centering
+    \begin{tikzpicture}
+      \node (O) at (0,0) {$\O$};
+      \node (O1) at (6,0) {$\O'$};
+      \node (E) at (0,-1) {$E$};
+      \node (E1) at (6,-1) {$E'$};
+      
+      \begin{scope}[gray,anchor=north]
+        \node (Oc) at (-2,1) {left order};
+        \node at (-2, 1.5) {$\{\alpha\in B_{p,\infty}\;|\; \alpha\a=\a\}$};
+        \node (O1c) at (8,1) {right order};
+        \node at (8,1.5) {$\{\alpha\in B_{p,\infty}\;|\; \a\alpha=\a\}$};
+        \node (ac) at (3,1.5) {connecting ideal (class)};
+        
+        \node (Ec) at (-2,-2) {supersingular curve};
+        \node (E1c) at (8,-2) {supersingular curve};
+        \node (phic) at (3,-2) {isogeny (class)};
+      \end{scope}
+      
+      \draw[->] (O) edge node[auto] (a) {$\a$} (O1)
+      (E) edge node[auto,swap] (phi) {$\phi_\a$} (E1);
+      \draw[dashed,->] (Oc) edge (O) (O1c) edge (O1) (ac) edge (a)
+      (Ec) edge (E) (E1c) edge (E1) (phic) edge (phi);
+    \end{tikzpicture}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Supersingular isogeny graphs}
+  \begin{columns}
+    \begin{column}{0.6\textwidth}
+      \begin{itemize}
+      \item There is a \emph{unique isogeny class} of supersingular
+        curves over $\bar{\F}_p$ of size \emph{$≈ p/12$}.
+      \item The graph of isogenies of degree \emph{$\ell$} is
+        \emph{$(\ell+1)$}-regular.
+      \item It is a \emph{Ramanujan graphs}, i.e., an optimal
+        \emph{expander}.
+      \item Related to Hecke operators, modular forms, Brandt
+        matrices\dots
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{scope}[every node/.style={fill,black,circle,inner sep=2pt}]
+          \node at (0,0)  (1){};
+          \node at (0,4) (20){};
+          \node at (2,1)  (16z){};
+          \node at (-2,1)  (81z){};
+          \node at (-1,2) (77z){};
+          \node at (1,2)  (20z){};
+          \node at (-2,3)  (85z){};
+          \node at (2,3)  (12z){};
+        \end{scope}
+
+        \begin{scope}[red]
+          \path (1) edge (85z) edge (81z) edge (12z) edge (16z);
+          \path (20) edge (85z) edge (77z) edge (20z) edge (12z);
+          \path (81z) edge (85z) edge (77z) edge (16z);
+          \path (85z) edge (12z);
+          \path (12z) edge (16z);
+          \path (16z) edge (20z);
+          \path (20z) edge[bend right=10] (77z) edge[bend left=10] (77z);
+        \end{scope}
+      \end{tikzpicture}
+      
+      \small
+      \emph{Figure:} $3$-isogeny graph on $\F_{97^2}$.
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Effective correspondences (over finite fields)}
+  \begin{description}
+  \item[Discrete log:] 
+    \begin{tikzpicture}
+      \node (g) at (0,0) {$g$};
+      \node (gn) at (4,0) {$g^n$};
+      \draw [->] (g) edge node[auto] {exp} (gn);
+    \end{tikzpicture}
+    \begin{itemize}
+    \item schoolbook method
+    \end{itemize}
+  \item[Complex multiplication:]
+    \begin{tikzpicture}
+      \node (Eo) at (0,-3) {$E$};
+      \node (Eo1) at (4,-3) {$E'$};
+      \draw [->] (Eo) edge node[auto] {$\a\in\Cl(\O)$} (Eo1);
+    \end{tikzpicture}
+    \begin{itemize}
+    \item Vélu '71, Elkies '92, and many others\dots
+    \end{itemize}
+  \item[Deuring correspondence:]
+  \begin{tikzpicture}
+    \node (Es) at (0,-6) {$E$};
+    \node (Es1) at (4,-6) {$E'$};
+    \draw [->] (Es) edge node[auto] {$\a \subset B_{p,\infty}$} (Es1);
+  \end{tikzpicture}
+    \begin{itemize}
+    \item all of the above,
+    \item Kohel, Lauter, Petit, Tignol '14 (KLPT),
+    \item D., Kohel, Leroux, Petit, Wesolowski '20 (part of SQISign).
+    \end{itemize}
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{SQISign: Signatures from the effective Deuring correspondence}
+  \begin{center}
+    \begin{tikzpicture}
+      \node (E0) at (1,2.5) {$E_0$};
+      \node (E1) at (4,2.5) {$E_1$};
+      \node (E2) at (4,1) {$E_2$};
+      \node (EA) at (0,1) {$E_A$};
+      \node (A) at (0.25,1.75) {$\tau$};
+      \node (B) at (2.5,2.75) {$\psi$};
+      \node (A) at (4.25,1.75) {$\varphi$};
+      \node (B) at (2,1.25) {$\sigma$};
+      % \draw [->] (E) -- (E1);
+      \draw [blue,very thick] [->] (EA) -- (E2);
+      \draw [red] [->] (E1) to (E2);
+      \draw [blue,dashed] [->] (E0) to (EA);
+      \draw [blue] [->] (E0) to (E1);
+      \matrix [right] at (6,2) {
+        \node[] (l1) {}; \node (l2) [right of = l1, node distance=0.5in,label=right: commitment isogeny (prover)] {}; \draw [blue] [->] (l1) -- (l2); \\
+        \node[] (l3) {}; \node (l4) [right of = l3, node distance=0.5in,label=right:challenge isogeny (verifier)] {}; \draw [red] [->] (l3) -- (l4); \\
+        \node[] (l1) {}; \node (l2) [right of = l1, node distance=0.5in,label=right: response isogeny (prover)] {}; \draw [blue,very thick] [->] (l1) -- (l2); \\
+        \node[] (l1) {}; \node (l2) [right of = l1, node distance=0.5in,label=right: secret key isogeny] {}; \draw  [dashed,blue] [-] (l1) -- (l2); \\
+      };
+    \end{tikzpicture}
+  \end{center}
+
+  \bigskip
+  
+  \emph{Most compact PQ signature scheme}: PK + Signature combined
+  \textbf{5$\times$smaller} than Falcon.
+
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{ c c c c}
+      Secret Key (bytes) & Public Key (bytes) & Signature (bytes) & Security \\
+      \hline
+      16 & 64 & 204 & NIST-1 \\
+      \hline
+    \end{tabular}
+  \end{table}
+\end{frame}
+
+%%
+
+\begin{frame}[plain]
+  \centering
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[xscale=1.7,yshift=-15,opacity=0.8]
+      \def\crater{12}
+      \def\jumpa{-8}
+      \def\jumpb{9}
+      \def\diam{5cm}
+
+      \foreach \i in {1,...,\crater} {
+        \draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+        \draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jumpa*360/\crater : \diam);
+        \draw[green] (360/\crater*\i : \diam) to[bend right=50] (360/\crater*\i+\jumpb*360/\crater : \diam);
+      }
+    \end{scope}
+    
+    \draw (0,0.5) node{\Huge\bf Thank you};
+    \draw (0,-1.1) node{\large\url{https://defeo.lu/}};
+    \draw (0,-1.8) node{\large\includegraphics[height=0.9em]{twitter.png}~\href{https://twitter.com/luca_defeo}{@luca\_defeo}};
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\end{document}
+
+
+% LocalWords:  Isogeny abelian isogenies hyperelliptic supersingular Frobenius
+% LocalWords:  isogenous
