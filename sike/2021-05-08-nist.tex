@@ -1,0 +1,310 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{amsmath,amsthm}
+\usepackage{unicode}
+\usepackage{sourcesanspro}
+\usepackage[amssymb,amsfonts]{concmath}
+\usepackage{multirow}
+\usepackage{tikz}
+\usetikzlibrary{matrix,decorations,decorations.text,calc,arrows,snakes,shapes,positioning}
+\usepackage{ulem}
+
+\mode<presentation>{%
+  \usetheme{Boadilla}
+  \setbeamertemplate{frametitle}[default][right]
+}
+\beamertemplatenavigationsymbolsempty
+\usecolortheme[RGB={0,98,255}]{structure}
+\definecolor{ibmblue}{RGB}{0,98,255}
+\setbeamercolor*{title}{fg=ibmblue}
+\usefonttheme[onlymath]{serif}
+\renewcommand{\emph}[1]{{\usebeamercolor[fg]{structure}#1}}
+
+
+\newcommand{\F}{\mathbb{F}}
+\newcommand{\cyc}[1]{{〈 #1 〉}}
+\newcommand{\bl}[1]{\textcolor{blue}{#1}}
+\newcommand{\rd}[1]{\textcolor{red}{#1}}
+
+
+\title{Supersingular Isogeny Key Encapsulation}
+\author{presented by Luca De Feo}
+\date[Jun 8, 2021, NIST PQC Conference]{June 8, 2021, Third PQC Standardization Conference}
+\institute{IBM Research}
+
+\begin{document}
+
+\frame[plain]{
+  \begin{center}
+    {\usebeamerfont{title}{SIKE}\par}
+    {\usebeamerfont{subtitle}{\inserttitle}\par}
+    \vspace{2.5\baselineskip}
+    
+    \begin{tabular}{l l l}
+      David Jao, UW & Reza Azarderakhsh, FAU & Matthew Campagna, Amazon \\
+      Craig Costello, MSR & \underline{Luca De Feo, IBM} & Basil Hess, IBM \\
+      Aaron Hutchinson, UW & Amir Jalali, LinkedIn & Koray Karabina, NRC \\
+      Brian Koziel, TI & Brian LaMacchia, MSR & Patrick Longa, MSR \\
+      Michael Naehrig, MSR & Geovandro Pereira, UW & Joost Renes, NXP \\
+      Vladimir Soukharev, ISG & David Urbanik, UofT
+    \end{tabular}
+
+    \vspace{1.5\baselineskip}
+    \url{https://sike.org/}\par
+    \vspace{1\baselineskip}
+    \insertdate\par
+  \end{center}
+}
+
+%%
+
+\begin{frame}{SIKE}
+  \vfill
+  \textbf{S}upersingular \textbf{I}sogeny \textbf{K}ey \textbf{E}ncapsulation (SIKE)
+  \begin{itemize}
+  \item IND-CCA2 KEM
+  \item Based on \textbf{S}upersingular \textbf{I}sogeny \textbf{D}iffie-\textbf{H}ellman (SIDH)
+  \item Uses Hofheinz et al. transformation (TCC 2017) on SIDH to achieve CCA security
+  \end{itemize}
+
+  \bigskip
+  The SIKE protocol specifies:
+  \begin{itemize}
+  \item Parameter sets
+  \item Key/ciphertext formats
+  \item Encapsulation/decapsulation mechanisms
+  \item Choice of symmetric primitives (hash functions, etc.)
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{SIDH: simplified overview}
+  \hfill\begin{minipage}{0.4\linewidth}
+    \emph{0.} Starting supersingular curve\\
+    \phantom{0.} {$E \;:\; y^2 = x^3 + 6x^2 + x$} over $\F_{p^2}$;
+  \end{minipage}\hfill\strut
+
+  \bigskip
+  
+  \begin{minipage}{0.45\linewidth}
+    \emph{1.} Alice chooses a kernel $\bl{A}\subset E(\F_{p^2})$\\
+    \phantom{1.} and sends $E/\bl{A}$ to Bob;    
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.45\linewidth}
+    \begin{flushright}
+      \emph{2.} Bob chooses a kernel $\rd{B}\subset E(\F_{p^2})$\\
+      \phantom{2.} and sends $E/\rd{B}$ to Alice;
+    \end{flushright}
+  \end{minipage}
+
+  \bigskip
+  
+  \begin{center}
+    \emph{3.} Shared secret: $E/\cyc{\bl{A},\rd{B}} = (E/\bl{A})/\bl{\phi_A}(\rd{B})
+    = (E/\rd{B})/\rd{\phi_B}(\bl{A})$.
+  \end{center}
+
+  \begin{center}
+    \begin{tikzpicture}
+      \begin{scope}
+        \large
+        \node[matrix of nodes, ampersand replacement=\&, column sep=2cm, row sep=1cm] (diagram) {
+          |(E)| $g$ \& |(Es)| $g^{\bl{a}}$ \\
+          |(Ep)| {$g^{\rd{b}}$} \& |(Eps)| {$g^{\bl{a}\rd{b}}$}\\
+        };
+        \path[->,blue] (E) edge (Es);
+        \path[->,blue] (Ep) edge (Eps);
+        \path[->,red] (E) edge (Ep);
+        \path[->,red] (Es) edge (Eps);
+      \end{scope}
+      \begin{scope}[xshift=8cm]
+        \large
+        \node[matrix of nodes, ampersand replacement=\&, column sep=2cm, row sep=1cm] (diagram) {
+          |(E)| $E$ \& |(Es)| $E/\bl{A}$ \\
+          |(Ep)| {$E/\rd{B}$} \& |(Eps)| {$E/\cyc{\bl{A},\rd{B}}$}\\
+        };
+        \path[->,blue] (E) edge node[auto] {$\phi_A$} (Es);
+        \path[->,blue] (Ep) edge (Eps);
+        \path[->,red] (E) edge node[auto,swap] {$\phi_B$} (Ep);
+        \path[->,red] (Es) edge (Eps);
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+%%
+
+\begin{frame}{SIDH: detailed overview}
+  \begin{center}
+    Curves represented by public triplets of \textit{torsion points}
+  \end{center}
+  \begin{minipage}{0.45\linewidth}
+      ``Alice's'' \textit{torsion basis}:\\
+      $E^{\bl{A}} := \bl{(P_A, Q_A, R_A:=P_A-Q_A)}$
+  \end{minipage}
+  \hfill
+  \begin{minipage}{0.45\linewidth}
+    \begin{flushright}
+      ``Bob's'' \textit{torsion basis}:\\
+      $E^{\rd{B}} := \rd{(P_B, Q_B, R_B:=P_B-Q_B)}$
+    \end{flushright}
+  \end{minipage}
+
+  \begin{center}
+    \begin{tikzpicture}
+      \node at (-2,0) {\bf Alice};
+      \node at (9,0) {\bf Bob};
+      \node (A) at (-2,-1) {$\bl{A\subset\cyc{P_A,Q_A}}$};
+      \node (fA) at (-2,-2) {$\bl{\phi_A}$};
+      \node (B) at (9,-1) {$\rd{B\subset\cyc{P_B,Q_B}}$};
+      \node (fB) at (9,-2) {$\rd{\phi_B}$};
+      \draw[<->] (A) edge[blue] (fA) (B) edge[red] (fB);
+      \draw
+      (0,-1) edge[-latex] node[above]
+      {$E^{\rd{B}}/\bl{A}
+        := \bigl(\bl{\phi_A}(\rd{P_B}), \bl{\phi_A}(\rd{Q_B}), \bl{\phi_A}(\rd{R_B})\bigr)$}
+      (7,-1)
+      (7,-2.5) edge[-latex] node[above]
+      {$E^{\bl{A}}/\rd{B}
+        := \bigl(\rd{\phi_B}(\bl{P_A}), \rd{\phi_B}(\bl{Q_A}), \rd{\phi_B}(\bl{R_A})\bigr)$
+      } (0,-2.5);
+    \end{tikzpicture}
+
+    \bigskip
+    Shared secret:\\
+    $j\bigl(E/\cyc{\bl{A},\rd{B}}\bigr) =
+    j\bigl((E^{\rd{B}}/\bl{A})/\bl{\phi_A}(\rd{B})\bigr) =
+    j\bigl((E^{\bl{A}}/\rd{B})/\rd{\phi_B}(\bl{A})\bigr)$.
+  \end{center}
+\end{frame}
+
+%%
+
+\begin{frame}{Changes for SIKE in third round}
+  \begin{itemize}
+  \item New optimized ARMv8, Cortex M4, and VHDL implementations.
+  \item Space and time optimizations for key compression.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Changes for SIKE in second round}
+  \begin{itemize}
+  \item \emph{New} parameter sets: \emph{SIKEp434}, SIKEp503,
+    \emph{SIKEp610}, SIKEp751, \sout{SIKEp964};
+  \item Updated security analysis.
+  \item Starting curve changed;
+  \item Introduced key compression: $\approx 40\%$ smaller public keys
+    and ciphertexts;
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Parameter sets}
+  \centering
+  \begin{tabular}{c || c c c}
+    \hline
+    Scheme & prime $p$ & $\log_2 p$ & Security level\\
+    \hline\hline
+    \texttt{SIKEp434} & $2^{216}3^{137}-1$ & 433.13 & NIST 1\\
+    \texttt{SIKEp503} & $2^{250}3^{159}-1$ & 502.01 & NIST 2\\
+    \texttt{SIKEp610} & $2^{305}3^{192}-1$ & 609.31 & NIST 3\\
+    \texttt{SIKEp751} & $2^{372}3^{239}-1$ & 750.81 & NIST 5\\
+    \hline
+  \end{tabular}
+\end{frame}
+
+%%
+
+\begin{frame}{Key compression}
+  \vfill
+  \centering
+  \begin{tabular}{l || c c | c c }
+    \hline
+    Scheme & Public key & ciphertext & Encaps & Decaps \\
+           & \multicolumn{2}{c|}{\small bytes} & \multicolumn{2}{c}{\small $10^3$ cycles (\texttt{x86\_64} asm)} \\
+    \hline\hline
+    \texttt{SIKEp434} & 330 & 346 & 9,681 & 10,343 \\
+    \texttt{SIKEp434\_compressed} & 197 & 236 & 15,120 & 11,077 \\
+    \texttt{SIKEp503} & 378 & 402 & 13,554 & 14,415 \\
+    \texttt{SIKEp503\_compressed} & 225 & 280 & 21,190 & 15,733 \\
+    \texttt{SIKEp610} & 462 & 486 & 27,254 & 27,445 \\
+    \texttt{SIKEp610\_compressed} & 274 & 336 & 37,470 & 29,216 \\
+    \texttt{SIKEp751} & 564 & 596 & 40,703 & 43,851 \\
+    \texttt{SIKEp751\_compressed} & 335 & 410 & 63,254 & 46,606 \\
+    \hline
+  \end{tabular}
+
+  \bigskip
+  Memory footprint of compression 3--10$\times$ smaller compared to Round 2.
+\end{frame}
+
+%%
+
+\begin{frame}{Additional implementations}
+  \vfill
+  \begin{tabular}{c || c || c c | c c}
+    \hline
+    \multirow{6}*{\parbox{4cm}{\centering ARM implementations\\($10^6$ cycles)}}
+    & Scheme & \multicolumn{2}{c|}{Cortex M4 (ARMv7)} & \multicolumn{2}{c}{Cortex A72 (ARMv8)} \\
+    & & Encaps & Decaps & Encaps & Decaps\\
+    \cline{2-6}
+    & \texttt{SIKEp434} & 89 & 95 & 28 & 30 \\
+    & \texttt{SIKEp503} & 125 & 133 & 40 & 42 \\
+    & \texttt{SIKEp610} & 246 & 248 & 90 & 91 \\
+    & \texttt{SIKEp751} & 371 & 399 & 136 & 146 \\
+    \hline
+  \end{tabular}
+
+  \bigskip
+  
+  \begin{tabular}{c || c || c c | c c}
+    \hline
+    \multirow{6}*{\parbox{4cm}{\centering VHDL implementation\\(FPGA, ms)}}
+    & Scheme & \multicolumn{2}{c|}{Xilinx Artix-7} & \multicolumn{2}{c}{Xilinx Kintex UltraScale+} \\
+    & & Encaps & Decaps & Encaps & Decaps\\
+    \cline{2-6}
+    & \texttt{SIKEp434} & 7.01 & 7.42 & 3.09 & 3.28 \\
+    & \texttt{SIKEp503} & 8.81 & 9.25 & 3.75 & 3.93 \\
+    & \texttt{SIKEp610} & 14.43 & 14.22 & 6.02 & 5.94 \\
+    & \texttt{SIKEp751} & 17.37 & 18.39 & 7.43 & 7.87 \\
+    \hline
+  \end{tabular}
+\end{frame}
+
+%%
+
+\begin{frame}{Summary}
+  \begin{columns}[t]
+    \begin{column}{0.45\textwidth}
+      SIKE advantages:
+      \begin{itemize}
+      \item Smallest public key size. Key compression has become almost free.
+      \item Straightforward parameter selection.
+      \item No decryption error, Gaussians, rejection sampling, etc.
+      \item Generic attacks are well understood.
+      \item Only KEM proposal not based on lattices / codes / LW[ER].
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.45\textwidth}
+      SIKE disadvantages:
+      \begin{itemize}
+      \item Slow.
+      \item Non-generic attacks may one day pose a threat (they are currently far from it).
+      \end{itemize}
+
+      Work in progress:
+      \begin{itemize}
+      \item Side channel attacks, cryptanalysis.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\end{document}
