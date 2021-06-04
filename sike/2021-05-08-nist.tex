@@ -252,13 +252,13 @@
   \begin{tabular}{c || c || c c | c c}
     \hline
     \multirow{6}*{\parbox{4cm}{\centering ARM implementations\\($10^6$ cycles)}}
-    & Scheme & \multicolumn{2}{c|}{Cortex M4 (ARMv7)} & \multicolumn{2}{c}{Cortex A72 (ARMv8)} \\
+    & Scheme & \multicolumn{2}{c|}{Cortex M4 (ARMv7)\footnote{M. Anastasova, R. Azarderakhsh, M. Mozaffari Kermani, ``Fast Strategies for the Implementation of SIKERound 3 on ARM Cortex-M4'', \url{https://ia.cr/2021/115}.}} & \multicolumn{2}{c}{Cortex A72 (ARMv8)} \\
     & & Encaps & Decaps & Encaps & Decaps\\
     \cline{2-6}
-    & \texttt{SIKEp434} & 89 & 95 & 28 & 30 \\
-    & \texttt{SIKEp503} & 125 & 133 & 40 & 42 \\
-    & \texttt{SIKEp610} & 246 & 248 & 90 & 91 \\
-    & \texttt{SIKEp751} & 371 & 399 & 136 & 146 \\
+    & \texttt{SIKEp434} & 69 & 74 & 28 & 30 \\
+    & \texttt{SIKEp503} & 97 & 104 & 40 & 42 \\
+    & \texttt{SIKEp610} & 198 & 199 & 90 & 91 \\
+    & \texttt{SIKEp751} & 299 & 321 & 136 & 146 \\
     \hline
   \end{tabular}
 
@@ -276,6 +276,42 @@
     & \texttt{SIKEp751} & 17.37 & 18.39 & 7.43 & 7.87 \\
     \hline
   \end{tabular}
+\end{frame}
+
+%%
+
+\begin{frame}{Recent developments}
+  \vfill
+  \begin{itemize}
+  \item Best attack is the generic van Oorschot-Wiener (vOW) parallel
+    collision finding algorithm.
+  \item Current parameter selection penalizes SIKE: \textbf{memory is
+      assumed to be free}.
+  \item {[LWS'21]} uses a budget-based cost model to derive a more
+    realistic security estimation:
+    \begin{itemize}
+    \item Takes into account processing (ASICs) and memory costs
+      needed for cryptanalysis,
+    \item Suggests new smaller parameters fit NIST levels more closely,
+    \end{itemize}
+  \end{itemize}
+
+  \begin{center}
+    \begin{tabular}{c | c c c c | c c c c }
+      \hline
+      & \multicolumn{4}{c|}{SIKE round 3} & \multicolumn{4}{c}{[LWS'21]} \\
+      NIST level & $\log p$ & public key & Encaps & Decaps & $\log p$ & public key & Encaps & Decaps \\
+      \hline\hline
+      1 & 434 & 330 & 9.7 & 10.3 & 377 & 288 & 7.3 & 7.2\\
+      3 & 610 & 462 & 27.3 & 27.4 & 546 & 414 & 19.9 & 19.9\\
+      5 & 751 & 564 & 40.7 & 43.9 & 697 & 528 & 33.3 & 35.0\\
+      \hline
+    \end{tabular}
+  \end{center}
+  
+  \footnotetext{[LWS'21] P. Longa, W. Wang, J. Szefer: ``The Cost to
+    Break SIKE: A Comparative Hardware-Based Analysis with AES and
+    SHA-3'', CRYPTO 2021. \url{https://eprint.iacr.org/2020/1457}.}
 \end{frame}
 
 %%
