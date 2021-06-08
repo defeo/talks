@@ -82,6 +82,7 @@
 %%
 
 \begin{frame}{SIDH: simplified overview}
+  \vfill  
   \hfill\begin{minipage}{0.4\linewidth}
     \emph{0.} Starting supersingular curve\\
     \phantom{0.} {$E \;:\; y^2 = x^3 + 6x^2 + x$} over $\F_{p^2}$;
@@ -116,6 +117,7 @@
           |(E)| $g$ \& |(Es)| $g^{\bl{a}}$ \\
           |(Ep)| {$g^{\rd{b}}$} \& |(Eps)| {$g^{\bl{a}\rd{b}}$}\\
         };
+        \node at (-.1,0) {\Large DH};
         \path[->,blue] (E) edge (Es);
         \path[->,blue] (Ep) edge (Eps);
         \path[->,red] (E) edge (Ep);
@@ -127,6 +129,7 @@
           |(E)| $E$ \& |(Es)| $E/\bl{A}$ \\
           |(Ep)| {$E/\rd{B}$} \& |(Eps)| {$E/\cyc{\bl{A},\rd{B}}$}\\
         };
+        \node at (-.3,0) {\Large SIDH};
         \path[->,blue] (E) edge node[auto] {$\phi_A$} (Es);
         \path[->,blue] (Ep) edge (Eps);
         \path[->,red] (E) edge node[auto,swap] {$\phi_B$} (Ep);
@@ -187,7 +190,11 @@
 \begin{frame}{Changes for SIKE in third round}
   \begin{itemize}
   \item New optimized ARMv8, Cortex M4, and VHDL implementations.
-  \item Space and time optimizations for key compression.
+  \item Key compression:
+    \begin{itemize}
+    \item Changed format of compressed ciphertexts (12.5\% larger than in round 2).
+    \item Major improvements in speed and memory usage.
+    \end{itemize}
   \end{itemize}
 \end{frame}
 
@@ -212,32 +219,32 @@
     \hline
     Scheme & prime $p$ & $\log_2 p$ & Security level\\
     \hline\hline
-    \texttt{SIKEp434} & $2^{216}3^{137}-1$ & 433.13 & NIST 1\\
-    \texttt{SIKEp503} & $2^{250}3^{159}-1$ & 502.01 & NIST 2\\
-    \texttt{SIKEp610} & $2^{305}3^{192}-1$ & 609.31 & NIST 3\\
-    \texttt{SIKEp751} & $2^{372}3^{239}-1$ & 750.81 & NIST 5\\
+    \texttt{SIKEp434} & $2^{216}3^{137}-1$ & 434 & NIST 1\\
+    \texttt{SIKEp503} & $2^{250}3^{159}-1$ & 503 & NIST 2\\
+    \texttt{SIKEp610} & $2^{305}3^{192}-1$ & 610 & NIST 3\\
+    \texttt{SIKEp751} & $2^{372}3^{239}-1$ & 751 & NIST 5\\
     \hline
   \end{tabular}
 \end{frame}
 
 %%
 
-\begin{frame}{Key compression}
+\begin{frame}{Performance}
   \vfill
   \centering
   \begin{tabular}{l || c c | c c }
     \hline
     Scheme & Public key & ciphertext & Encaps & Decaps \\
-           & \multicolumn{2}{c|}{\small bytes} & \multicolumn{2}{c}{\small $10^3$ cycles (\texttt{x86\_64} asm)} \\
+           & \multicolumn{2}{c|}{\small bytes} & \multicolumn{2}{c}{\small $10^6$ cycles (\texttt{x86\_64} asm)} \\
     \hline\hline
-    \texttt{SIKEp434} & 330 & 346 & 9,681 & 10,343 \\
-    \texttt{SIKEp434\_compressed} & 197 & 236 & 15,120 & 11,077 \\
-    \texttt{SIKEp503} & 378 & 402 & 13,554 & 14,415 \\
-    \texttt{SIKEp503\_compressed} & 225 & 280 & 21,190 & 15,733 \\
-    \texttt{SIKEp610} & 462 & 486 & 27,254 & 27,445 \\
-    \texttt{SIKEp610\_compressed} & 274 & 336 & 37,470 & 29,216 \\
-    \texttt{SIKEp751} & 564 & 596 & 40,703 & 43,851 \\
-    \texttt{SIKEp751\_compressed} & 335 & 410 & 63,254 & 46,606 \\
+    \texttt{SIKEp434} & 330 & 346 & \phantom{0}9.7 & 10.3 \\
+    \texttt{SIKEp434\_compressed} & 197 & 236 & 15.1 & 11.0 \\
+    \texttt{SIKEp503} & 378 & 402 & 13.6 & 14.4 \\
+    \texttt{SIKEp503\_compressed} & 225 & 280 & 21.2 & 15.7 \\
+    \texttt{SIKEp610} & 462 & 486 & 27.3 & 27.4 \\
+    \texttt{SIKEp610\_compressed} & 274 & 336 & 37.5 & 29.2 \\
+    \texttt{SIKEp751} & 564 & 596 & 40.7 & 43.9 \\
+    \texttt{SIKEp751\_compressed} & 335 & 410 & 63.3 & 46.6 \\
     \hline
   \end{tabular}
 
@@ -283,6 +290,34 @@
 \begin{frame}{Recent developments}
   \vfill
   \begin{itemize}
+  \item SIKE's speed has greatly improved over the last 10 years.
+  \item Improvements, especially in software, become harder to come by.
+  \item {[BI'21]} applies a \emph{Polynomial Modular Number System
+      (PMNS)} representation to finite fields in SIKE:
+    \begin{itemize}
+    \item Does not appear to be competitive for SIKE's proposed
+      parameters;
+    \item Suggests new level 5 parameter, \texttt{p736}, which is
+      1.17$\times$ faster.
+    \item {[TWLLWG'20]} had explored similar ideas previously, but had
+      not demonstrated a speed-up.
+    \end{itemize}
+  \end{itemize}
+  
+  \footnotetext{[BI'21] C. Bouvier, L. Imbert. ``An Alternative
+    Approach for SIDH Arithmetic'', PKC 2021,
+    \url{https://ia.cr/2020/1385}.}%
+  \footnotetext[2]{[TWLLWG'20] J. Tian, P. Wang, Z. Liu, J. Lin,
+    Z. Wang, J. Großschädl ``Faster Software Implementation of the
+    SIKE Protocol Based on a New Data Representation'',
+    \url{https://ia.cr/2020/660}.}
+\end{frame}
+
+%%
+
+\begin{frame}{Recent developments}
+  \vfill
+  \begin{itemize}
   \item Best attack is the generic van Oorschot-Wiener (vOW) parallel
     collision finding algorithm.
   \item Current parameter selection penalizes SIKE: \textbf{memory is
@@ -301,10 +336,11 @@
       \hline
       & \multicolumn{4}{c|}{SIKE round 3} & \multicolumn{4}{c}{[LWS'21]} \\
       NIST level & $\log p$ & public key & Encaps & Decaps & $\log p$ & public key & Encaps & Decaps \\
+      && \small bytes &\multicolumn{2}{c|}{\small $10^6$ cycles} && \small bytes & \multicolumn{2}{c}{\small $10^6$ cycles} \\
       \hline\hline
-      1 & 434 & 330 & 9.7 & 10.3 & 377 & 288 & 7.3 & 7.2\\
-      3 & 610 & 462 & 27.3 & 27.4 & 546 & 414 & 19.9 & 19.9\\
-      5 & 751 & 564 & 40.7 & 43.9 & 697 & 528 & 33.3 & 35.0\\
+      1 & 434 & 330 & 9.7 & 10.3 & 377 & 288 B & \phantom{0}7.3 & \phantom{0}7.2\\
+      3 & 610 & 462 & 27.3 & 27.4 & 546 & 414 B & 19.9 & 19.9\\
+      5 & 751 & 564 & 40.7 & 43.9 & 697 & 528 B & 33.3 & 35.0\\
       \hline
     \end{tabular}
   \end{center}
@@ -338,6 +374,7 @@
       Work in progress:
       \begin{itemize}
       \item Side channel attacks, cryptanalysis.
+      \item Do not miss Craig Costello's talk tomorrow!
       \end{itemize}
     \end{column}
   \end{columns}
