@@ -1,0 +1,915 @@
+\documentclass[aspectratio=169]{beamer}
+
+%\includeonlyframes{current}
+
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{amsmath,amsthm}
+\usepackage{unicode}
+\usepackage{array,tabularx}
+\usepackage{ifthen}
+\usepackage{tikz}
+\usetikzlibrary{matrix,decorations,decorations.text,calc,arrows,snakes,shapes,positioning}
+\usepackage{tikzsymbols}
+\usepackage[backend=biber,citestyle=authoryear-comp,bibstyle=beamer,doi=false,isbn=false,url=true,maxnames=10]{biblatex}
+\bibliography{refs}
+\usepackage{multimedia}
+
+\usepackage{ulem}
+
+\mode<presentation>{%
+  \usetheme{ibm}
+}
+
+\newcommand{\C}{ℂ}
+\newcommand{\R}{ℝ}
+\newcommand{\Z}{ℤ}
+\newcommand{\N}{ℕ}
+\newcommand{\Q}{ℚ}
+\newcommand{\F}{\mathbb{F}}
+\renewcommand{\P}{\mathbb{P}}
+\renewcommand{\O}{\mathcal{O}}
+\newcommand{\tildO}{\mathcal{\tilde{O}}}
+\newcommand{\poly}{\operatorname{poly}}
+\newcommand{\polylog}{\operatorname{polylog}}
+\newcommand{\End}{\operatorname{End}}
+\newcommand{\Hom}{\operatorname{Hom}}
+\newcommand{\Gal}{\operatorname{Gal}}
+\newcommand{\chr}{\operatorname{char}}
+\newcommand{\Cl}{\operatorname{Cl}}
+\newcommand{\GL}{\operatorname{GL}}
+\renewcommand{\a}{{\mathfrak{a}}}
+\renewcommand{\b}{{\mathfrak{b}}}
+\newcommand{\p}{{\mathfrak{p}}}
+\newcommand{\q}{{\mathfrak{q}}}
+\newcommand{\g}{{\mathfrak{g}}}
+\newcommand{\G}{{\mathcal{G}}}
+\newcommand{\E}{{\mathcal{E}}}
+\newcommand{\cyc}[1]{{〈 #1 〉}}
+\newcommand{\ord}{\operatorname{ord}}
+\newcommand{\mat}[1]{\left(\begin{smallmatrix}#1\end{smallmatrix}\right)}
+\newcommand{\from}{\overset{\$}{\leftarrow}}
+
+\newcommand{\bl}[1]{\textcolor{blue}{#1}}
+\newcommand{\rd}[1]{\textcolor{red}{#1}}
+\newcommand{\gr}[1]{\textcolor{green}{#1}}
+\newcommand{\og}[1]{\textcolor{orange}{#1}}
+
+\definecolor{light blue}{RGB}{0,102,204}
+
+\newcommand{\myedge}[3]{
+  \draw[#3] (360/\crater*#1 : \diam) to[bend right] (360/\crater*#2 : \diam);
+}
+\newcommand{\sk}[4]{
+  \draw[very thick,blue]   (0,0) -- (0,#1);
+  \draw[very thick,red]    (1,0) -- (1,#2);
+  \draw[very thick,green]  (2,0) -- (2,#3);
+  \draw[very thick,orange] (3,0) -- (3,#4);
+}
+\newcommand{\axes}[4]{
+  \clip (#1,#3) rectangle (#2,#4);
+  \draw [thin, gray, -latex] (#1,0) -- (#2,0);% Draw x axis
+  \draw [thin, gray, -latex] (0,#3) -- (0,#4);% Draw y axis
+}
+\pgfkeys{/lattice/.code n args={4}{\tikzset{cm={#1,#2,#3,#4,(0,0)}}}}
+\newcommand{\lattice}[2]{
+  \draw[style=help lines,dashed] (#1-1,#1-1) grid[step=1] (#2+1,#2+1);
+  \foreach \x in {#1,...,#2}{
+    \foreach \y in {#1,...,#2}{
+      \node[draw,circle,inner sep=2pt,fill] at (\x,\y) {};
+      % Places a dot at those points
+    }
+  }
+}
+
+\newenvironment<>{goodblock}[1]{%
+  \begin{actionenv}#2%
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=green!60!black,bg=green!50!white}
+       \setbeamercolor{block body}{bg=green!20!white}
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}}
+\newenvironment<>{mehblock}[1]{%
+  \begin{actionenv}#2%
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=yellow!50!black,bg=yellow!50!white}
+       \setbeamercolor{block body}{bg=yellow!20!white}
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}}
+\newenvironment<>{badblock}[1]{%
+  \begin{actionenv}#2%
+      \def\insertblocktitle{#1}%
+      \par%
+      \mode<presentation>{%
+        \setbeamercolor{block title}{fg=red!60!black,bg=red!50!white}
+       \setbeamercolor{block body}{bg=red!20!white}
+     }%
+      \usebeamertemplate{block begin}}
+    {\par\usebeamertemplate{block end}\end{actionenv}}
+
+
+\include{isographs}
+
+\title{What's next for isogeny based cryptography?}
+\author{Luca De Feo}
+\date[Oct 6, 2021, Latincrypt]{October 6, 2021\\
+  Latincrypt}
+\institute{IBM Research Zürich}
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+%%
+
+\begin{frame}{Isogeny epochs}
+  \begin{description}
+  \item[The Big Bang]<+->\
+    \begin{itemize}
+    \item[1997] Couveignes presents the first isogeny based scheme at
+      the ENS seminar in Paris.
+    \end{itemize}
+  \item[The Dark Age]<+->
+  \item[Star formation]<+->\
+    \begin{itemize}
+    \item[2006] Charles--Goren--Lauter hash function;
+    \item[2006] Rostovtsev and Stolbunov independently rediscover
+      Couveignes' idea;
+    \item[2011] Jao and De Feo introduce SIDH.
+    \end{itemize}
+  \item[Inflection point]<+->\
+    \begin{itemize}
+    \item[2016] NIST announces plans for the Post-Quantum Competition.
+    \end{itemize}
+  \item[Accelerating expansion]<+->\
+    \begin{itemize}
+    \item[2018] Castryck, Lange, Martindale, Panny, and Renes
+      introduce CSIDH;
+    \item[2019] Beullens, Kleinjung and Vercauteren introduce CSI-FiSh;
+    \item[2020] De Feo, Kohel, Leroux, Petit and Wesolowski introduce SQISign\dots
+    \end{itemize}
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{Where did isogenies come from?}
+  \begin{description}
+  \item[1940s] André Weil invents the name for his Foundations of
+    Algebraic Geometry;
+  \item[1985] Schoof's elliptic point counting algorithm;
+  \item[1990s] Schoof--Elkies--Atkin (SEA) point counting
+    algorithm\footnote{with important contributions by Couveignes,
+      Lercier, Morain, \dots}\\
+    \dots \emph{computing isogenies} becomes a thing!
+  \item[2000s] People\footnote{Galbraith--Hess--Smart, Menezes--Teske,
+      Jao--Miller--Venkatesan, and many others\dots} use isogenies to
+    reduce discrete logarithms between elliptic curves\\
+    \dots \emph{isogeny graphs} become mainstream!
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \frametitle{Maps: what's \alt<2->{\xout{scalar multiplication} an
+      isogeny}{scalar multiplication}?}
+
+  \begin{overlayarea}{\textwidth}{4em}
+    \Large
+    \[
+      \alt<3->{\phi}{[n]}
+      \;:\; P \mapsto
+      \alt<3->{\phi(P)}{\underbrace{P + P + \cdots + P}_{n\text{ times}}}\]
+  \end{overlayarea}
+  
+  \begin{itemize}
+  \item A map \emph{$E\to \alt<4->{\xout{E} E'}{E\phantom{\xout{}}}$},
+  \item a \emph{group morphism},
+  \item with \emph{finite kernel}\\
+    \alt<5->{(\xout{the torsion group $E[n]\simeq(ℤ/nℤ)^2$} any
+      finite subgroup \emph{$H\subset E$})}{(the torsion group
+      \emph{$E[n]\simeq(ℤ/nℤ)^2$})},
+  \item \emph{surjective} (in the algebraic closure),
+  \item given by \emph{rational maps} of degree \alt<6->{\xout{$n^2$}
+      \emph{$\#H$}}{\emph{$n^2$}}.
+  \end{itemize}
+\end{frame}
+
+%% 
+
+\begin{frame}{Isogenies: an example over $\F_{11}$}
+  \centering
+  \begin{tikzpicture}[scale=0.4]
+    \begin{scope}
+      \node[anchor=center] at (0,7) {$E \;:\; y^2 = x^3 + x$};
+
+      \uncover<-1>{
+        \draw[thin,gray] (0,-6) -- (0,6);
+        \draw[thin,gray] (-6,0) -- (6,0);
+      }
+
+      \foreach \x/\y in {0/0,5/3,-4/3,-3/5,-2/1,-1/3} {
+        \draw[blue,fill] (\x,\y) circle (0.2) node(E_\x_\y){}
+        (\x,-\y) circle (0.2) node(E_\x_-\y){};
+      }
+
+      \uncover<2->{\draw[red,fill] (0,0) circle (0.3);}
+    \end{scope}
+
+    \draw[black!10!white,thick] (10,-7) -- +(0,14);
+    
+    \begin{scope}[shift={(20,0)}]
+      \node at (0,7) {$E' \;:\; y^2 = x^3 - 4x$};
+
+      \uncover<-1>{
+        \draw[thin,gray] (0,-6) -- (0,6);
+        \draw[thin,gray] (-6,0) -- (6,0);
+      }
+
+      \foreach \x/\y in {0/0,2/0,3/2,4/2,6/4,-2/0,-1/5} {
+        \draw[color=blue,fill] (\x,\y) circle (0.2) node(F_\x_\y){}
+        (\x,-\y) circle (0.2) node(F_\x_-\y){};
+      }
+    \end{scope}
+
+    \begin{scope}[color=red,-latex,dashed]
+      \begin{uncoverenv}<2->
+        \path
+        (E_5_3) edge (F_3_2)
+        (E_-4_3) edge (F_4_-2)
+        (E_-3_5) edge (F_4_2)
+        (E_-2_1) edge (F_3_-2)
+        (E_-1_3) edge (F_-2_0);
+      \end{uncoverenv}
+      \begin{uncoverenv}<2->
+        \path
+        (E_5_-3) edge (F_3_-2)
+        (E_-4_-3) edge (F_4_2)
+        (E_-3_-5) edge (F_4_-2)
+        (E_-2_-1) edge (F_3_2)
+        (E_-1_-3) edge (F_-2_0);
+      \end{uncoverenv}
+    \end{scope}
+  \end{tikzpicture}
+  
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \[\phi(x,y) = \left(\frac{x^2 + 1}{x},\quad y\frac{x^2-1}{x^2}\right)\]
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item<2-> Kernel generator in \alert{red}.
+      \item<2-> This is a degree $2$ map.
+      \item<2-> Analogous to $x\mapsto x^2$ in $\F_q^*$.
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Reducing discrete logarithms}
+
+  \begin{block}{Serre-Tate theorem}
+    Two elliptic curves $E,E'$ defined over a finite field $\F_q$ are
+    \emph{isogenous}
+    (over $\F_q$) iff \emph{$\#E(\F_q) = \#E'(\F_q)$}.
+  \end{block}
+  
+  \begin{center}
+    \begin{tikzpicture}
+      \path (0,0) node[anchor=east] {$E$} (6,0) node[anchor=west] {$E'$};
+      \path[gray] (-0.8,0) node[anchor=east] {weak curve}
+      (6.8,0) node[anchor=west] {strong curve};
+
+      \draw[->] (0,0) -- (0.5,-0.2);
+      \draw[->] (6,0) -- (5.5,0.2);
+      \draw[->] (0.5,-0.2) -- (1,0.2);
+      \draw[->] (5.5,0.2) -- (5,-0.2);
+      \begin{scope}[densely dotted,coils/.style={decorate,decoration={coil,aspect=0,amplitude=2pt}}]
+        \draw[coils] (1,0.2) -- (3,0.4);
+        \draw[coils] (5,-0.2) -- (3,0.4);
+        \draw[-angle 90,coils] (3,0.4) -- (3, -0.4) node[anchor=north] {$E''$};
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+  
+  \begin{block}{Fourth root attacks (Galbraith--Hess--Smart, Menezes--Teske)}
+    \begin{itemize}
+    \item Start two random walks from the two curves and wait for a
+      collision.
+    \item Over \emph{$\F_q$}, the average size of an isogeny class is
+      \emph{$h_\Delta\sim\sqrt{q}$}.
+    \item A collision is expected after \emph{$O(\sqrt{h_\Delta}) =
+        O(q^{\frac{1}{4}})$} steps.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Up to \emph{isomorphism}}
+  \begin{center}
+    \begin{tikzpicture}[domain=-2.4566:4,samples=100]
+      \newcount\zoomout
+      \transduration<15-21>{0.5}
+      \animatevalue<15-20>{\zoomout}{0}{10}
+      \begin{uncoverenv}<-20>
+        \begin{scope}[scale=1-0.09*\zoomout]
+          \begin{scope}
+            \draw[thin,gray,-latex] (0,-4) -- (0,4);
+            \draw[thin,gray,-latex] (-4.2,0) -- (7,0);
+          \end{scope}
+          
+          \newcount\xstretch
+          \newcount\ystretch
+          \newcount\slant
+          \transduration<1-13>{0.5}
+          \animatevalue<1-5>{\xstretch}{0}{4}
+          \animatevalue<5-9>{\ystretch}{0}{4}
+          \animatevalue<9-13>{\slant}{0}{4}      
+          \begin{scope}[yscale=0.55-0.05*\the\ystretch,xscale=1+0.1*\the\xstretch,xslant=0.02*\slant]
+            \draw plot (\x,{sqrt(\x*\x*\x-4*\x+5)});
+            \draw plot (\x,{-sqrt(\x*\x*\x-4*\x+5)});
+
+            \begin{uncoverenv}<-18>
+              \draw (-3,1) -- (4,8/3+3);
+              \begin{scope}[every node/.style={draw,circle,inner sep=1pt,fill},cm={1,2/3,0,0,(0,3)}]
+                \node at (-2.287980,0) {};
+                \node at (-0.535051,0) {};
+                \node at (3.267475,0) {};
+              \end{scope}
+              \begin{scope}[every node/.style={yshift=0.3cm},cm={1,2/3,0,0,(0,3)}]
+                \node at (-2.287980,0) {$P$};
+                \node at (-0.535051,0) {$Q$};
+                \node at (3.267475,0) {$R$};
+              \end{scope}
+              \draw[dashed] (3.267475,3.267475*2/3+3) -- (3.267475,-3.267475*2/3-3) 
+              node[draw,circle,inner sep=1pt,fill] {}
+              node[xshift=-0.1cm,anchor=east] {$P+Q$};
+            \end{uncoverenv}
+          \end{scope}
+
+          \begin{uncoverenv}<14>
+            \node[anchor=west] at (-4,-3) {\Large\alert{$y^2=x^3+ax+b \quad\longrightarrow\quad j\equiv 1728\frac{4a^3}{4a^3+27b^2}$}};
+          \end{uncoverenv}
+        \end{scope}
+      \end{uncoverenv}
+      
+      \begin{uncoverenv}<21->
+        \draw[fill] (0,0) circle (2pt) node[anchor=north] {$j=1728$};
+        \uncover<22>{
+          \draw (0.1,0) edge[bend left,->] node[auto] {$\phi$} (7,0);
+        }
+        \uncover<22->{
+          \draw[fill] (7.1,0) circle (2pt) node[anchor=north] {$j=287496$};
+        }
+        \uncover<23->{
+          \draw (0.1,0) edge[bend left,<->,red,very thick] (7,0);
+        }
+      \end{uncoverenv}
+    \end{tikzpicture}
+  \end{center}  
+\end{frame}
+
+%%
+
+\begin{frame}{Isogeny graphs}
+  \begin{block}{}
+    \begin{description}
+    \item[1986] Mestre's \emph{\it``La méthode des graphes''};
+    \item[1996] Kohel's PhD thesis \emph{\it``Endomorphism rings of elliptic
+      curves over finite fields''};
+    \item[2002] Fouquet and Morain's \emph{\it``Isogeny volcanoes and the SEA
+      algorithm''};
+    \item \dots
+    \end{description}
+  \end{block}
+  
+  \smallskip
+  
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{itemize}
+      \item \emph{Vertices are curves} up to isomorphism,
+      \item \emph{Edges are isogenies} up to isomorphism.
+      \end{itemize}
+    \end{column}      
+    \begin{column}{0.5\textwidth}
+      \centering
+      \begin{tikzpicture}
+        \begin{scope}
+          \def\crater{7}
+          \foreach \i in {1,...,\crater} {
+            \draw[fill] (360/\crater*\i:1cm) circle (5pt);
+            \draw (360/\crater*\i : 1cm) -- (360/\crater*\i+360/\crater : 1cm);
+            \foreach \j in {-1,1} {
+              \draw[fill] (360/\crater*\i : 1cm) -- (360/\crater*\i + \j*360/\crater/4 : 2cm) circle (3pt);
+              \foreach \k in {-1,0,1} {
+                \draw[fill] (360/\crater*\i + \j*360/\crater/4 : 2cm) --
+                (360/\crater*\i + + \j*360/\crater/4 + \k*360/\crater/6 : 2.5cm) circle (1pt);
+              }
+            }
+          }
+        \end{scope}
+      \end{tikzpicture}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}{Cryptanalysis $\to$ cryptography}
+  \begin{description}
+  \item[1993]<+-> Menezes--Okamoto--Vanstone use \emph{pairings to
+      break discrete logarithms} of supersingular curves;
+  \item[2000]<+-> Joux and Boneh--Franklin initiate \emph{pairing based
+      cryptography}.
+    \bigskip
+  \item[1999]<+-> Galbraith--Hess--Smart use \emph{isogeny graphs} to
+    extend the impact of \emph{Weil descent attacks};
+  \item[2006]<+-> Charles--Goren--Lauter and Rostovtsev--Stolbunov
+    initiate \emph{isogeny based cryptography}.
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{The beauty and the beast {\quad\footnotesize(credit: Lorenz Panny)}}
+    \smallskip
+    \begin{center}
+
+      Cryptographically interesting isogeny graphs
+
+      \par\vspace{1ex}
+
+      \begin{minipage}{.49\textwidth}\centering
+        \begin{tikzpicture}[scale=.6,>=stealth,shorten >=.2mm,shorten <=.2mm,rotate=90,line width=.6pt]
+          \isoggraph
+        \end{tikzpicture}
+
+        \vspace{.2ex}
+
+        Complex multiplication graphs \\[.7ex]
+        \small Couveignes--Rostovtsev--Stolbunov, CSIDH, CSI-FiSh, \dots
+      \end{minipage}
+      % 
+      \begin{minipage}{.49\textwidth}\centering
+        \begin{tikzpicture}[scale=2.456,>=stealth,shorten >=.2mm,shorten <=.2mm,rotate=90,line width=.6pt]
+          \fpsqgraph
+        \end{tikzpicture}
+
+        \vspace{.2ex}
+
+        Full supersingular graphs \\[.7ex]
+        \small SIDH, SQISign, \dots
+      \end{minipage}
+    \end{center}
+\end{frame}
+
+%%
+
+\begin{frame}{The isogeny path problem}
+  \centering
+  \movie[width=13.5cm,height=7.875cm,loop,poster,autostart,borderwidth=0pt]{}{PathFinding.mp4}
+\end{frame}
+
+%%
+
+\begin{frame}{The isogeny path problem}
+  \begin{block}{The mother of all problems}
+    Given (supersingular) elliptic curves \emph{$E$} and \emph{$E'$}
+    over a finite field, find a \emph{chain of low-degree isogenies}
+    \[\phi_n\circ\cdots\circ\phi_1 \;:\; E\to E'.\]
+  \end{block}
+
+  \begin{description}[leftmargin=1em]
+    \setlength{\itemsep}{1em}
+  \item[CSIDH/CSI-FiSh]
+    \begin{itemize}
+    \item $E$ and $E'$ are supersingular curves \emph{defined over $\F_p$}.
+    \end{itemize}
+  \item[SIDH/SIKE] 
+    \begin{itemize}
+    \item Additional information given on a \emph{secret short
+        chain} $E\to E'$;
+    \item In instantiations, $E$ is fixed and \emph{special} (in a
+      cryptanalytic sense).
+    \end{itemize}
+  \item[SQISign]
+    \begin{itemize}
+    \item Every signature leaks information on a secret chain
+      $E\to E'$,\\ unless a \emph{10-pages-long computational
+        assumption} holds.
+    \item + Random Oracle Model (rewinding).
+    \end{itemize}
+  \item[Time-delay]
+    \begin{itemize}
+    \item A \emph{long chain} $E\to E'$ is \emph{publicly known}, find
+      a shorter one.
+    \item + Pairing assumptions.
+    \end{itemize}
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \centering
+  \begin{tikzpicture}
+    \draw[blue,thick] (90:3.5) -- (210:3.5) -- (330:3.5) -- (90:3.5);
+    
+    \node[rotate=0] at (270:2.5) {Modular functions};
+    \node[rotate=60] at (150:2.5) {Class field theory};
+    \node[rotate=-60] at (30:2.5) {Elliptic curves};
+
+    \begin{uncoverenv}<1>
+      \begin{scope}[gray]
+        \node[rotate=0] at (270:3.2) {$j(z) = \frac{1}{q} + 744 + 196884q + \cdots$};
+        \node[anchor=east] at (150:3.2) {$H(j) = j - 1728$};
+        \node[anchor=west] at (30:3.2) {$y^2 = x^3 - ax - b$};
+      \end{scope}
+    \end{uncoverenv}
+
+    \begin{uncoverenv}<2>
+      \begin{scope}[yshift=0.5cm]
+        \node[anchor=east] (C) at (150:4.5) {Abelian extensions};
+        \node[anchor=east,below of=C] {of $\Q(\sqrt{-D})$};
+        \node[anchor=west] (E) at (30:4.5) {Elliptic curves with};
+        \node[anchor=west,below of=E] {$\End(E) \subset \Q(\sqrt{-D})$};
+      \end{scope}
+    \end{uncoverenv}
+    
+    \begin{uncoverenv}<3>
+      \begin{scope}[yshift=1.5cm]
+        \node[anchor=east] (C) at (150:3) {Galois group of $K/\Q(\sqrt{-D})$};
+        \node[anchor=east,below of=C] (C1) {$\simeq$};
+        \node[anchor=east,below of=C1] {Ideal class group $\Cl(-D)$};
+        \node[anchor=west] (E) at (30:3) {$\Cl(-D)$ acts on set of $E$ s.t.};
+        \node[anchor=west,below of=E] {$\End(E) \subset \Q(\sqrt{-D})$};
+      \end{scope}
+    \end{uncoverenv}
+    
+    \begin{scope}
+      \Large
+      \node at (0,0.3) {\emph{Complex}};
+      \node at (0,-0.5) {\emph{Multiplication}};
+    \end{scope}
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \begin{block}{Group action}
+    \emph{$\G\circlearrowright\E$}: A (finite) set $\E$ \emph{acted
+      upon} by a group $\G$ \emph{freely} and \emph{transitively}:
+    \begin{align*}
+      * : \G × \E &→ \E\\
+      \g * E &↦ E'
+    \end{align*}
+    \par\begin{description}
+    \item[Compatibility:] \emph{$\g' * (\g * E) = (\g'\g)*E$} for all
+      $\g,\g'\in\G$ and $E\in\E$;
+    \item[Identity:] \emph{$\mathfrak{e} * E = E$} if and only if
+      $\mathfrak{e}\in\G$ is the identity element;
+    \item[Regularity:] for all $E,E'\in\E$ there exist a \emph{unique
+        $\g\in\G$} such that \emph{$\g*E'=E$}.
+      \setlength{\itemsep}{2em}
+    \end{description}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Cryptographic Group Actions}
+  \begin{block}{Hard Homogeneous Space (HHS) --- Couveignes 1997}
+    \emph{$\G\circlearrowright\E$} such that $\G$ is commutative and:
+    \begin{itemize}
+    \item \emph{Evaluating} $E' = \g*E$ is \emph{easy};\hfill isogeny computation
+    \item \emph{Inverting} the action is \emph{hard}.\hfill isogeny path problem
+    \end{itemize}
+  \end{block}
+
+  \begin{itemize}
+  \item Efficient non-interactive key exchange;\hfill\emph{CSIDH}
+  \item Decent signatures;\hfill\emph{CSI-FiSh}
+  \item Threshold and ring signatures;\footnote{De Feo--Meyer, Beullens--Katsumata--Pintore}
+  \item Hash proof systems, OT, VRFs, KDM-secure symmetric encryption,
+    \dots\footnote{De Feo--Alamati--Montgomery--Patranabis}
+  \item \dots
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Oriented curves (CSIDH, Colò--Kohel)}
+  \begin{block}{Quadratic orientations}
+    $\O$ a quadratic imaginary order
+    \[\emph{\Q(\sqrt{-D})} \qquad\supset\qquad \emph{\O} \qquad\subset\qquad \emph{\End(E)}\]
+    Complex multiplication group action from $\Cl(\O)$.
+  \end{block}
+
+  \begin{block}{Deuring correspondence}
+    When $E$ is \emph{supersingular}:
+    \begin{itemize}
+    \item $\End(E)$ isomorphic to a maximal order in a quaternion
+      algebra;
+    \item $E$ has infinitely many (primitive) orientations;
+    \item \emph{Quaternionic multiplication} acts on the set of
+      supersingular curves.
+    \end{itemize}
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{The Deuring correspondence}
+  \centering
+  \movie[width=13.5cm,height=7.875cm,loop,poster,autostart,borderwidth=0pt]{}{Cycles.mp4}
+\end{frame}
+
+%%
+
+\begin{frame}{The Deuring correspondence}
+  \begin{itemize}
+  \item A foundation for the Charles--Goren--Lauter hash function;
+  \item A framework to study the security of SIDH;\footnote{de
+      Quehen--Kutas--Leonardi--Martindale--Panny--Petit--Stange.}
+  \item An equivalence between the \emph{isogeny path problem} and the
+    \emph{endomorphism ring
+      problem};\footnote{Galbraith--Petit--Shani--Ti,
+      Eisenträger--Hallgren--Lauter--Morrison--Petit, Wesolowski.}
+  \item A tool to build new schemes.\footnote{Galbraith--Petit--Silva,
+      De Feo--Kohel--Leroux--Petit--Wesolowski,
+      De~Feo--Delpech~de~Saint~Guilhem--Fouotsa--Kutas--Leroux--Petit--Silva--Wesolowski}
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Cryptanalysis $\to$ cryptography}
+  \begin{description}
+  \item[1993] Menezes--Okamoto--Vanstone use \emph{pairings to
+      break discrete logarithms} of supersingular curves;
+  \item[2000] Joux and Boneh--Franklin initiate \emph{pairing based
+      cryptography}.
+    \bigskip
+  \item[1999] Galbraith--Hess--Smart use \emph{isogeny graphs} to
+    extend the impact of \emph{Weil descent attacks};
+  \item[2006]<+-> Charles--Goren--Lauter and Rostovtsev--Stolbunov
+    initiate \emph{isogeny based cryptography}.
+    \bigskip
+  \item[2014]<+-> Kohel--Lauter--Petit--Tignol solve one direction of
+    the \emph{Deuring correspondence} (quaternions $\to$ curves) to
+    \emph{break hash functions};
+  \item[2017]<+-> Galbraith--Petit--Silva construct a \emph{signature
+      scheme based on the Deuring correspondence};
+  \item[2020]<+-> De Feo--Kohel--Leroux--Petit--Wesolowski introduce
+    \emph{SQISign}.
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{Time delay cryptography}
+    \begin{block}{Verifiable Delay Functions \small(D., Masson, Petit, Sanso 2019)}
+    \begin{itemize}
+    \item $\phi$ is a \emph{long chain of small degree isogenies} (e.g., degree $2$);
+    \item Conjecturally \emph{sequential task}: evaluate one isogeny at a time;
+    \item Start from \emph{BLS Signatures}, replace multiplications with isogenies;
+    \item \emph{Fast verification} of evaluation through pairing.
+    \end{itemize}
+  \end{block}
+  
+  \begin{block}{Delay Encryption \small(Burdges, D. 2021)}
+    \begin{itemize}
+    \item Start from \emph{Identity Based Encryption}, replace multiplications with isogenies;
+    \item Everyone can \emph{encrypt efficiently} to an identity;
+    \item \emph{Slow decryption}: need to evaluate long chain of isogenies.
+    \end{itemize}
+  \end{block}
+
+  \bigskip
+  \centering
+  Warning: Not post quantum!
+\end{frame}
+
+%%
+
+\begin{frame}{Are isogenies for real?}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      Ask this guy
+
+      \bigskip
+      \url{https://youtu.be/EAe5dqWcxh4}
+
+      \bigskip
+      
+      He'll tell you:
+      \begin{itemize}
+      \item SIKE is ready for standardization;
+      \item CSIDH, CSI-FiSh, SQISign, require more work, but still
+        hold promise.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \centering
+      \includegraphics[width=\textwidth]{pirate.jpg}
+
+      \small
+      Peculiar invited speaker at RWC '21
+    \end{column}
+  \end{columns}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \Huge\centering
+  What's next?
+\end{frame}
+
+%%
+
+\begin{frame}{The cost of evaluating isogenies}
+    \large
+  \centering
+  \begin{tikzpicture}
+    \node at (-6,0) {$\phi(x,y) = \Biggl($};
+    \node (x) at (-2.5,0) {$\displaystyle
+      \frac{
+        x^4 - x^3 + 11x^2 + 9x + 12
+      }{
+        x^3-x^2-x+1
+      },$};
+    \node (y) at (3.5,0) {$\displaystyle y
+      \frac{x^5 - x^4 - 14x^3 - 26x^2 - 67x - 21}{x^5 - x^4 - 2x^3 + 2x^2 + x - 1}$};
+    \node at (7,0) {$\Biggr)$};
+    
+    \begin{scope}[thick,red]
+      \draw (-4.5,0.4) circle (0.2) +(0,0.2) -- +(0,1) +(0,1.2) node {degree};
+      \draw (-2.5,-0.3) ellipse (1.7 and 0.4) +(0,-0.4) -- +(0,-1.2) +(0,-1.4) node {kernel polynomial};
+    \end{scope}
+  \end{tikzpicture}
+
+  \medskip
+  
+  \begin{itemize}
+  \item For a long time, people believed in a
+    $O(\alert{\text{degree}})$ lower bound;
+  \item Bernstein--De Feo--Leroux--Smith proved
+    $O(\sqrt{\alert{\text{degree}}})$;
+  \item Can we do better? Can we prove this is the optimum?
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Prime searches and B-SIDH}
+  \begin{itemize}
+  \item Missing an $O(\log(\alert{\text{degree}}))$ algorithm, we are
+    stuck to find \emph{curves with torsion points of small order};
+  \item Order constraints $\to$ prime constraints:
+    \begin{itemize}
+    \item SIDH: $p + 1 = 2^a 3^b$,
+    \item B-SIDH: $p^2-1$ smooth,
+    \item SQISign: $p^2-1 = 2^a \cdot f$, with $f$ partially smooth,
+    \item \dots
+    \end{itemize}
+  \item How far can we go?
+  \item Will B-SIDH ever be competitive with SIDH/SIKE?
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{From SQISign to X.509?}
+  \begin{center}
+    \begin{tikzpicture}
+      \node (E0) at (1,2.5) {$E_0$};
+      \node (E1) at (4,2.5) {$E_1$};
+      \node (E2) at (4,1) {$E_2$};
+      \node (EA) at (0,1) {$E_A$};
+      \node (A) at (0.25,1.75) {$\tau$};
+      \node (B) at (2.5,2.75) {$\psi$};
+      \node (A) at (4.25,1.75) {$\varphi$};
+      \node (B) at (2,1.25) {$\sigma$};
+      % \draw [->] (E) -- (E1);
+      \draw [blue,very thick] [->] (EA) -- (E2);
+      \draw [red] [->] (E1) to (E2);
+      \draw [blue,dashed] [->] (E0) to (EA);
+      \draw [blue] [->] (E0) to (E1);
+      \matrix [right] at (6,2) {
+        \node[] (l1) {}; \node (l2) [right of = l1, node distance=0.5in,label=right: commitment isogeny (prover)] {}; \draw [blue] [->] (l1) -- (l2); \\
+        \node[] (l3) {}; \node (l4) [right of = l3, node distance=0.5in,label=right:challenge isogeny (verifier)] {}; \draw [red] [->] (l3) -- (l4); \\
+        \node[] (l1) {}; \node (l2) [right of = l1, node distance=0.5in,label=right: response isogeny (prover)] {}; \draw [blue,very thick] [->] (l1) -- (l2); \\
+        \node[] (l1) {}; \node (l2) [right of = l1, node distance=0.5in,label=right: secret key isogeny] {}; \draw  [dashed,blue] [-] (l1) -- (l2); \\
+      };
+    \end{tikzpicture}
+  \end{center}
+
+  \bigskip
+  
+  \emph{Most compact PQ signature scheme}: PK + Signature combined
+  \textbf{5$\times$smaller} than Falcon.
+
+  \begin{table}[h]
+    \centering
+    \begin{tabular}{ c c c c}
+      Secret Key (bytes) & Public Key (bytes) & Signature (bytes) & Security \\
+      \hline
+      16 & 64 & 204 & NIST-1 \\
+      \hline
+    \end{tabular}
+  \end{table}
+
+\end{frame}
+
+%%
+
+\begin{frame}{Does CSI-FiSh have a future?}
+  \begin{itemize}
+  \item Huge potential (threshold, ring, \dots);
+  \item Unclear quantum security;
+  \item Nearly impossible instantiation;
+  \item Can we make CSI-FiSh easier to instantiate?
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Trusted setups}
+  \begin{itemize}
+  \item Time delay protocols need \emph{supersingular curves with
+      unknown endomorphism ring};
+  \item No known way to generate these safely (\emph{Hashing to the
+      supersingular set});
+  \item Easy MPC protocols to reduce trust issues;
+  \item But unsatisfactory ZK proofs of isogeny knowledge;
+  \item \dots will someone dare to run them?
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Is Ethereum going to adopt isogenies?}
+  \begin{itemize}
+  \item Time delay isogeny protocols are extremely
+    space/bandwidth-hungry;
+  \item Delay encryption sexy \emph{and unique!};
+  \item Are we going to see isogeny based delay encryption used in the
+    real world?
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Other questions}
+  \begin{itemize}
+  \item Will SIDH become even faster?
+  \item What is the quantum security of CSIDH?
+  \item Can we make SQISign even faster?
+  \item \dots
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}[plain]
+  \centering
+  \begin{tikzpicture}[remember picture,overlay]
+    \begin{scope}[xscale=1.7,yshift=-15,opacity=0.8]
+      \def\crater{12}
+      \def\jumpa{-8}
+      \def\jumpb{9}
+      \def\diam{5cm}
+
+      \foreach \i in {1,...,\crater} {
+        \draw[blue] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+360/\crater : \diam);
+        \draw[red] (360/\crater*\i : \diam) to[bend right] (360/\crater*\i+\jumpa*360/\crater : \diam);
+        \draw[green] (360/\crater*\i : \diam) to[bend right=50] (360/\crater*\i+\jumpb*360/\crater : \diam);
+      }
+    \end{scope}
+    
+    \draw (0,0.5) node{\Huge\bf Thank you};
+    \draw (0,-1.1) node{\large\url{https://defeo.lu/}};
+    \draw (0,-1.8) node{\large\includegraphics[height=0.9em]{twitter.png}~\href{https://twitter.com/luca_defeo}{@luca\_defeo}};
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\end{document}
+
+
+% LocalWords:  Isogeny abelian isogenies hyperelliptic supersingular Frobenius
+% LocalWords:  isogenous
