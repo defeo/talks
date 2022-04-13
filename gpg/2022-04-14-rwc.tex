@@ -1,0 +1,502 @@
+\documentclass[aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{amsmath,amsthm}
+\usepackage{tikz}
+\usetikzlibrary{matrix}
+\usepackage{ulem}
+\usepackage{hyperref}
+\usepackage{diagbox}
+
+\mode<presentation>{%
+  \usetheme{ibm}
+}
+
+\newcommand{\Z}{\mathbb{Z}}
+
+\title{On the (in)security of ElGamal in OpenPGP}
+\author[De Feo, Poettering, Sorniotti]{\uline{Luca De Feo}, Bertram Poettering and Alessandro Sorniotti}
+\date[Apr 14, 2022, RWC Amsterdam]{April 14, 2022, Real World Crypto, Amsterdam}
+\institute[IBM Research]{IBM Research Zürich}
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+%%
+{
+  \setbeamertemplate{background} 
+  {
+    \includegraphics[width=\paperwidth,height=\paperheight]{hammer.jpg}
+  }
+  \begin{frame}{\Large Details matter}
+    \Large
+    \textbf{How to hang a picture? (ISO 3103\textonehalf)}
+    \pause
+    \bigskip
+    \begin{itemize}
+      \setlength{\itemsep}{1em}
+    \item[1.]<+-> Take hammer,
+    \item[2.]<+-> Strike nail\dots
+    \end{itemize}
+    \vspace{3cm}
+  \end{frame}
+}
+
+%%
+
+\begin{frame}{Cryptographic standards, what's the worse that could happen?}
+  \large
+  \begin{itemize}
+    \setlength{\itemsep}{1.2em}
+  \item Theoretical break.
+  \item Side-channel leakage.
+  \item Implementations secure in isolation, do not interoperate.
+  \item \bf Implementations secure in isolation, insecure when
+    interoperating.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{OpenPGP}
+  \large
+  \begin{itemize}
+    \setlength{\itemsep}{1em}
+  \item An IETF Encryption standard, since 1998.
+  \item One of two standards for \emph{end-to-end email encryption}
+    (along with S/MIME).
+  \item Many implementations:\\
+    ~~GnuPG, Botan (\emph{rnp/Thunderbird}), Go
+    (\emph{Protonmail}), Libcrypto++, \dots
+  \item IETF RFCs:
+    \begin{description}
+    \item[RFC 4880 ] \textbf{OpenPGP Message Format}
+    \item[RFC 3156 ] MIME Security with OpenPGP
+    \item[RFC 5581 ] The Camellia Cipher in OpenPGP
+    \item[RFC 6637 ] Elliptic Curve Cryptography in OpenPGP
+    \end{description}
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{OpenPGP algorithms}
+  \large
+  \begin{description}
+  \item[Hash Functions:] MD5, RIPE-MD, SHA-1, SHA-2.
+  \item[Symmetric Ciphers:] IDEA, TripleDES, CAST5, Blowfish, AES,
+    Twofish, Camellia.
+  \item[Public Key Encryption:] RSA, ElGamal, ECDH.
+  \item[Signature Algorithms:] RSA, DSA, ECDSA.
+  \end{description}
+
+  \bigskip
+  
+  \begin{block}{RFC 4880 \small(dated November 2007)}
+    \it ``Implementations MUST implement DSA for signatures, and
+    \textbf{ElGamal} for encryption. Implementations SHOULD implement
+    RSA [\dots]''
+  \end{block}
+\end{frame}
+
+%%
+
+\begin{frame}{Public key algorithms specifications in OpenPGP}
+  \large
+  \begin{description}
+    \setlength{\itemsep}{1em}
+  \item[RSA ] PKCS \#1
+  \item[ECDH ] NIST SP 800-56A ~~~+~~~ RFC 6637
+  \item[DSA ] FIPS 186-2
+  \item[ECDSA ] FIPS 186-3
+  \item[ElGamal ] \textbf{El Gamal '85} ~~~/~~~ \textbf{Handbook of Applied Cryptography '97}
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{ElGamal according to the OpenPGP standard?}
+  \centering
+  \begin{tikzpicture}[x=.1\textwidth,y=.1\textheight,
+    every node/.style={draw=black!60,thick,fill=white}]
+    \node at (0.4,-4) {\includegraphics[width=.5\textwidth]{hac-enc}};
+    \node at (0,0) {\includegraphics[width=.5\textwidth]{hac-gen}};
+    \node at (5,-0.5) {\includegraphics[width=.35\textwidth]{elgamal-gen}};
+    \node at (5.4,-4) {\includegraphics[width=.35\textwidth]{elgamal-enc}};
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\begin{frame}{ElGamal in the wild (OpenPGP ecosystem)}
+  \large
+  \begin{description}[leftmargin=8cm]
+    \setlength{\itemsep}{2em}
+  \item[Large prime $p$] \hfill Safe prime \hfill ``Schnorr'' prime
+    \hfill ``Lim-Lee'' prime \hfill other \hfill\strut
+  \item[Generator $\alpha$] \hfill primitive element \hfill generates
+    subgroup \hfill\strut
+  \item[Private key] \hfill $0 < a < p$ \hfill ``short exponent'' optimisation \hfill\strut
+  \item[Ephemeral key] \hfill $0 < k < p$ \hfill ``short exponent'' optimisation \hfill\strut
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{What could possibly go wrong?}
+  \centering
+  \begin{tikzpicture}[x=.1\textwidth]
+    \node at (0,0) {\includegraphics[height=.9\textheight]{mars}};
+    \node at (-5,0) {\includegraphics[width=.5\textwidth]{mars-orbit}};
+    \node at (-7,-3.5) {\tiny credit: Wikipedia};
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\begin{frame}{Our results}
+  \begin{itemize}
+    \setlength{\itemsep}{1em}
+  \item<1-> Each of \emph{GnuPG}, \emph{Botan} and \emph{Libcrypto++}
+    implements ElGamal in a different, non-RFC-4880-compliant way:
+    \begin{itemize}
+    \item Each is \emph{secure taken in isolation}.
+    \item They are interoperable: functionally and securely.
+    \end{itemize}
+  \item<3-> We analyse 800K registered PGP ElGamal public keys:
+    \begin{itemize}
+    \item 2K of them are exposed to \emph{practical plaintext
+        recovery} when \emph{GnuPG}, \emph{Botan}, \emph{Libcrypto++}
+      (or any other library using the ``short exponent'' optimisation)
+      \emph{encrypts to them}.\\
+      We call these \emph{cross-configuration} attacks.
+    \end{itemize}
+  \item<2-> \emph{Go} does not implement ElGamal key generation and is \emph{the
+    least offender}.
+  \item<4-> We find side channels leaking ElGamal secret keys in \emph{GnuPG}, \emph{Go} and
+    \emph{Libcrypto++}:
+    \begin{itemize}
+    \item \emph{GnuPG} claimed to be side-channel resistant.
+    \item Our attack against \emph{GnuPG} becomes more powerful in the
+      \emph{cross-configuration} scenario.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Prime generation}
+  \begin{description}[labelwidth=0,leftmargin=!]
+    \setlength{\itemsep}{1em}
+  \item[Goal:] prime $p$ with at least \emph{one large prime factor $q|(p-1)$}.
+  \item[Safe primes:] $p = 2\emph{q} + 1$:
+    \begin{itemize}
+    \item Considered kind of expensive, back in the '90s.
+    \end{itemize}
+  \item[``Lim-Lee'' primes:] $p = 2\emph{q_1}q_2\cdots q_r$, all $q_i$ large:
+    \begin{itemize}
+    \item Cheaper than safe primes,
+    \item Protecting against the same \emph{attacks}.
+    \end{itemize}
+  \item[``Schnorr'' primes:] $p = 2\emph{q}f + 1$, with $f$ arbitrary:
+    \begin{itemize}
+    \item Cheapest,
+    \item Popularized by Schnorr signatures, DSA, FIPS-186-2.
+    \end{itemize}
+  \item[Random primes:] risky, don't do it!
+  \item[Other:] your imagination is the only limitation!
+  \end{description}
+\end{frame}
+
+%% 
+
+\begin{frame}{800K registered OpenPGP ElGamal public keys}
+  \centering
+  \begin{tikzpicture}
+    \draw (0,0) circle (3.8cm);
+    \node at (0,0) {\Large Safe primes};
+    \node[blue] at (.3,-1) {16 ``standardized'' primes};
+    \fill[green!50!black] (1,2) circle (.04cm);
+    \node[green!50!black] at (1,1.7) {\footnotesize generated (Libcrypto++/Botan?)};
+
+    \begin{scope}[shift={(6,1.5)}]
+      \draw (0,0) circle (1.8cm);
+      \node at (0,0) {Lim--Lee?};
+      \node[purple] at (.4,-.8) {GnuPG?};
+      \fill[brown] (.3,1) circle (.02cm);
+      \node[brown] at (.3,.8) {\tiny ???};
+    \end{scope}
+
+    \begin{scope}[shift={(5,-3)}]
+      \draw (0,0) circle (.5cm);
+      \node at (0,.8) {``quasi-safe''};
+    \end{scope}
+
+    \begin{scope}[shift={(7,-1.5)}]
+      \fill[red] (0,0) circle (.3cm);
+      \node[red] at (0,.6) {Schnorr / Other};
+
+      \begin{uncoverenv}<2->
+        \node[white] (0,0) {\Large !!!};
+        \draw[->,red,thick] (2,-1) to (.3,0);
+        \node[red] at (2,-1.3) {plaintext recovery attack};
+      \end{uncoverenv}
+    \end{scope}
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\begin{frame}{Discrete log: when $\alpha$ is primitive \uncover<4->{and $x$ is \alert{``short''}}}
+  \Large\centering
+  \begin{tikzpicture}
+    \begin{scope}
+      \node at (-1,0) {$p-1 \quad=$};
+      \node at (2,0) {$2 \quad\cdot$};
+      \node at (5,0) {$\emph{q} \quad\cdot$};
+      \node at (8,0) {$\ell_3 \quad\cdot$};
+      \node at (11,0) {$\ell_4 \quad\cdots$};
+      \node (a) at (6,-1.5) {$\alpha^x$};
+      \begin{uncoverenv}<2->
+        \begin{scope}[yshift=-3cm]
+          \node (a2) at (2,0) {$\alpha_2^x$};
+          \node (aq) at (5,0) {$\emph{\alpha_q^x}$};
+          \node (a3) at (8,0) {$\alpha_3^x$};
+          \node (a4) at (11,0) {$\alpha_4^x$};
+          \draw[->,gray!50!white] (a) edge (a2) edge (aq) edge (a3) edge (a4);
+          \node[gray] at (0,.7) {Pohlig--Hellman};
+        \end{scope}
+      \end{uncoverenv}
+      \begin{uncoverenv}<3->
+        \begin{scope}[yshift=-5cm]
+          \node (x2) at (2,0) {$x \bmod 2$};
+          \node (xq) at (5,0) {$\emph{??}$};
+          \node (x3) at (8,0) {$x \bmod \ell_3$};
+          \node (x4) at (11,0) {$x \bmod \ell_4$};
+          \draw[->,gray!50!white] (a2) edge (x2)
+          (a3) edge (x3)
+          (a4) edge (x4);
+        \end{scope}
+      \end{uncoverenv}
+      \begin{uncoverenv}<4->
+        \node (x) at (5,-7) {$x \mod \alert{2\ell_3\ell_4\cdots}$};
+        \draw[<-,gray!50!white] (x) edge (x2) edge (x3) edge (x4);
+        \node[gray] at (0,-6) {CRT};
+      \end{uncoverenv}
+    \end{scope}
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\begin{frame}{ElGamal Encryption \uncover<7->{in OpenPGP}}
+  \begin{tikzpicture}
+    \begin{uncoverenv}<1-4>
+      \begin{scope}
+        \large
+        \node at (0,0) {$p$};
+        \node at (0,-.7) {$\alpha \bmod p$};
+        \node at (0,-1.4) {$\alert{\alpha^x = X}$};
+      \end{scope}
+      \begin{scope}[anchor=west,xshift=1.5cm,color=black!60]
+        \node at (0,0) {prime};
+        \node at (0,-.7) {generator};
+        \node at (0,-1.4) {public key};
+      \end{scope}
+    \end{uncoverenv}
+    
+    \begin{uncoverenv}<2-4>
+      \begin{scope}[xshift=11cm]
+        \large
+        \node at (0,0) {$m$};
+        \node at (0,-.7) {$y$};
+      \end{scope}
+      \begin{scope}[xshift=12.5cm,color=black!60]
+        \node at (0,0) {message};
+        \node at (0,-.7) {random};
+      \end{scope}
+    \end{uncoverenv}
+    
+    \begin{uncoverenv}<3>
+      \begin{scope}[xshift=6cm,yshift=-3.5cm]
+        \Large
+        \node at (0,0) {$(\alert{Y=\alpha^y},\quad X^y\cdot m)$};
+        \node at (0,-1.5) {$m = X^y\cdot m / Y^x$};
+      \end{scope}
+      \begin{scope}[xshift=10cm,yshift=-3.5cm,color=black!60]
+        \node at (0,0) {encryption};
+        \node at (0,-1.5) {decryption};
+      \end{scope}
+    \end{uncoverenv}
+
+    \begin{uncoverenv}<4->
+      \begin{scope}[yshift=-3cm]
+        \large
+        \node at (0,0) {$(p-1) = $};
+        \node at (0,-1) {$\alpha$};
+        \node at (0,-2) {$x\in$};
+        \node at (0,-3) {$y\in$};
+        \uncover<10->{
+          \node[scale=2] at (14.1,-1) {$\Biggr\}$};
+          \node[scale=2] at (14.1,-3) {$\}$};
+        }
+      \end{scope}
+      \begin{scope}[anchor=west,xshift=1.5cm,yshift=-3cm]
+        \begin{scope}[gray,yshift=0.4cm]
+          \scriptsize
+          \node at (0.1,0) {safe};
+          \node at (2.1,0) {Schnorr};
+          \node at (5.6,0) {Lim-Lee};
+        \end{scope}
+        \node at (0,0) {$2\cdot q$};
+        \node at (2,0) {$2\cdot f \cdot q$};
+        \node at (5,0) {$2\cdot q \cdot q_2 \cdots q_r$};
+        \node at (0,-1) {generates all of $\Z_p^*$};
+        \node at (4,-1) {generates subgroup of order $q$};
+        \node at (1,-2) {$[1,p-1]$};
+        \node at (5,-2) {``short''};
+        \node at (1,-3) {$[1,p-1]$};
+        \node at (5,-3) {``short''};
+        %% 
+        \uncover<5->{\draw[thick,blue] (2.6,-.2) -- (1.8,-.8) (1.8,-1.2) -- (5.5,-1.8);}
+        \uncover<6->{\draw[thick,red] (2.5,-.2) -- (1.7,-.8) (1.7,-1.2) -- (5.5,-2.8);}
+      \end{scope}
+      \begin{scope}[anchor=east,xshift=14cm,yshift=-3cm,color=black!60]
+        \small
+        \node at (0,0) {($q$ are ``large'' primes)};
+        \node at (0,-1) {(other possible)};
+      \end{scope}
+    \end{uncoverenv}
+
+    \begin{uncoverenv}<5-6>
+      \begin{scope}[anchor=east,xshift=4cm,yshift=-.5cm]
+        \node[color=blue] at (0,0) {Bingo 0:};
+        \uncover<6->{
+          \node[color=red] at (0,-.7) {Bingo 1:};
+        }
+      \end{scope}
+      \begin{scope}[anchor=west,xshift=4.5cm,yshift=-.5cm]
+        \node at (0,0) {key recovery from public key only (van Oorschot--Wiener)};
+        \uncover<6->{
+          \node at (0,-.7) {message recovery from single ciphertext (this work)};
+        }
+      \end{scope}
+    \end{uncoverenv}
+
+    \begin{uncoverenv}<7->
+      \begin{scope}[anchor=west,yshift=.5cm]
+        \uncover<7->{
+          \node at (0,-.7) {\textcolor{green!80!black}{GnuPG:} Lim-Lee, generates all $\Z_p^*$, \alert{short exponents}.};
+        }
+        \uncover<8->{
+          \node at (0,-1.4) {\textcolor{purple}{Libcrypto++/Botan:} safe primes, generates subgroup, \alert{short exponents}.};
+        }
+        \uncover<9->{
+          \node at (0,-2.1) {\texttt{Go:} no key generation, $y\in[1,p-1]$.};
+        }
+      \end{scope}
+      \begin{scope}[xshift=1.5cm,yshift=-3cm,dashed]
+        \uncover<7->{
+          \draw[green!80!black] (6,-.2) -- (1.9,-.8) (2.1,-1.2) -- (5.8,-1.8) (5.8,-2.2) -- (5.8,-2.8);
+        }
+        \uncover<8->{
+          \draw[purple] (1,-.2) -- (6,-.8) (6,-1.2) -- (6,-1.8) (6,-2.2) -- (6,-2.8);
+          }
+      \end{scope}
+    \end{uncoverenv}
+  \end{tikzpicture}
+  \vspace{1cm}
+\end{frame}
+
+%%
+
+\begin{frame}{800K registered OpenPGP ElGamal public keys}
+  \large
+  \begin{center}
+    \begin{tabular}{l|ccc|r|r}
+      \multicolumn{1}{c}{prime type} & \multicolumn{3}{c}{group size} & \multicolumn{2}{c}{quantity} \\
+                                     & $p-1$ & $q$ & other & total & since 2016 \\
+      Safe prime I   & x & & & 472,518 & 783 \\
+      Safe prime II  & & x & & 107,339 & 219 \\
+      Lim--Lee I      & ? & & & 211,271 & 6,003 \\
+      Lim--Lee II     & & ? & & 47 & 24 \\
+      Quasi-safe I   & x & & & 15,592 & 89 \\
+      Quasi-safe II  & & x & & 20 & 3 \\
+      Quasi-safe III & & & x & 26,199 & 125 \\
+      \alert{Schnorr I}     & \alert{?} & & & \alert{828} & \alert{810} \\
+      Schnorr II    & & ? & & 27 & 26 \\
+      \alert{Schnorr III}   & & & \alert{x} & \alert{1,304} & \alert{1,300}
+    \end{tabular}%
+  \end{center}
+\end{frame}
+
+%%
+
+\begin{frame}{Side channel vulnerabilities in exponentiation $\to$ Key recovery}
+  \begin{description}
+  \item[Threat model]
+    \begin{itemize}
+    \item Co-located attacker;
+    \item Targets the exponentiation in the decryption routine;
+    \item Must trigger decryption (e.g., email decryption).
+    \end{itemize}
+  \item[Techniques] FLUSH+RELOAD (instruction cache), PRIME+PROBE (data cache).
+  \item[Findings]\
+    
+    \begin{tabular}{l | c c c }
+      \backslashbox{Key}{Library} & Libcrypto++ & Go & GnuPG\\
+      \hline
+      $x\in[1,p-1]$ & $|$ & $|$ & unfeasible\\
+      GnuPG & trivial & easy & unfeasible/state\\
+      Libcrypto++/Botan & $|$ & $|$ & state/commodity*\\
+    \end{tabular}
+  \end{description}
+
+  \bigskip
+  *Verified experimentally on 2048 bits key.  
+\end{frame}
+
+%%
+
+{
+  \setbeamertemplate{background} 
+  {
+    \tikz[opacity=.3]{\node{\includegraphics[width=\paperwidth,height=\paperheight]{hammer.jpg}};}
+  }
+\begin{frame}{Our results}
+  \begin{itemize}
+    \setlength{\itemsep}{1em}
+  \item Each of \emph{GnuPG}, \emph{Botan} and \emph{Libcrypto++}
+    implements ElGamal in a different, non-RFC-4880-compliant way:
+    \begin{itemize}
+    \item Each is \emph{secure taken in isolation}.
+    \item They are interoperable: functionally and securely.
+    \end{itemize}
+  \item We analyse 800K registered PGP ElGamal public keys:
+    \begin{itemize}
+    \item 2K of them are exposed to \emph{practical plaintext
+        recovery} when \emph{GnuPG}, \emph{Botan}, \emph{Libcrypto++}
+      (or any other library using the ``short exponent'' optimisation)
+      \emph{encrypts to them}.\\
+      We call these \emph{cross-configuration} attacks.
+    \end{itemize}
+  \item \emph{Go} does not implement ElGamal key generation and is \emph{the
+    least offender}.
+  \item We find side channels leaking ElGamal secret keys in \emph{GnuPG}, \emph{Go} and
+    \emph{Libcrypto++}:
+    \begin{itemize}
+    \item \emph{GnuPG} claimed to be side-channel resistant.
+    \item Our attack against \emph{GnuPG} becomes more powerful in the
+      \emph{cross-configuration} scenario.
+    \end{itemize}
+  \end{itemize}
+\end{frame}
+}
+
+\end{document}
+
+
+% LocalWords:  Isogeny abelian isogenies hyperelliptic supersingular Frobenius
+% LocalWords:  isogenous
