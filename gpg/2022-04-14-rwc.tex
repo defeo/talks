@@ -195,7 +195,7 @@
     \begin{itemize}
     \item Considered kind of expensive, back in the '90s.
     \end{itemize}
-  \item[``Lim-Lee'' primes:] $p = 2\emph{q_1}q_2\cdots q_r$, all $q_i$ large:
+  \item[``Lim-Lee'' primes:] $p = 2\emph{q_1}q_2\cdots q_r + 1$, all $q_i$ large:
     \begin{itemize}
     \item Cheaper than safe primes,
     \item Protecting against the same \emph{attacks}.
@@ -460,40 +460,26 @@
 
 %%
 
-{
-  \setbeamertemplate{background} 
-  {
-    \tikz[opacity=.3]{\node{\includegraphics[width=\paperwidth,height=\paperheight]{hammer.jpg}};}
-  }
-\begin{frame}{Our results}
-  \begin{itemize}
-    \setlength{\itemsep}{1em}
-  \item Each of \emph{GnuPG}, \emph{Botan} and \emph{Libcrypto++}
-    implements ElGamal in a different, non-RFC-4880-compliant way:
-    \begin{itemize}
-    \item Each is \emph{secure taken in isolation}.
-    \item They are interoperable: functionally and securely.
-    \end{itemize}
-  \item We analyse 800K registered PGP ElGamal public keys:
-    \begin{itemize}
-    \item 2K of them are exposed to \emph{practical plaintext
-        recovery} when \emph{GnuPG}, \emph{Botan}, \emph{Libcrypto++}
-      (or any other library using the ``short exponent'' optimisation)
-      \emph{encrypts to them}.\\
-      We call these \emph{cross-configuration} attacks.
-    \end{itemize}
-  \item \emph{Go} does not implement ElGamal key generation and is \emph{the
-    least offender}.
-  \item We find side channels leaking ElGamal secret keys in \emph{GnuPG}, \emph{Go} and
-    \emph{Libcrypto++}:
-    \begin{itemize}
-    \item \emph{GnuPG} claimed to be side-channel resistant.
-    \item Our attack against \emph{GnuPG} becomes more powerful in the
-      \emph{cross-configuration} scenario.
-    \end{itemize}
-  \end{itemize}
+\begin{frame}{More info, get in touch, \dots}
+  \large\centering
+  
+  \begin{description}
+    \setlength{\itemsep}{2em}
+  \item[Luca:]
+    \includegraphics[height=0.9em]{twitter.png}~\href{https://twitter.com/luca_defeo}{@luca\_defeo}
+  \item[Ale:]
+    \includegraphics[height=0.9em]{twitter.png}~\href{https://twitter.com/sigusr0}{@sigusr0}
+  
+  \item[Blog:]
+    \url{https://ibm.github.io/system-security-research-updates/}
+  
+  \item[Paper:]
+    \url{https://ia.cr/2021/923}
+  \end{description}
+  
+  \Huge\vfill
+  Thank you!
 \end{frame}
-}
 
 \end{document}
 
