@@ -228,22 +228,55 @@
   \end{description}
 \end{frame}
 
+%%
+
+\begin{frame}{Prime and exponent sizes}
+  \centering
+  \begin{tabular}{r|rrr|rrrrrr}
+    {} & \multicolumn{3}{c|}{GnuPG\footnotemark} & {Libcrypto++\footnotemark} & DSA & RFC 3766 & BSI TR 02102\\
+    {$|p|$} & ``Wiener's table'' & $|x|$ & $|y|$ & $|x|,|y|$ & $|q|$ & $|q|$ & $|q|$ \\
+    \hline
+    512 & {119} & {181} & {184} & {120} & {} & {} & {} \\
+    768 & {145} & {220} & {224} & {144} & {} & {} & {}  \\
+    1024 & {165} & {250} & {248} & {164} & {160} & {135} & {140} \\
+    1536 & {198} & {298} & {304} & {198} & {} & {168} & {} \\
+    2048 & {225} & {340} & {344} & {226} & {224} & {190} & {200} \\
+    3072 & {269} & {406} & {408} & {268} & {256} & {224} & {256} \\
+    4096 & {305} & {460} & {464} & {304} & {} & {280} & {} \\
+    7680 & {1160} & {1741} & {1744} & {398} & {384} & {380} & {384} \\
+    15360 & {2120} & {3181} & {3184} & {530} & {512} & {480} & {512} \\
+  \end{tabular}
+
+  \footnotetext[1]{\it ``Michael Wiener's table on subgroup sizes to
+    match field sizes.  (floating around somewhere, probably based on
+    the paper from Eurocrypt 96, page 332).''} %
+  \footnotetext[1]{\it ``I don't see a reason to have a x of about the
+    same size as the p.  It should be sufficient to have one about the
+    size of q or the later used k plus a large safety
+    margin. Decryption will be much faster with such an x.''} %
+  \footnotetext{\it ``extrapolated from the table in Odlyzko's "The
+    Future of Integer Factorization" updated to reflect the factoring
+    of RSA-130''}
+\end{frame}
+
 %% 
 
 \begin{frame}{800K registered OpenPGP ElGamal public keys}
   \large
   \begin{itemize}
-    \setlength{\itemsep}{1.5ex}
+    \setlength{\itemsep}{2em}
   \item We downloaded an OpenPGP server dump produced on Jan 15, 2021;
   \item Out of 2,721,869 keys, 835,144 contain ElGamal subkeys;
-  \item For each El Gamal subkey we factored $p-1$ as much as we
+  \item For each El Gamal subkey we factored $(p-1)$ as much as we
     could:\footnote{Trial division + ECM}
     \begin{itemize}
       \normalsize
+      \setlength{\itemsep}{1em}
     \item We collected the keys into prime types: safe prime,
       \textit{probable} Lim-Lee, ``quasi-safe'', Schnorr/other;
     \item Based on factorization, we inspected the order of the
-      generator.
+      generator\\
+      $\to$ tentative attribution to originating software.
     \end{itemize}
   \end{itemize}
 \end{frame}
@@ -472,6 +505,24 @@
 
 %%
 
+\begin{frame}{How bad is it?}
+  \centering
+  \begin{tikzpicture}
+    \node at (0,0) {\includegraphics[width=12cm]{cross-implem}};
+    \draw[red,thick,->] (4,-3) -- (3.2,-1.7);
+    \node[anchor=north,red] at (4.5,-3) {2.5 hours on a single core!};
+  \end{tikzpicture}
+\end{frame}
+
+%%
+
+\begin{frame}{Side channel vulnerabilities in exponentiation (GnuPG)}
+  \centering
+  \includegraphics[height=0.9\textheight]{libgcrypt-FR}
+\end{frame}
+
+%%
+
 \begin{frame}{Side channel vulnerabilities in exponentiation $\to$ Key recovery}
   \begin{description}
   \item[Threat model]
@@ -599,6 +650,16 @@
   \Huge\vfill
   Thank you!
 \end{frame}
+
+%%
+
+{
+  \setbeamercolor{background canvas}{bg=black}
+  \begin{frame}[plain]
+    \centering
+    \includegraphics[height=\paperheight]{grimsel}
+  \end{frame}
+}
 
 \end{document}
 
