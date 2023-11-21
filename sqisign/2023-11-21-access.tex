@@ -576,8 +576,44 @@
 
 %%
 
-\begin{frame}{The effective Deuring correspondence}
-  
+\begin{frame}{The endomorphism ring problem}
+  \Large\centering
+  \vfill
+  Given a random supersingular curve $E$, compute $\End(E)$
+  \vfill
+\end{frame}
+
+%%
+
+\begin{frame}{Contagious knowledge}
+  \centering
+  \begin{tikzpicture}
+    \pgfmathsetseed{12345}
+    \foreach \i in {1,...,100} {
+      \pgfmathparse{16*random()}
+      \let\x\pgfmathresult
+      \pgfmathparse{7*random()}
+      \let\y\pgfmathresult
+      \fill[black!20!white] (\x,\y) circle (1pt);
+    }
+    \foreach \i in {1,...,10} {
+      \pgfmathparse{floor(15*random())}
+      \let\x\pgfmathresult
+      \pgfmathparse{floor(6*random())}
+      \let\y\pgfmathresult
+      \fill (\x,\y) circle (2pt);
+      \uncover<2->{
+        \foreach \rho in {0,1,2} {
+          \draw[fill,-latex] (\x,\y) -- +(120*\rho:.3) circle (2pt);
+          \uncover<3->{
+            \foreach \sigma in {-1,1} {
+              \draw[fill,-latex] (\x,\y) ++(120*\rho:.3) -- ++(120*\rho+60*\sigma:.3) circle (2pt);
+            }
+          }
+        }
+      }
+    }
+  \end{tikzpicture}
 \end{frame}
 
 %%
@@ -607,22 +643,74 @@
 
 %%
 
+\begin{frame}{The effective Deuring correspondence}
+  \centering\large
+  \setlength{\tabcolsep}{2em}
+  \renewcommand{\arraystretch}{1.8}
+  \begin{tabular}{c c c}
+    Input & Output \\
+    \hline
+    random $E$ & $\End(E)$ & \alert{hard}\\
+    random $E$ & $ω ∈ \End(E)$ & \alert{hard}\\
+    random $E$ & $\phi : E_0\to E$ & \alert{hard}\\
+    \hline
+    $\End(E)$ & $E$ & easy\\
+    $\End(E)$, $\End(E')$ & connecting ideal & easy\\
+    \hline
+    $I ⊂ \End(E)$ & $\phi_I : E → E'$ & easy\\
+    $\End(E)$, $\phi: E → E'$ & $I_\phi ⊂ \End(E)$, $\End(E')$ & easy
+  \end{tabular}
+\end{frame}
+
+%%
+
+\begin{frame}{Galbraith--Petit--Silva}
+  \centering
+  \begin{tikzpicture}
+    \node (E0) at (1,3) {$E_0$};
+    \node (EA) at (0,0) {$E_A$};
+    \draw [blue,dashed,->] (E0) edge (EA);
+    
+    \uncover<2->{
+    \node (Ec) at (5,0) {$E_c$};
+      \draw [blue] [->] (EA) to (Ec);
+    }
+    \uncover<3->{
+      \draw [blue,very thick] [->] (E0) -- (Ec);
+    }
+    
+    \matrix [right] at (6,2) {
+      \node[] (l1) {}; \node (l2) [right of = l1, node distance=0.5in,label=right: secret key isogeny] {}; \draw  [dashed,blue] [-] (l1) -- (l2); \\
+      \uncover<2->{\node[] (l1) {}; \node (l2) [right of = l1, node distance=0.5in,label=right: commitment isogeny (prover)] {}; \draw [blue] [->] (l1) -- (l2);} \\
+    };
+  \end{tikzpicture}  
+\end{frame}
+
+%%
+
 \begin{frame}{SQIsign: Signatures from the effective Deuring correspondence}
   \begin{center}
     \begin{tikzpicture}
       \node (E0) at (1,2.5) {$E_0$};
-      \node (E1) at (4,2.5) {$E_1$};
-      \node (E2) at (4,1) {$E_2$};
+      \uncover<2->{
+        \node (E1) at (4,2.5) {$E_1$};
+        \node (B) at (2.5,2.75) {$\psi$};
+        \draw [blue] [->] (E0) to (E1);
+      }
+      \uncover<3->{
+        \node (E2) at (4,1) {$E_2$};
+        \node (A) at (4.25,1.75) {$\varphi$};
+        \draw [red] [->] (E1) to (E2);
+      }
       \node (EA) at (0,1) {$E_A$};
       \node (A) at (0.25,1.75) {$\tau$};
-      \node (B) at (2.5,2.75) {$\psi$};
-      \node (A) at (4.25,1.75) {$\varphi$};
-      \node (B) at (2,1.25) {$\sigma$};
-      % \draw [->] (E) -- (E1);
-      \draw [blue,very thick] [->] (EA) -- (E2);
-      \draw [red] [->] (E1) to (E2);
       \draw [blue,dashed] [->] (E0) to (EA);
-      \draw [blue] [->] (E0) to (E1);
+
+      \uncover<4->{
+        \node (B) at (2,1.25) {$\sigma$};
+        \draw [blue,very thick] [->] (EA) -- (E2);
+      }
+
       \matrix [right] at (6,2) {
         \node[] (l1) {}; \node (l2) [right of = l1, node distance=0.5in,label=right: commitment isogeny (prover)] {}; \draw [blue] [->] (l1) -- (l2); \\
         \node[] (l3) {}; \node (l4) [right of = l3, node distance=0.5in,label=right:challenge isogeny (verifier)] {}; \draw [red] [->] (l3) -- (l4); \\
@@ -651,43 +739,6 @@
 \end{frame}
 
 %% 
-
-\begin{frame}{SQIsign}
-  \centering
-  \begin{tikzpicture}
-    \node[draw] (bigint) at (0,2.5) {\emph{BigInts}};
-    \node[draw] (quat) at (3.6,2.5) {
-      \parbox{4cm}{
-        \emph{Quaternions}\\[1ex]
-        (modular) Integer matrices, kernels, lattices,
-        orders (maximal, Eichler),
-        LLL, HNF, Howell form, \dots
-      }};
-    \node[draw] (klpt) at (9,2.5) {
-      \parbox{4cm}{
-        \emph{KLPT}\\[1ex]
-        Diophantine equations (Cornacchia), norm equations, \dots
-      }};
-    \node[draw] (gf) at (2,-2.5) {\emph{$\F_{p^2}$}};
-    \node[draw] (ec) at (6,-2.5) {
-      \parbox{4cm}{
-        \emph{Elliptic curves}\\[1ex]
-        Isogenies, Weil pairing, discrete logs, \dots
-      }};
-    \node[draw] (i2i) at (12,0) {
-      \parbox{3cm}{\centering
-        \emph{Ideal $\leftrightarrow$ Isogeny translation.}
-      }};
-
-    \draw[-latex] (i2i) edge (klpt) edge (ec)
-    (ec) edge (gf)
-    (klpt) edge (quat)
-    (quat) edge (bigint);
-  \end{tikzpicture}
-\end{frame}
-
-
-%%
 
 \begin{frame}[plain]
   \centering
