@@ -1,0 +1,226 @@
+\documentclass[12pt,aspectratio=169]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[american]{babel}
+\usepackage{amsmath,amsthm}
+\usepackage{tikz}
+
+\newcommand{\sm}[2]{\left(\protect\begin{matrix}#1\protect\\#2\protect\end{matrix}\right)}
+
+\usepackage[nosfdefault]{comicneue}
+\usepackage{sourcesanspro}
+\usepackage[amssymb,amsfonts]{concmath}
+
+\let\OLDitemize\itemize
+\renewcommand\itemize{\OLDitemize\addtolength{\itemsep}{1em}}
+
+\setbeamertemplate{navigation symbols}{}
+\renewcommand{\emph}[1]{{\usebeamercolor[fg]{structure}#1}}
+
+\title{Interpolating isogenies in quasi-optimal time}
+\author{Luca De Feo}
+\date[24 Nov 2023, François 3C]{24 Nov 2023, François 3C}
+\institute{IBM Research Zürich}
+
+\begin{document}
+
+\frame[plain]{\titlepage}
+
+%%
+
+\begin{frame}{Schoof}
+  \large
+  \[\pi|E[\ell] \quad:\quad (X,Y) \quad\mapsto\quad (X^q, Y^q) \mod \phi_\ell(X)\]
+\end{frame}
+
+%%
+
+\begin{frame}{Elkies}
+  \large
+  \[H < E[\ell]\]
+  \pause
+  \[\phi_H(X) \;\mid\; \phi_\ell(X)\]
+  \pause
+  \[\phi : E \to E/H\]
+\end{frame}
+
+%%
+
+\begin{frame}{Finding $E/H$}
+  \large
+  \begin{gather*}
+    \Phi_\ell(j(E), X)\\
+    =\\
+    (X-\alert{j_1}) \cdot (X-j_2) \cdot (X^n + \cdots) \cdots (X^n + \cdots)
+  \end{gather*}
+\end{frame}
+
+%%
+
+\begin{frame}{Finding $H$}
+  \large\centering
+  
+  \begin{tikzpicture}
+    \node (E) at (0,0) {$E$};
+    \node (EH) at (5,0) {$E/H$};
+    \draw[dashed,->] (E) edge node[above] {\normalsize $\ell$} (EH);
+  \end{tikzpicture}
+  
+  \bigskip
+
+  Now what?
+\end{frame}
+
+%%
+
+\begin{frame}{Elkies / Bostan--Morain--Salvy--Schost}
+  \large
+  \begin{itemize}
+  \item Set up a differential equation;
+  \item Solve the differential equation (Newton iteration).
+  \end{itemize}
+
+  \bigskip
+  \begin{description}
+  \item[Complexity:] $\tilde{O}(\ell)$
+  \item[Problem:] only works if $\ell < p$.
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{Couveignes}
+  \large\centering
+  \begin{tikzpicture}
+    \node (E) at (0,0) {$E[p^n]$};
+    \node (EH) at (5,0) {$E'[p^n]$};
+    \node (P) at (0,-1) {$P$};
+    \node (P') at (5,-1) {$aP'$};
+    \draw[dashed,->] (E) edge node[above] {\normalsize $\ell$} (EH);
+  \end{tikzpicture}
+
+  \bigskip
+  \begin{itemize}
+  \item Try all $a$ and interpolate, until one works.
+  \item Complexity: need $p^n > 2\ell \quad\to\quad \tilde{O}(p^{2n}) = \tilde{O}(\ell^2)$
+  \item For small $p$, obsolted by $p$-adic point-counting.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Lercier--Sirvent}
+  \large
+  \begin{itemize}
+  \item Lift Elkies' differential equation to $\mathbb{Q}_p$,
+  \item Solve equation using BMSS,
+  \item Reduce mod $p$.
+  \item Complexity: $\tilde{O}(\ell^3)$ or $\tilde{O}(\ell^2)$.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{De Feo--Hugounenq--Plût--Schost} 
+  \large\centering
+  \begin{tikzpicture}
+    \node (E) at (0,0) {$E[2^n]$};
+    \node (EH) at (5,0) {$E'[2^n]$};
+    \node (P) at (0,-1.5) {$\sm{P}{Q}$};
+    \node (P') at (5,-1.5) {$\sm{a&b}{c&d}\sm{P'}{Q'}$};
+    \draw[dashed,->] (E) edge node[above] {\normalsize $\ell$} (EH);
+  \end{tikzpicture} 
+
+  \bigskip
+  \begin{description}
+  \item[Complexity:] $2^{2n} > 2\ell \quad\to\quad \tilde{O}(2^{4n}\cdot\ell) = \tilde{O}(\ell^{3})$
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{De Feo--Hugounenq--Plût--Schost} 
+  \large\centering
+  \begin{tikzpicture}
+    \node (P) at (0,-1) {$\sm{P}{Q}$};
+    \node (P') at (5,-1) {$\sm{a&}{&d}\sm{P'}{Q'}$};
+    \draw[dashed,->] (P) edge node[above] {\normalsize $\ell$} (P');
+  \end{tikzpicture} 
+
+  \bigskip
+
+  \begin{itemize}
+  \item If $2$ splits in $\mathbb{Z}[\pi]$, use volcanoes to find
+    eigenspaces.
+  \item Complexity: $2^{2n} > 2\ell \quad\to\quad \tilde{O}(2^{2n}\cdot \ell) = \tilde{O}(\ell^{2})$
+  \item Non-split case in Cyril's thesis.
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}{Facepalm: don't forget Weil}
+  \large\centering
+  \begin{tikzpicture}
+    \node (P) at (0,-1) {$\sm{P}{Q}$};
+    \node (P') at (5,-1) {$\sm{a&}{&d}\sm{P'}{Q'}$};
+    \draw[dashed,->] (P) edge node[above] {\normalsize $\ell$} (P');
+  \end{tikzpicture} 
+
+  
+  \[e(P,Q)^\ell \quad=\quad e(aP',dQ') \quad=\quad e(P',Q')^{ad}\]
+  
+  \bigskip
+  \begin{description}
+  \item[Complexity:] $2^{2n} > 2\ell \quad\to\quad \tilde{O}(2^{n}\cdot\ell) = \alert{\tilde{O}(\ell^{1.5})}$
+  \end{description}
+\end{frame}
+
+%%
+
+\begin{frame}{Shooting at isogenies with a cannon}
+  \large\centering
+  \begin{tikzpicture}
+    \node (P) at (0,-1) {$\sm{P}{Q}$};
+    \node (P') at (5,-1) {$\sm{a&}{&d}\sm{P'}{Q'}$};
+    \draw[dashed,->] (P) edge node[above] {\normalsize $\ell$} (P');
+  \end{tikzpicture}
+
+  \bigskip
+  
+  \begin{itemize}
+  \item SIDH attacks verify existence of $\ell$-isogenies in $\log(\ell)^{O(1)}$.
+  \item Attack $2^n$ times, interpolate once!
+  \item Complexity: $2^{2n} > 2\ell \quad\to\quad \tilde{O}(2^{n}\cdot\mathsf{SIDH} + \ell) = \alert{\tilde{O}(\ell)}$
+  \end{itemize}
+\end{frame}
+
+%%
+
+\begin{frame}
+  \Huge\centering
+  Happy birthday, F.~!
+\end{frame}
+
+%%
+
+\begin{frame}{A small puzzle for the road}
+  \large
+  \begin{itemize}
+  \item Given a semiprime \emph{$N = pq$},
+  \item Knowing \emph{$\ell \mid p-1$} and \emph{$\ell \mid q-1$}
+  \item \dots with \emph{$\ell > N^{1/3}$},
+  \item Given \emph{$x$} such that \emph{$x^\ell = 1 \mod N$}
+  \item \dots and \emph{$\gcd(x, N) = 1$}~!
+  \item Can you find \emph{$p,q$}?
+  \end{itemize}
+  
+\end{frame}
+
+\end{document}
+
+
+% LocalWords:  Isogeny abelian isogenies hyperelliptic supersingular Frobenius
+% LocalWords:  isogenous
+
+
