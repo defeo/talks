@@ -11,7 +11,6 @@
 \usepackage{tikz}
 \usetikzlibrary{matrix,decorations,decorations.text,calc,arrows,snakes,shapes,positioning,patterns,intersections}
 \usepackage{tikzsymbols}
-\usepackage{multimedia}
 
 \usepackage{ulem}
 
@@ -241,9 +240,9 @@
   
   \begin{uncoverenv}<9->
     \begin{description}
-    \item[Input:] Finite kernel \emph{$K⊂E(k)$} of order \emph{$d$};
+    \item[Input:] Finite kernel \emph{$K⊂E$} of order \emph{$d$};
     \item[Output:] Rational fractions \emph{$ϕ(x,y)$};
-    \item[Complexity:] \emph{$\tilde{O}(d)$} operations over $k$.
+    \item[Complexity:] \emph{$\tilde{O}(d)$} operations.
     \end{description}
   \end{uncoverenv}
 \end{frame}
@@ -344,7 +343,7 @@
 
 \begin{frame}
   \centering
-  \movie[width=13.5cm,height=7.875cm,loop,poster,autostart,borderwidth=0pt]{}{PathFinding.mp4}
+  \includegraphics[width=\textwidth]{PathFinding.png}
 \end{frame}
 
 %%
@@ -492,7 +491,7 @@
   \begin{description}
     \setlength{\itemsep}{1em}
   \item[Algorithm:] Index calculus
-  \item[Cost:] exponential complexity, fast in practice
+  \item[Cost:] (sub)exponential complexity, fast in practice
   \item[Used in:] CSI-FiSh signature scheme (2019)
   \end{description}
 \end{frame}
