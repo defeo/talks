@@ -334,8 +334,14 @@
 
 %%
 
-\begin{frame}{More correspondences}
+\begin{frame}{More on correspondences}
   \begin{description}
+  \item[Algorithms for the Deuring correspondence:]\
+    \begin{itemize}
+    \item Jordi Pujolàs\\
+      --- \textit{On prime degree twisting endomorphisms of
+        supersingular elliptic curves}
+    \end{itemize}
   \item[Higher dimensions:]\ 
     \begin{itemize}
     \item Enric Florit\\
@@ -665,6 +671,23 @@
 
 %%
 
+\begin{frame}{Other topics}
+  \begin{description}
+  \item[Better pairing computations:]\
+    \begin{itemize}
+    \item Alessandro Sferlazza\\
+      --- \textit{Montgomery ladders already compute pairings}
+    \end{itemize}
+  \item[Abstracting SQIsign for cryptography:]\
+    \begin{itemize}
+    \item Ilinca Radulescu\\
+      --- \textit{Cryptographic Categories}
+    \end{itemize}
+  \end{description}
+\end{frame}
+
+%%
+
 \begin{frame}{Performance of SQIsign v2 \small(February 2025)}
   \begin{table}[h]
     \centering
@@ -731,12 +754,37 @@
 
 %%
 
-\begin{frame}{Challenges}
-  \begin{itemize}
-  \item Better security proof,
-  \item Better 1D SQIsign,
-  \item Constant time,
-  \end{itemize}
+\begin{frame}{The future}
+  \begin{columns}
+    \begin{column}{0.5\textwidth}
+      \begin{description}
+      \item[Todos:]\
+        \begin{itemize}
+        \item Systematic analysis of variants
+        \item Hardware accelerations
+        \end{itemize}
+      \item[Challenges:]\
+        \begin{itemize}
+        \item Better security proof
+        \item Constant time algorithms
+        \item SQIsign needs stability
+        \end{itemize}
+      \end{description}
+    \end{column}
+    \begin{column}{0.5\textwidth}
+      \begin{description}
+      \item[Looks tough:]\
+        \begin{itemize}
+        \item Meaningfully faster signatures
+        \end{itemize}
+      \item[One may always dream:]\
+        \begin{itemize}
+        \item Meaningfully faster verification
+        \item Better 1D SQIsign
+        \end{itemize}
+      \end{description}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \end{document}
